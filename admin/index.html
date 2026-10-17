@@ -555,6 +555,10 @@ window.SSAPI = (function () {
       { cart: [{ id: 'wake', v: 0, q: 1 }, { id: 'ai', v: 0, q: 1 }], name: '高砂 三郎', email: 'saburo@example.com', tel: '070-5555-6666', zip: '530-0001', pref: '大阪府', addr: '大阪市北区梅田 1-1', message: 'トマトソース用です' }
     ];
     S.forEach(function (d) { createOrder(d); });
+    /* 見本の注文に、数分ずつずらした受付時刻を付ける（1件目・2件目…が受付順に並ぶように） */
+    var list = get(K.orders, []), base = Date.now() - S.length * 7 * 60000;
+    list.slice(0, S.length).reverse().forEach(function (o, i) { o.created = new Date(base + i * 7 * 60000).toISOString(); o.history[0].at = o.created; });
+    set(K.orders, list);
   }
   function reset() { if (LIVE) { call('POST', '/api/reset'); return; } [K.orders, K.stock, K.log].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} }); }
 
