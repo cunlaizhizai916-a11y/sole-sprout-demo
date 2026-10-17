@@ -1,0 +1,981 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>管理画面｜SOLE SPROUT</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#163A16">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@800&family=Shippori+Mincho+B1:wght@800&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<style>/* SOLE SPROUT 管理画面 — 玉垣さんがスマホで、ハウスの中で片手で使う前提 */
+:root{
+  --bg:#F6F2E7; --card:#FFFFFF; --ink:#1E2B1B; --ink2:#5A6656; --line:#E6DFCD;
+  --leaf:#2B6324; --leaf-d:#163A16; --sprout:#8DC63F; --tomato:#E0452A; --sun:#F4B23E; --sky:#2F5F96;
+  --num:'Shippori Mincho B1','Hiragino Mincho ProN',serif; --jp:'Zen Maru Gothic','Hiragino Sans',sans-serif;
+  --top:58px; --tab:64px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--jp);font-weight:500;color:var(--ink);background:var(--bg);font-size:15px;line-height:1.7;letter-spacing:.03em;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+svg{display:block}
+h1,h2,h3,p{margin:0}
+ul{margin:0;padding:0;list-style:none}
+input,select,textarea{font:inherit;font-size:16px;color:var(--ink)}
+.n{font-family:var(--num);font-weight:800;letter-spacing:.01em}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:8px}
+
+/* 上のバー */
+.top{position:sticky;top:0;z-index:30;height:var(--top);display:flex;align-items:center;gap:10px;padding:0 10px 0 14px;background:var(--leaf-d);color:#FAF5E9}
+.brand{display:flex;align-items:center;gap:8px;margin-right:auto;min-width:0}
+.brand svg{width:30px;height:30px;flex:none}
+.brand b{display:block;font-family:'Fraunces',serif;font-size:15px;line-height:1.1;letter-spacing:.01em;white-space:nowrap}
+.brand small{display:block;font-size:11px;color:var(--sprout);line-height:1.2}
+.demo-chip{white-space:nowrap;flex:none;font-size:11.5px;font-weight:700;background:var(--sun);color:var(--leaf-d);padding:2px 10px;border-radius:999px}
+.top-link{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:700;padding:7px 10px;white-space:nowrap;flex:none;border-radius:999px;border:1.5px solid rgba(250,245,233,.4)}
+.top-link svg{width:15px;height:15px}
+.top-gear{flex:none;width:44px;height:44px;display:grid;place-items:center;border-radius:50%}
+.top-gear svg{width:24px;height:24px}
+
+/* タブ（スマホは下・PCは左） */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;height:calc(var(--tab) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);
+  display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border-top:1px solid var(--line)}
+.tabs a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11.5px;font-weight:700;color:var(--ink2)}
+.tabs svg{width:24px;height:24px}
+.tabs a.on{color:var(--leaf)}
+.tabs a.on::before{content:"";position:absolute;top:0;left:28%;right:28%;height:3px;border-radius:0 0 3px 3px;background:var(--leaf)}
+.tab-badge{position:absolute;top:6px;left:calc(50% + 6px);min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:var(--tomato);color:#fff;font-size:11px;font-family:var(--num);display:grid;place-items:center}
+.tab-badge:empty{display:none}
+.main{padding:16px 14px calc(var(--tab) + 30px + env(safe-area-inset-bottom));max-width:860px;margin:0 auto}
+@media(min-width:900px){
+  .tabs{top:var(--top);bottom:0;right:auto;width:200px;height:auto;padding:16px 10px;display:flex;flex-direction:column;gap:4px;border-top:0;border-right:1px solid var(--line)}
+  .tabs a{flex-direction:row;justify-content:flex-start;gap:12px;font-size:15px;padding:12px 14px;border-radius:12px}
+  .tabs a.on{background:#EEF4E5}
+  .tabs a.on::before{display:none}
+  .tab-badge{position:static;margin-left:auto}
+  .main{margin-left:200px;padding:28px 34px 60px;max-width:none}
+  .main>*{max-width:900px}
+}
+
+/* 見出し */
+.h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:6px 0 14px}
+.h h1{font-size:22px;font-weight:900}
+.h small{font-size:13px;color:var(--ink2)}
+.sub-h{font-size:15px;font-weight:900;margin:22px 0 10px;color:var(--ink2)}
+.lead{font-size:13.5px;color:var(--ink2);margin:-6px 0 14px;line-height:1.7}
+
+/* カード・数字タイル */
+.card{background:var(--card);border-radius:18px;padding:16px;box-shadow:0 1px 0 var(--line)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:var(--card);border-radius:18px;padding:14px 16px;box-shadow:0 1px 0 var(--line);display:flex;flex-direction:column;gap:2px}
+.tile small{font-size:12.5px;color:var(--ink2);font-weight:700}
+.tile b{font-size:30px;line-height:1.2}
+.tile b em{font-style:normal;font-family:var(--jp);font-size:14px;margin-left:3px}
+.tile.big{grid-column:1/3;background:var(--leaf);color:#fff;flex-direction:row;align-items:center;justify-content:space-between}
+.tile.big small{color:var(--sprout);font-size:14px}
+.tile.big b{font-size:44px}
+.tile.big .go{display:flex;align-items:center;gap:6px;font-weight:900;font-size:15px;background:rgba(255,255,255,.14);padding:10px 14px;border-radius:999px}
+@media(min-width:900px){.tiles{grid-template-columns:repeat(3,1fr)}.tile.big{grid-column:1/2;flex-direction:column;align-items:flex-start}}
+
+/* 注文の行 */
+.olist{display:flex;flex-direction:column;gap:8px}
+.orow{display:grid;grid-template-columns:1fr auto;gap:2px 10px;background:var(--card);border-radius:16px;padding:12px 14px;box-shadow:0 1px 0 var(--line);align-items:center}
+.orow .who{font-weight:900;font-size:15.5px;line-height:1.4}
+.orow .what{grid-column:1/2;font-size:13px;color:var(--ink2);line-height:1.5}
+.orow .meta{grid-column:1/3;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--ink2)}
+.orow .amt{font-size:17px;text-align:right}
+.orow.sel{outline:3px solid var(--sprout)}
+.pill{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 10px;border-radius:999px;line-height:1.6;white-space:nowrap}
+.s-paid{background:#FDE7E2;color:#B5301A}
+.s-packed{background:#FFF0D2;color:#8A5A00}
+.s-shipped{background:#E3EEF8;color:var(--sky)}
+.s-done{background:#EEF4E5;color:var(--leaf)}
+.s-canceled,.s-refunded,.s-pending{background:#EEE;color:#777}
+.gift{font-size:11px;font-weight:700;color:var(--tomato);border:1.5px solid var(--tomato);border-radius:6px;padding:0 5px;margin-left:6px;vertical-align:1px}
+
+/* 絞り込み */
+.chips{display:flex;gap:6px;overflow-x:auto;margin:0 -14px 12px;padding:2px 14px 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;min-height:40px;padding:0 14px;border-radius:999px;background:#fff;border:1.5px solid var(--line);font-size:13.5px;font-weight:700}
+.chips button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chips button b{font-family:var(--num);margin-left:4px}
+.search{width:100%;min-height:48px;padding:10px 14px;border-radius:14px;border:1.5px solid var(--line);background:#fff;margin-bottom:10px}
+
+/* ボタン */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 20px;border-radius:14px;font-weight:900;font-size:15px;white-space:nowrap}
+.btn svg{width:20px;height:20px}
+.b-green{background:var(--leaf);color:#fff}
+.b-red{background:var(--tomato);color:#fff}
+.b-line{border:1.5px solid var(--ink)}
+.b-ghost{color:var(--ink2);text-decoration:underline;text-underline-offset:3px;min-height:44px;padding:0 6px;font-weight:700}
+.btn:disabled{opacity:.4;cursor:default}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btns .btn{flex:1}
+
+/* 注文の詳細 */
+.back{display:inline-flex;align-items:center;gap:4px;font-weight:700;color:var(--ink2);min-height:44px;margin:-6px 0 4px}
+.back svg{width:20px;height:20px}
+.dl{display:grid;grid-template-columns:96px 1fr;gap:8px 12px;font-size:14.5px}
+.dl dt{color:var(--ink2);font-weight:700}
+.dl dd{margin:0;word-break:break-all}
+.items li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.items li:last-child{border-bottom:0}
+.sum{display:flex;justify-content:space-between;align-items:baseline;padding-top:10px;margin-top:4px;border-top:2px solid var(--ink);font-weight:900}
+.sum .n{font-size:22px}
+.flow{display:flex;gap:4px;margin:4px 0 14px}
+.flow span{flex:1;text-align:center;font-size:11.5px;font-weight:700;padding:7px 0;border-radius:8px;background:#EEE9DC;color:var(--ink2)}
+.flow span.on{background:var(--leaf);color:#fff}
+.flow span.now{box-shadow:0 0 0 2px var(--sun) inset}
+.memo{width:100%;min-height:80px;padding:12px;border-radius:12px;border:1.5px solid var(--line);resize:vertical}
+.stack{display:flex;flex-direction:column;gap:12px}
+.hist{font-size:12.5px;color:var(--ink2)}
+
+/* 発送 */
+.selbar{position:sticky;top:calc(var(--top) + 6px);z-index:5;display:flex;align-items:center;gap:8px;background:var(--leaf-d);color:#fff;border-radius:16px;padding:8px 8px 8px 14px;margin-bottom:12px;flex-wrap:wrap}
+.selbar b{margin-right:auto;font-size:14px}
+.selbar .btn{min-height:42px;padding:0 12px;font-size:13.5px;border-radius:12px}
+.selbar .b-line{border-color:rgba(255,255,255,.6);color:#fff}
+.selall{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;min-height:44px}
+.cb{width:24px;height:24px;accent-color:var(--leaf);flex:none}
+.shiprow{grid-template-columns:auto 1fr auto}
+.shiprow .who,.shiprow .what{grid-column:2/3}
+.shiprow .meta{grid-column:2/4}
+.shiprow .cb{grid-row:1/3}
+
+/* 在庫 */
+.prod{background:var(--card);border-radius:18px;padding:14px 14px 6px;box-shadow:0 1px 0 var(--line);margin-bottom:10px}
+.prod h3{font-size:16px;font-weight:900}
+.prod .kind{font-size:12px;color:var(--ink2)}
+.var{padding:12px 0;border-top:1px solid var(--line);margin-top:10px;display:grid;gap:8px}
+.var-h{display:flex;justify-content:space-between;align-items:baseline;font-weight:700}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);background:#EEE9DC;border-radius:12px;padding:3px;gap:3px}
+.seg button{min-height:42px;border-radius:10px;font-weight:700;font-size:14px;color:var(--ink2)}
+.seg button.on[data-s=on]{background:var(--leaf);color:#fff}
+.seg button.on[data-s=pause]{background:var(--sun);color:var(--leaf-d)}
+.seg button.on[data-s=end]{background:#666;color:#fff}
+.cap{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink2);flex-wrap:wrap}
+.cap input{width:84px;min-height:42px;padding:6px 10px;border-radius:10px;border:1.5px solid var(--line);text-align:center;font-family:var(--num);font-weight:800}
+.cap .now{margin-left:auto}
+.cap .now.full{color:var(--tomato);font-weight:900}
+.note-box{background:#FFF7E3;border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.7;margin-bottom:12px}
+
+/* 通知 */
+.nlist{display:flex;flex-direction:column;gap:8px}
+.nrow{background:var(--card);border-radius:16px;padding:12px 14px;box-shadow:0 1px 0 var(--line)}
+.nrow header{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink2);flex-wrap:wrap}
+.kind{font-size:11px;font-weight:900;padding:1px 8px;border-radius:6px;color:#fff}
+.k-line{background:#06C755}.k-mail{background:var(--sky)}
+.nrow h3{font-size:15px;font-weight:900;margin:6px 0 4px}
+.nrow pre{margin:0;white-space:pre-wrap;word-break:break-all;font-family:inherit;font-size:13px;color:var(--ink2);line-height:1.7;max-height:5.1em;overflow:hidden}
+.nrow.open pre{max-height:none}
+.nrow button{font-size:12.5px;color:var(--leaf);font-weight:700;margin-top:4px;min-height:32px}
+
+/* フォーム */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.field label{font-size:13.5px;font-weight:700}
+.field input,.field textarea{min-height:48px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:#fff}
+.field.bad input{border-color:#C23A22;background:#FFF6F3}
+.err{font-size:12.5px;color:#C23A22;font-weight:700}
+
+/* 空のとき */
+.empty{text-align:center;padding:36px 16px;background:var(--card);border-radius:18px}
+.empty svg{width:64px;height:64px;margin:0 auto 10px}
+.empty b{display:block;font-size:16px;font-weight:900}
+.empty p{font-size:13.5px;color:var(--ink2);margin:4px 0 16px}
+
+/* 下から出るシート */
+.sheet-bg{position:fixed;inset:0;z-index:40;background:rgba(20,28,18,.45)}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;max-height:88vh;overflow-y:auto;background:var(--bg);border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));animation:up .35s cubic-bezier(.22,.8,.2,1)}
+@keyframes up{from{translate:0 100%}}
+.sheet h2{font-size:18px;font-weight:900;margin-bottom:6px}
+@media(min-width:900px){.sheet{left:50%;right:auto;bottom:auto;top:50%;width:520px;translate:-50% -50%;border-radius:22px;animation:none}}
+.trk{display:grid;grid-template-columns:1fr;gap:4px;padding:10px 0;border-bottom:1px solid var(--line)}
+.trk small{font-size:12.5px;color:var(--ink2)}
+
+.toast{position:fixed;left:50%;bottom:calc(var(--tab) + 18px + env(safe-area-inset-bottom));z-index:50;translate:-50% 16px;opacity:0;pointer-events:none;
+  background:var(--ink);color:#fff;font-weight:700;font-size:14px;padding:11px 18px;border-radius:999px;transition:.3s;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1;translate:-50% 0}
+@media(min-width:900px){.toast{bottom:30px}}
+@media(max-width:420px){
+  .top{gap:6px}
+  .top-link{padding:0;width:40px;height:40px;justify-content:center;border-radius:50%;font-size:0}
+  .top-link svg{width:18px;height:18px}
+  .top-gear{width:40px;height:40px}
+}
+
+/* ログイン */
+body.locked .tabs,body.locked .top-gear,body.locked .top-link{display:none}
+body.locked .main{margin-left:auto}
+.login{max-width:380px;margin:40px auto 0;text-align:center}
+.login-mark{width:64px;height:64px;margin:0 auto 10px}
+.login h1{font-size:20px;font-weight:900;margin-bottom:16px}
+.login form{text-align:left}
+
+.pk-btn{width:100%;min-height:58px;font-size:16px}
+.pk-btn svg{width:22px;height:22px}
+.pw-alt{margin-top:6px;text-align:left}
+.pw-alt summary{cursor:pointer;color:var(--ink2);font-size:13.5px;font-weight:700;padding:10px 0;text-align:center;list-style:none}
+.pw-alt summary::-webkit-details-marker{display:none}
+.pk-list{display:flex;flex-direction:column;gap:6px;margin-bottom:6px}
+.pk-list li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;background:var(--bg);border-radius:12px}
+.pk-list b{display:block;font-size:14.5px}
+.pk-list small{display:block;font-size:12px;color:var(--ink2)}
+.tgl{display:flex;align-items:center;gap:12px;font-size:14px;font-weight:700;cursor:pointer;min-height:44px}
+.tgl input{position:absolute;opacity:0;pointer-events:none}
+.tgl span{width:48px;height:28px;border-radius:999px;background:var(--line);position:relative;flex:none;transition:background-color .25s}
+.tgl span::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:translate .3s;box-shadow:0 2px 4px rgba(0,0,0,.15)}
+.tgl input:checked+span{background:var(--leaf)}
+.tgl input:checked+span::after{translate:20px 0}
+.tgl input:disabled+span{opacity:.4}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-mark" viewBox="0 0 40 40"><circle cx="20" cy="24" r="14.5" fill="#E0452A"/><ellipse cx="14.2" cy="19.6" rx="3.6" ry="2.1" fill="#fff" opacity=".5" transform="rotate(-32 14.2 19.6)"/><path d="M20 11.5C16.4 4.6 9.6 5.4 7.6 9.6c4 1.4 8.4 2 12.4 1.9z" fill="#2B6324"/><path d="M20 11.5c3.4-7.4 11-7.2 12.8-2.6-4.2 1.6-8.6 2.6-12.8 2.6z" fill="#8DC63F"/><path d="M20 11.4v5.4" stroke="#2B6324" stroke-width="2.6" stroke-linecap="round"/></symbol>
+  <symbol id="a-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="a-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="4" cy="6" r="1.4" fill="currentColor"/><circle cx="4" cy="12" r="1.4" fill="currentColor"/><circle cx="4" cy="18" r="1.4" fill="currentColor"/></symbol>
+  <symbol id="a-box" viewBox="0 0 24 24"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5zM3 7.5l9 4.5 9-4.5M12 12v9" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="a-toggle" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="10" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="16.5" cy="12" r="3" fill="currentColor"/></symbol>
+  <symbol id="a-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="a-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.9 1.9M16.6 16.6l1.9 1.9M5.5 18.5l1.9-1.9M16.6 7.4l1.9-1.9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="a-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="a-dl" viewBox="0 0 24 24"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="a-ext" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-8 8M18 14v5H5V6h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<header class="top">
+  <a class="brand" href="#/home"><svg><use href="#i-mark"/></svg><span><b>SOLE SPROUT</b><small>管理画面</small></span></a>
+  <span class="demo-chip" title="いまはこのブラウザの中だけに保存されます">デモ</span>
+  <a class="top-link" id="shopLink" href="../" target="_blank" rel="noopener" aria-label="ショップを開く">ショップ<svg><use href="#a-ext"/></svg></a>
+  <a class="top-gear" href="#/settings" aria-label="設定"><svg><use href="#a-gear"/></svg></a>
+</header>
+
+<nav class="tabs" aria-label="管理メニュー">
+  <a href="#/home" data-tab="home"><svg><use href="#a-home"/></svg><span>ホーム</span></a>
+  <a href="#/orders" data-tab="orders"><svg><use href="#a-list"/></svg><span>注文</span></a>
+  <a href="#/ship" data-tab="ship"><svg><use href="#a-box"/></svg><span>発送</span><b class="tab-badge" id="shipBadge"></b></a>
+  <a href="#/stock" data-tab="stock"><svg><use href="#a-toggle"/></svg><span>在庫</span></a>
+  <a href="#/notice" data-tab="notice"><svg><use href="#a-bell"/></svg><span>通知</span></a>
+</nav>
+
+<main class="main" id="view"></main>
+
+<div class="sheet-bg" id="sheetBg" hidden></div>
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>/* ============================================================
+   SOLE SPROUT サイトのデータ（ここを書き換えれば商品・お知らせが変わる）
+   tmp:true が付いた値は「仮」。README.md の確認リストと対応している
+   ============================================================ */
+window.SS = {
+  /* 収穫・発送の期間（月, 日）。期間外は「予約受付中」になる */
+  season: { start: [11, 25], end: [7, 31] },
+
+  /* クール便（冷蔵）で送る期間（月, 日）。この期間外は常温便。日付は仮・玉垣さんと決める */
+  cool: { from: [5, 20], to: [7, 31] },
+
+  links: {
+    line: 'https://lin.ee/u4GqhUS',
+    ig: 'https://www.instagram.com/sole_sprout/',
+    x: 'https://x.com/SOLESPROUT',
+    yt: 'https://www.youtube.com/watch?v=xpv9mbQMWH8',
+    tabechoku: 'https://www.tabechoku.com/producers/3078466',
+    map: 'https://www.google.com/maps/search/?api=1&query=%E5%85%B5%E5%BA%AB%E7%9C%8C%E5%8A%A0%E5%8F%A4%E5%B7%9D%E5%B8%82%E5%BF%97%E6%96%B9%E7%94%BA%E5%8E%9F793-1'
+  },
+
+  /* 送信先（決まったら入れる。空なら画面上で完了表示だけ出す） */
+  endpoint: '',
+
+  products: [
+    {
+      id: 'ai', name: 'AI・愛トマト', kind: 'ミニトマト', cat: 'mini',
+      imgs: ['box', 'pile', 'truss'], badge: 'いちばん人気', seasonal: true,
+      lead: '愛情×データ栽培で育てた、濃い味のミニトマト。',
+      desc: 'ハウスの環境をデータで見守りながら、毎日この手で確かめて育てました。酸味と甘味のバランス、そして食感にこだわっています。',
+      voice: 'AIと僕の共同作品！ 濃い〜トマトの味に仕上がっております。',
+      variants: [
+        { label: '約1kg', price: 1800, tmp: true },
+        { label: '約3kg', price: 4500 }
+      ],
+      specs: [['内容', '兵庫県産 ミニトマト'], ['産地', '兵庫県加古川市志方町原'], ['栽培', '養液栽培（慣行栽培）'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
+    },
+    {
+      id: 'gift', name: '贈りものボックス', kind: 'ミニトマト 約2kg・化粧箱', cat: 'gift',
+      imgs: ['pile', 'crate', 'box'], badge: 'ギフト', seasonal: true, gift: true,
+      lead: '大切な方へ、志方の赤い宝石を。',
+      desc: '粒のそろったミニトマトを化粧箱に詰めてお届けします。のし・メッセージカードを承ります。',
+      variants: [{ label: '約2kg', price: 4200, tmp: true }],
+      specs: [['内容', '兵庫県産 ミニトマト 約2kg'], ['包装', '化粧箱・のし対応'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
+    },
+    {
+      id: 'teiki', name: '旬のトマト定期便', kind: '収穫期に毎月お届け', cat: 'teiki',
+      imgs: ['crate', 'vines', 'sunrow'], badge: '定期便', seasonal: true,
+      lead: '冬の濃い味から、初夏のみずみずしさまで。',
+      desc: '収穫期間中（12月〜7月）、その月いちばんの状態のトマトを詰め合わせてお届けします。季節で変わる味わいをお楽しみください。',
+      variants: [
+        { label: '月1回・約2kg', price: 3800, tmp: true },
+        { label: '月2回・約2kg', price: 7400, tmp: true }
+      ],
+      specs: [['内容', 'ミニトマト・大玉トマトの詰め合わせ（時期による）'], ['お届け', '収穫期間中 毎月'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
+    },
+    {
+      id: 'wake', name: '訳ありミニトマト', kind: 'ご家庭用', cat: 'mini',
+      imgs: ['truss', 'pile', 'crate'], badge: 'お得', seasonal: true,
+      lead: '形や大きさが不ぞろいなだけ。味は同じです。',
+      desc: 'サイズの違いや小さなキズで店頭に並べられないトマトを、ご家庭用にお分けします。トマトソースやスープにも。',
+      variants: [{ label: '約2kg', price: 2500, tmp: true }],
+      specs: [['内容', '兵庫県産 ミニトマト（規格外）'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
+    },
+    {
+      id: 'big', name: '志方の大玉トマト', kind: '大玉トマト', cat: 'big',
+      imgs: ['bigred', 'crate', 'vines'], seasonal: true,
+      lead: 'かぶりつきたくなる、ずっしりの一玉。',
+      desc: 'ひと房ずつ手で摘み取った大玉トマト。スライスしてシンプルに、塩ひとつまみで。',
+      variants: [{ label: '約2kg', price: 3200, tmp: true }],
+      specs: [['内容', '兵庫県産 大玉トマト'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
+    },
+    {
+      id: 'tee', name: 'SOLE SPROUT Tシャツ', kind: 'アパレル', cat: 'goods',
+      imgs: ['@tee'], badge: 'グッズ', seasonal: false,
+      lead: 'トマトハウスで生まれた、農園のユニフォーム。',
+      desc: 'スタッフが畑で着ているロゴTシャツ。綿100%・ユニセックスのサイズ展開です。',
+      variants: [
+        { label: 'S', price: 4400, tmp: true }, { label: 'M', price: 4400, tmp: true },
+        { label: 'L', price: 4400, tmp: true }, { label: 'XL', price: 4400, tmp: true }
+      ],
+      specs: [['素材', '綿100%（仮）'], ['配送', 'ヤマト運輸']]
+    }
+  ],
+
+  featured: ['ai', 'gift', 'teiki'],
+
+  cats: [['all', 'すべて'], ['mini', 'ミニトマト'], ['big', '大玉'], ['gift', 'ギフト'], ['teiki', '定期便'], ['goods', 'グッズ']],
+
+  news: [
+    { d: '2026.10.12', tag: 'イベント', t: '「ロハスミーツ稲美」に3日間出店しました', u: 'https://www.instagram.com/p/DeaTGPxE8-v/' },
+    { d: '2026.03.08', tag: '取扱店', t: 'ボンマルシェさんの広告に掲載いただきました', u: 'https://www.instagram.com/p/DVnwMT5D_8X/' },
+    { d: '2026.03.03', tag: '農園', t: 'おかげさまで、創業1周年を迎えました', u: 'https://www.instagram.com/p/DVaxYw-Eneq/' },
+    { d: '2026.01.31', tag: '直売', t: '無人販売所が稼働中です（加古川市志方町原793-1）', u: 'https://www.instagram.com/p/DUK_AhDE69c/' },
+    { d: '2026.01.30', tag: '募集', t: 'アルバイトさんを募集しています（週1日・1時間から）', u: 'https://www.instagram.com/p/DUIqP9TD_dN/' },
+    { d: '2025.11.27', tag: '収穫', t: '本格的な収穫シーズンを迎えました', u: 'https://www.instagram.com/p/DRk19bWE9NB/' }
+  ]
+};
+</script>
+<script>/* ============================================================
+   SOLE SPROUT 注文台帳（ショップと管理画面の共通部品）
+   いまは「デモ用」：このブラウザの中（localStorage）に保存する。
+   本番では同じ関数の中身を、Cloudflare Workers のAPI呼び出しに差し替える
+   （呼び出す側＝ショップ・管理画面は書き換えなくてよい）。
+   ============================================================ */
+window.SSAPI = (function () {
+  'use strict';
+  /* テスト用サーバー（test-server/server.py・4230番）から開いたときは、台帳をサーバーに置く＝live */
+  var LIVE = location.port === '4230' || !!window.SS_LIVE;
+  var MODE = LIVE ? 'live' : 'demo';
+  var K = { orders: 'ss-demo-orders-v1', stock: 'ss-demo-stock-v1', log: 'ss-demo-log-v1', conf: 'ss-demo-conf-v1' };
+  var cache = {}, rev = -1, subs = [], stripeState = '', channels = {}, avail = null, login = { need: false, noPassword: false };
+  /* 管理画面は注文・住所まで読む（ログイン必須）。ショップは在庫の状態だけを読む */
+  var ADMIN = /\/admin(\/|\.html|$)/.test(location.pathname);
+  var STATE = ADMIN ? '/api/state' : '/api/public';
+  function apply(st) {
+    if (st.avail) { avail = st.avail; var ch = st.rev !== rev; rev = st.rev; return ch; }
+    cache[K.orders] = st.orders; cache[K.stock] = st.stock; cache[K.log] = st.log; cache[K.conf] = st.conf;
+    var changed = st.rev !== rev; rev = st.rev; stripeState = st.stripe; channels = st.channels || {}; return changed;
+  }
+  function call(method, path, body) {      /* 同期で呼ぶ（呼び出す側のコードを今のまま使うため） */
+    var x = new XMLHttpRequest(); x.open(method, path, false);
+    x.setRequestHeader('Content-Type', 'application/json'); x.send(body ? JSON.stringify(body) : null);
+    var r = {}; try { r = JSON.parse(x.responseText); } catch (e) { r = { error: 'サーバーに届きませんでした' }; }
+    if (x.status === 401 && r.error === 'login') { login.need = true; login.auth = r.auth || {}; }
+    if (r.state) apply(r.state); return r;
+  }
+  if (LIVE) {
+    try { var first = call('GET', STATE); if (!first.error) apply(first); } catch (e) {}
+    setInterval(function () {              /* 2秒ごとに台帳を見て、変わったら画面を描き直す */
+      if (login.need) return;
+      fetch(STATE, { cache: 'no-store', credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (st) {
+        if (st.error === 'login') { login.need = true; subs.forEach(function (cb) { cb(K.orders); }); return; }
+        if (apply(st)) subs.forEach(function (cb) { cb(K.orders); });
+      }).catch(function () {});
+    }, 2000);
+  }
+  var get = LIVE ? function (k, d) { return cache[k] != null ? cache[k] : d; }
+    : function (k, d) { try { var v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } };
+  var set = function (k, v) { if (LIVE) return; try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  var SS = function () { return window.SS; };
+  var prod = function (id) { return SS().products.filter(function (p) { return p.id === id; })[0]; };
+  var yen = function (v) { return '¥' + Number(v).toLocaleString('ja-JP'); };
+  var pad = function (n) { return String(n).padStart(2, '0'); };
+
+  var STATUS = {
+    pending: { label: '支払い待ち', next: null },
+    paid: { label: '支払い済み', next: 'packed' },
+    packed: { label: '梱包済み', next: 'shipped' },
+    shipped: { label: '発送済み', next: 'done' },
+    done: { label: '完了', next: null },
+    canceled: { label: 'キャンセル', next: null },
+    refunded: { label: '返金済み', next: null }
+  };
+  var STOCK = { on: '販売中', pause: '一時停止', end: '今季終了' };
+
+  function weekStart(d) { var x = new Date(d); x.setHours(0, 0, 0, 0); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; }
+
+  /* ---------- 通知（本番ではLINEとメールで自動送信） ---------- */
+  function log(kind, to, title, body, no) {
+    var l = get(K.log, []);
+    l.unshift({ at: new Date().toISOString(), kind: kind, to: to, title: title, body: body, no: no || '' });
+    set(K.log, l.slice(0, 200));
+  }
+  function itemsText(o) { return o.items.map(function (i) { return '・' + i.name + '（' + i.label + '）×' + i.q; }).join('\n'); }
+  function adminURL() { var u = location.href.split('#')[0].replace(/\/(admin\/)?(index\.html|src\.html|admin\.html)?$/, '/'); return u + 'admin/#/orders/'; }
+
+  /* ---------- 在庫・売り切れ ---------- */
+  function stockOf(id, v) { var s = get(K.stock, {})[id + ':' + v]; return s || { state: 'on', cap: null }; }
+  function weekCount(id, v) {
+    var ws = weekStart(new Date());
+    return get(K.orders, []).reduce(function (a, o) {
+      if (o.status === 'canceled' || o.status === 'refunded' || o.status === 'pending' || new Date(o.created) < ws) return a;
+      return a + o.items.filter(function (i) { return i.id === id && i.v === v; }).reduce(function (b, i) { return b + i.q; }, 0);
+    }, 0);
+  }
+  function availability(id, v) {
+    if (LIVE && avail) { var a = avail[id + ':' + v]; if (a) return a; }
+    var s = stockOf(id, v);
+    if (s.state === 'end') return { ok: false, label: '今季の販売は終了しました', short: '今季終了' };
+    if (s.state === 'pause') return { ok: false, label: 'ただいま販売を一時停止しています', short: '一時停止中' };
+    if (s.cap != null && s.cap !== '' && weekCount(id, v) >= +s.cap) return { ok: false, label: '今週分は完売しました', short: '今週は完売' };
+    return { ok: true, label: '', short: '' };
+  }
+
+  /* ---------- 注文 ---------- */
+  function newNo(t) { return 'SS' + t.getFullYear() + pad(t.getMonth() + 1) + pad(t.getDate()) + '-' + String(Math.floor(Math.random() * 900) + 100); }
+  function createOrder(d) {
+    var t = new Date(), list = get(K.orders, []);
+    var items = d.cart.map(function (c) { var p = prod(c.id), va = p.variants[c.v]; return { id: c.id, v: c.v, name: p.name, label: va.label, price: va.price, q: c.q, box: p.box || '80' }; });
+    var bad = items.filter(function (i) { return !availability(i.id, i.v).ok; });
+    if (bad.length) return { error: bad.map(function (i) { return i.name + '（' + i.label + '）'; }).join('・') + ' は、いまご注文いただけません' };
+    var o = {
+      no: newNo(t), created: t.toISOString(), status: 'paid', pay: MODE === 'demo' ? 'デモ（支払いなし）' : 'Stripe',
+      items: items, subtotal: items.reduce(function (a, i) { return a + i.price * i.q; }, 0), shipping: null,
+      name: d.name, email: d.email, tel: d.tel, zip: d.zip, pref: d.pref, addr: d.addr,
+      gift: !!d.gift, gift_name: d.gift_name || '', gift_addr: d.gift_addr || '', noshi: d.noshi || 'なし',
+      date: d.date || '指定なし', time: d.time || '指定なし', message: d.message || '',
+      memo: '', tracking: '', shipped_at: null, history: [{ at: t.toISOString(), s: 'paid' }]
+    };
+    list.unshift(o); set(K.orders, list);
+    log('line', '玉垣さん', '🍅 新しいご注文', '受付番号 ' + o.no + '\n' + itemsText(o) + '\n小計 ' + yen(o.subtotal) + '（送料別）\nお届け先：' + (o.gift ? '贈りもの・' : '') + o.pref + '\n希望：' + o.date + '／' + o.time + '\n▶ 管理画面で見る\n' + adminURL() + o.no, o.no);
+    log('mail', o.email, '【SOLE SPROUT】ご注文ありがとうございます', o.name + ' 様\n\nご注文を承りました。\n受付番号：' + o.no + '\n\n' + itemsText(o) + '\n小計：' + yen(o.subtotal) + '（送料は確定後にお知らせします）\n\n収穫の状況を見て、発送の際にあらためてご連絡します。\n\nSOLE SPROUT（加古川市志方町）', o.no);
+    return { order: o };
+  }
+  function updateOrder(no, patch) {
+    if (LIVE) { var r = call('POST', '/api/order', { no: no, patch: patch }); return r.error ? null : get(K.orders, []).filter(function (x) { return x.no === no; })[0]; }
+    var list = get(K.orders, []), o = list.filter(function (x) { return x.no === no; })[0];
+    if (!o) return null;
+    var before = o.status;
+    Object.keys(patch).forEach(function (k) { o[k] = patch[k]; });
+    if (patch.status && patch.status !== before) {
+      o.history.push({ at: new Date().toISOString(), s: patch.status });
+      if (patch.status === 'shipped') {
+        o.shipped_at = new Date().toISOString();
+        log('mail', o.email, '【SOLE SPROUT】トマトを発送しました', o.name + ' 様\n\n本日、ご注文のトマトを発送しました。\n受付番号：' + o.no + '\n\n' + itemsText(o) + '\n\nヤマト運輸 伝票番号：' + (o.tracking || '（未入力）') +
+          '\nお荷物の状況：https://toi.kuronekoyamato.co.jp/cgi-bin/tneko?number00=1&number01=' + (o.tracking || '') + '\n\n届いたら常温で保存し、食べる2〜3時間前に冷やすのがおすすめです。\n\nSOLE SPROUT', o.no);
+      }
+      if (patch.status === 'canceled') log('mail', o.email, '【SOLE SPROUT】ご注文のキャンセルについて', o.name + ' 様\n\n受付番号 ' + o.no + ' のご注文をキャンセルしました。', o.no);
+    }
+    set(K.orders, list); return o;
+  }
+
+  /* ---------- その日の何件目か（支払いが済んだ注文を、受付順に1件目・2件目…） ---------- */
+  function ymd(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function dailyNo(o) {
+    if (!o || o.status === 'pending') return null;
+    var day = ymd(new Date(o.created));
+    var same = get(K.orders, []).filter(function (x) { return x.status !== 'pending' && ymd(new Date(x.created)) === day; })
+      .sort(function (a, b) { return a.created < b.created ? -1 : 1; });
+    return { day: day, n: same.indexOf(same.filter(function (x) { return x.no === o.no; })[0]) + 1 };
+  }
+  /* 送り状CSVのファイル名：送り状_2026-10-17_1-3件目.csv（日をまたぐときは日ごとに並べる） */
+  function runs(ns) {
+    ns = ns.slice().sort(function (a, b) { return a - b; }); var out = [], s = ns[0], p = ns[0];
+    for (var i = 1; i <= ns.length; i++) { if (ns[i] === p + 1) { p = ns[i]; continue; } out.push(s === p ? String(s) : s + '-' + p); s = p = ns[i]; }
+    return out.join('・');
+  }
+  function shipFileName(nos) {
+    var byDay = {};
+    nos.forEach(function (no) { var d = dailyNo(getOrder(no)); if (!d) return; (byDay[d.day] = byDay[d.day] || []).push(d.n); });
+    var days = Object.keys(byDay).sort();
+    if (!days.length) return '送り状_' + ymd(new Date()) + '.csv';
+    if (days.length === 1) return '送り状_' + days[0] + '_' + runs(byDay[days[0]]) + '件目.csv';
+    return '送り状_' + days.map(function (d) { return d.slice(5) + '_' + runs(byDay[d]) + '件目'; }).join('_') + '.csv';
+  }
+  function getOrder(no) { return get(K.orders, []).filter(function (o) { return o.no === no; })[0] || null; }
+
+  /* ---------- ヤマト送り状CSV ---------- */
+  /* 今日がクール便の期間か（data.js の cool） */
+  function coolNow(d) {
+    var c = SS().cool; if (!c) return false; d = d || new Date();
+    var md = (d.getMonth() + 1) * 100 + d.getDate(), a = c.from[0] * 100 + c.from[1], b = c.to[0] * 100 + c.to[1];
+    return a <= b ? (md >= a && md <= b) : (md >= a || md <= b);
+  }
+  var TIME = { '午前中': '0812', '14〜16時': '1416', '16〜18時': '1618', '18〜20時': '1820', '19〜21時': '1921' };
+  function csvCell(v) { v = v == null ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+  function shipCSV(nos) {
+    var c = conf(), rows = [['お客様管理番号', '送り状種類', 'クール区分', '出荷予定日', 'お届け予定日', '配達時間帯', 'お届け先電話番号', 'お届け先郵便番号', 'お届け先住所', 'お届け先名', '敬称', 'ご依頼主電話番号', 'ご依頼主郵便番号', 'ご依頼主住所', 'ご依頼主名', '品名1', '荷扱い1', '記事']];
+    var today = new Date(), ds = today.getFullYear() + '/' + pad(today.getMonth() + 1) + '/' + pad(today.getDate());
+    get(K.orders, []).filter(function (o) { return nos.indexOf(o.no) >= 0; }).forEach(function (o) {
+      var m = /(\d+)月(\d+)日/.exec(o.date), due = m ? today.getFullYear() + '/' + pad(m[1]) + '/' + pad(m[2]) : '';
+      rows.push([o.no, '0', coolNow(today) ? '2' : '0', ds, due, TIME[o.time] || '', o.tel, o.zip, (o.gift && o.gift_addr) ? o.gift_addr : o.pref + o.addr, (o.gift && o.gift_name) ? o.gift_name : o.name, '様',
+        c.tel, c.zip, c.addr, c.name, 'トマト（生鮮品）', 'ナマモノ', (o.noshi && o.noshi !== 'なし' ? 'のし：' + o.noshi : '')]);
+    });
+    return '﻿' + rows.map(function (r) { return r.map(csvCell).join(','); }).join('\r\n');
+  }
+  /* 送り状システムから戻ってきたCSV（お客様管理番号・伝票番号）を読む */
+  function importTracking(text) {
+    var lines = text.replace(/^﻿/, '').split(/\r?\n/).filter(Boolean), head = lines[0].split(','), map = {};
+    var iNo = head.findIndex(function (h) { return /お客様管理番号/.test(h); }), iTr = head.findIndex(function (h) { return /伝票番号/.test(h); });
+    if (iNo < 0 || iTr < 0) return { error: '「お客様管理番号」と「伝票番号」の列が見つかりません' };
+    lines.slice(1).forEach(function (l) { var c = l.split(','); var no = (c[iNo] || '').replace(/"/g, ''), tr = (c[iTr] || '').replace(/[^\d]/g, ''); if (no && tr) map[no] = tr; });
+    return { map: map };
+  }
+
+  /* ---------- 発送元の設定 ---------- */
+  function conf() { return Object.assign({ name: 'SOLE SPROUT', zip: '', addr: '兵庫県加古川市志方町原', tel: '' }, get(K.conf, {})); }
+
+  /* ---------- サンプル注文（見せる用） ---------- */
+  function seed() {
+    if (LIVE) return;
+    var S = [
+      { cart: [{ id: 'ai', v: 1, q: 1 }], name: '加古川 花子', email: 'hanako@example.com', tel: '090-1111-2222', zip: '675-0001', pref: '兵庫県', addr: '加古川市尾上町 1-2-3', time: '午前中' },
+      { cart: [{ id: 'gift', v: 0, q: 2 }], name: '志方 一郎', email: 'ichiro@example.com', tel: '080-3333-4444', zip: '150-0001', pref: '東京都', addr: '渋谷区神宮前 4-5-6', gift: true, gift_name: '東京 次郎', gift_addr: '東京都世田谷区 7-8-9', noshi: '御歳暮', time: '14〜16時' },
+      { cart: [{ id: 'wake', v: 0, q: 1 }, { id: 'ai', v: 0, q: 1 }], name: '高砂 三郎', email: 'saburo@example.com', tel: '070-5555-6666', zip: '530-0001', pref: '大阪府', addr: '大阪市北区梅田 1-1', message: 'トマトソース用です' }
+    ];
+    S.forEach(function (d) { createOrder(d); });
+  }
+  function reset() { if (LIVE) { call('POST', '/api/reset'); return; } [K.orders, K.stock, K.log].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} }); }
+
+  return {
+    mode: MODE, STATUS: STATUS, STOCK: STOCK, yen: yen,
+    listOrders: function () { return get(K.orders, []); },
+    getOrder: getOrder, dailyNo: dailyNo, shipFileName: shipFileName,
+    createOrder: createOrder, updateOrder: updateOrder,
+    coolNow: coolNow,
+    stockOf: stockOf, weekCount: weekCount, availability: availability,
+    setStock: function (key, patch) { if (LIVE) { call('POST', '/api/stock', { key: key, patch: patch }); return; } var s = get(K.stock, {}); s[key] = Object.assign({ state: 'on', cap: null }, s[key], patch); set(K.stock, s); },
+    logs: function () { return get(K.log, []); },
+    shipCSV: shipCSV, importTracking: importTracking,
+    conf: conf, setConf: function (c) { if (LIVE) { call('POST', '/api/conf', c); return; } set(K.conf, Object.assign(conf(), c)); },
+    /* live：Stripeの支払い画面を作ってURLを返す／支払い済みかをすぐ確かめる */
+    checkout: function (d) { return call('POST', '/api/checkout', d); },
+    confirm: function () { if (LIVE) call('GET', '/api/confirm'); },
+    stripeState: function () { return stripeState; },
+    channels: function () { return channels; },
+    needLogin: function () { return LIVE && ADMIN && login.need; },
+    authInfo: function () { return login.auth || {}; },
+    afterLogin: function () { login.need = false; var st = call('GET', STATE); if (!st.error) apply(st); },
+    login: function (pw) {
+      var r = call('POST', '/api/login', { password: pw });
+      if (r.ok) { login.need = false; if (r.auth) login.auth = r.auth; var st = call('GET', STATE); if (!st.error) apply(st); return { ok: true }; }
+      return { error: r.error || 'ログインできませんでした' };
+    },
+    logout: function () { call('POST', '/api/logout'); login.need = true; },
+    testNotify: function () { if (LIVE) call('POST', '/api/test-notify'); },
+    seed: seed, reset: reset,
+    /* 別のタブ（ショップ⇔管理画面）で変わったら知らせる */
+    onChange: function (cb) { subs.push(cb); addEventListener('storage', function (e) { if (e.key && e.key.indexOf('ss-demo-') === 0) cb(e.key); }); }
+  };
+})();
+</script>
+<script>/* SOLE SPROUT 管理画面（注文台帳・発送待ち・送り状・売り切れスイッチ・通知） */
+(function () {
+  'use strict';
+  var A = window.SSAPI, SS = window.SS, yen = A.yen;
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return [].slice.call((r || document).querySelectorAll(s)); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var view = $('#view'), sel = {}, filter = 'all', q = '';
+
+  /* 開発中（admin.html）とビルド後（admin/）でショップへの道を変える */
+  if (/admin\.html$/.test(location.pathname)) $('#shopLink').href = 'src.html';
+  var LIVE = A.mode === 'live';
+  /* デモ版：初めて開いたときだけ見本の注文を入れて、すぐ触れるようにする */
+  if (!LIVE) {
+    try { if (!localStorage.getItem('ss-demo-seeded') && !A.listOrders().length) { A.seed(); localStorage.setItem('ss-demo-seeded', '1'); } } catch (e) {}
+    var dch = $('.demo-chip'); dch.textContent = '見本'; dch.title = '見本の画面です。触っても本物の注文には影響しません';
+  }
+  function demoBanner() {
+    return LIVE ? '' : '<div class="note-box"><b>これは見本の画面です。</b>自由に触ってください。ここで入れた注文や変更は、この端末の中だけに残り、本物の注文・お客さんには影響しません。</div>';
+  }
+  if (LIVE) { var dc = $('.demo-chip'); dc.textContent = 'テスト決済'; dc.title = 'Stripeのテスト環境につながっています（実際の請求はありません）'; }
+  function stripeBanner() {
+    if (!LIVE) return '';
+    var st = A.stripeState();
+    return st === 'ok' ? '<div class="note-box" style="background:#EEF4E5">Stripe（テスト環境）につながっています。支払いが済んだ注文は、数秒でここに出ます。</div>'
+      : '<div class="note-box" style="background:#FDE7E2"><b>Stripeにつながっていません。</b>' + esc(st) + '</div>';
+  }
+
+  function fmt(iso, withTime) {
+    var d = new Date(iso), s = (d.getMonth() + 1) + '/' + d.getDate();
+    return withTime ? s + ' ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0') : s;
+  }
+  function pill(s) { return '<span class="pill s-' + s + '">' + A.STATUS[s].label + '</span>'; }
+  function nth(o) { var d = A.dailyNo(o); return d ? (+d.day.slice(5, 7)) + '/' + (+d.day.slice(8)) + 'の' + d.n + '件目' : '支払い待ち'; }
+  function summary(o) { return o.items.map(function (i) { return i.name + '（' + i.label + '）×' + i.q; }).join('、'); }
+  function toast(t) { var e = $('#toast'); e.textContent = t; e.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(function () { e.classList.remove('show'); }, 2200); }
+  function waiting() { return A.listOrders().filter(function (o) { return o.status === 'paid' || o.status === 'packed'; }); }
+  function badge() { var n = waiting().length; $('#shipBadge').textContent = n || ''; }
+  function emptyBox(title, text, extra) {
+    return '<div class="empty"><svg viewBox="0 0 64 64"><circle cx="32" cy="36" r="20" fill="#F3D9D2"/><path d="M32 16c-4-8-12-7-14-2 4 2 9 2 14 2zM32 16c4-8 12-7 14-2-4 2-9 2-14 2z" fill="#8DC63F"/></svg><b>' + title + '</b><p>' + text + '</p>' + (extra || '') + '</div>';
+  }
+
+  /* ================= ホーム ================= */
+  function home() {
+    var all = A.listOrders(), now = new Date(), w = waiting();
+    var today = all.filter(function (o) { return o.status !== 'pending' && new Date(o.created).toDateString() === now.toDateString(); }).length;
+    var month = all.filter(function (o) { var d = new Date(o.created); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && ['canceled', 'refunded', 'pending'].indexOf(o.status) < 0; })
+      .reduce(function (a, o) { return a + o.subtotal; }, 0);
+    var h = demoBanner() + pkNudge() + stripeBanner() + '<div class="h"><h1>今日やること</h1><small>' + (now.getMonth() + 1) + '月' + now.getDate() + '日</small></div>' +
+      '<div class="tiles"><a class="tile big" href="#/ship"><span><small>発送待ち</small><b class="n">' + w.length + '<em>件</em></b></span><span class="go">発送へ →</span></a>' +
+      '<div class="tile"><small>今日の新しい注文</small><b class="n">' + today + '<em>件</em></b></div>' +
+      '<div class="tile"><small>今月の売上（送料別）</small><b class="n">' + yen(month) + '</b></div></div>';
+    h += '<p class="sub-h">最近の注文</p>';
+    if (!all.length) h += emptyBox('まだ注文がありません', LIVE ? 'ショップでテスト注文をすると、支払いが済んだ時点でここに出ます。' : 'ショップで試しに注文するか、サンプル注文を入れて動きを確かめられます。', '<div class="btns">' + (LIVE ? '' : '<button class="btn b-green" data-act="seed">サンプル注文を3件入れる</button>') + '<a class="btn b-line" id="tryShop" target="_blank" rel="noopener">ショップで注文してみる</a></div>');
+    else h += '<div class="olist">' + all.slice(0, 5).map(orow).join('') + '</div><p style="margin-top:10px"><a class="b-ghost btn" href="#/orders">すべての注文を見る</a></p>';
+    view.innerHTML = h;
+    var t = $('#tryShop'); if (t) t.href = $('#shopLink').href + '#/shop';
+  }
+
+  /* ================= 注文台帳 ================= */
+  function orow(o) {
+    return '<a class="orow" href="#/orders/' + o.no + '"><span class="who">' + esc(o.name) + ' 様' + (o.gift ? '<span class="gift">ギフト</span>' : '') + '</span>' +
+      '<span>' + pill(o.status) + '</span><span class="what">' + esc(summary(o)) + '</span><span class="amt n">' + yen(o.subtotal) + '</span>' +
+      '<span class="meta"><span><b>' + nth(o) + '</b></span><span>' + fmt(o.created, true) + '</span><span>' + o.no + '</span><span>' + esc(o.pref) + '</span><span>希望 ' + esc(o.date) + '・' + esc(o.time) + '</span></span></a>';
+  }
+  function orders() {
+    var all = A.listOrders(), cnt = { all: all.length };
+    Object.keys(A.STATUS).forEach(function (k) { cnt[k] = all.filter(function (o) { return o.status === k; }).length; });
+    var list = all.filter(function (o) { return filter === 'all' || o.status === filter; })
+      .filter(function (o) { return !q || (o.name + o.no + o.email + o.tel + summary(o)).indexOf(q) >= 0; });
+    var h = '<div class="h"><h1>注文台帳</h1><small>' + all.length + '件</small></div>' +
+      '<input class="search" id="q" type="search" placeholder="お名前・受付番号・電話で探す" value="' + esc(q) + '">' +
+      '<div class="chips" id="fchips">' + [['all', 'すべて']].concat(Object.keys(A.STATUS).map(function (k) { return [k, A.STATUS[k].label]; })).map(function (c) {
+        return '<button data-f="' + c[0] + '" class="' + (filter === c[0] ? 'on' : '') + '">' + c[1] + '<b>' + cnt[c[0]] + '</b></button>';
+      }).join('') + '</div>';
+    h += list.length ? '<div class="olist">' + list.map(orow).join('') + '</div>' : emptyBox('該当する注文はありません', '絞り込みを「すべて」に戻してみてください。');
+    view.innerHTML = h;
+    $('#q').addEventListener('input', function () { q = this.value.trim(); var p = this.selectionStart; orders(); var i = $('#q'); i.focus(); i.setSelectionRange(p, p); });
+  }
+  function detail(no) {
+    var o = A.getOrder(no);
+    if (!o) { view.innerHTML = '<a class="back" href="#/orders"><svg><use href="#a-back"/></svg>注文台帳</a>' + emptyBox('注文が見つかりません', 'このブラウザに保存された注文だけが表示されます。'); return; }
+    var steps = ['paid', 'packed', 'shipped', 'done'], idx = steps.indexOf(o.status);
+    var next = A.STATUS[o.status].next;
+    var nextBtn = next === 'packed' ? '<button class="btn b-green" data-act="status" data-to="packed">梱包済みにする</button>' :
+      next === 'shipped' ? '<button class="btn b-green" data-act="shipone">発送済みにする（伝票番号）</button>' :
+      next === 'done' ? '<button class="btn b-green" data-act="status" data-to="done">完了にする</button>' : '';
+    var to = o.gift && o.gift_name ? esc(o.gift_name) + ' 様<br>' + esc(o.gift_addr) : esc(o.name) + ' 様<br>〒' + esc(o.zip) + ' ' + esc(o.pref) + esc(o.addr);
+    view.innerHTML = '<a class="back" href="#/orders"><svg><use href="#a-back"/></svg>注文台帳</a>' +
+      '<div class="h"><h1>' + esc(o.name) + ' 様</h1>' + pill(o.status) + '</div>' +
+      '<div class="flow">' + steps.map(function (s, i) { return '<span class="' + (idx >= 0 && i <= idx ? 'on' : '') + (i === idx ? ' now' : '') + '">' + A.STATUS[s].label + '</span>'; }).join('') + '</div>' +
+      '<div class="stack">' +
+      (nextBtn ? '<div class="btns">' + nextBtn + '</div>' : '') +
+      '<div class="card"><p class="sub-h" style="margin-top:0">ご注文の品</p><ul class="items">' + o.items.map(function (i) { return '<li><span>' + esc(i.name) + '（' + esc(i.label) + '）×' + i.q + '</span><span class="n">' + yen(i.price * i.q) + '</span></li>'; }).join('') + '</ul>' +
+      '<div class="sum"><span>小計</span><span class="n">' + yen(o.subtotal) + '</span></div><p class="hist" style="margin-top:6px">送料：' + (o.shipping == null ? '未確定（送料表は保留中）' : yen(o.shipping)) + '／支払い：' + esc(o.pay) + '</p></div>' +
+      '<div class="card"><p class="sub-h" style="margin-top:0">お届け</p><dl class="dl"><dt>お届け先</dt><dd>' + to + '</dd>' +
+      (o.gift ? '<dt>ご依頼主</dt><dd>' + esc(o.name) + ' 様</dd><dt>のし</dt><dd>' + esc(o.noshi) + '</dd>' : '') +
+      '<dt>希望日時</dt><dd>' + esc(o.date) + '・' + esc(o.time) + '</dd><dt>電話</dt><dd><a href="tel:' + esc(o.tel) + '">' + esc(o.tel) + '</a></dd><dt>メール</dt><dd>' + esc(o.email) + '</dd>' +
+      (o.message ? '<dt>ご要望</dt><dd>' + esc(o.message) + '</dd>' : '') +
+      (o.tracking ? '<dt>伝票番号</dt><dd><a href="https://toi.kuronekoyamato.co.jp/cgi-bin/tneko?number00=1&number01=' + esc(o.tracking) + '" target="_blank" rel="noopener">' + esc(o.tracking) + '</a></dd>' : '') + '</dl></div>' +
+      '<div class="card"><p class="sub-h" style="margin-top:0">農園メモ（お客さんには見えません）</p><textarea class="memo" id="memo" placeholder="例：大きめを選んで詰める">' + esc(o.memo) + '</textarea></div>' +
+      '<div class="card"><p class="sub-h" style="margin-top:0">記録</p><ul class="hist">' + o.history.map(function (h) { return '<li>' + fmt(h.at, true) + '　' + A.STATUS[h.s].label + '</li>'; }).join('') + '</ul>' +
+      '<p class="hist">受付番号 ' + o.no + '（' + nth(o) + '）</p></div>' +
+      '<div class="btns">' + (o.status === 'paid' || o.status === 'packed' ? '<button class="btn b-ghost" data-act="status" data-to="canceled">この注文をキャンセルにする</button>' : '') +
+      (o.payment_intent ? '<a class="btn b-line" href="https://dashboard.stripe.com/test/payments/' + esc(o.payment_intent) + '" target="_blank" rel="noopener">Stripeで支払いを見る</a>' : '<span class="btn b-ghost" style="opacity:.5">Stripeで支払いを見る（支払い後に有効）</span>') + '</div></div>';
+    $('#memo').addEventListener('change', function () { A.updateOrder(o.no, { memo: this.value }); toast('メモを保存しました'); });
+    view.dataset.no = o.no;
+  }
+
+  /* ================= 発送待ち ================= */
+  function ship() {
+    var w = waiting();
+    Object.keys(sel).forEach(function (k) { if (!w.some(function (o) { return o.no === k; })) delete sel[k]; });
+    var dated = w.filter(function (o) { return /月/.test(o.date); }).sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+    var free = w.filter(function (o) { return !/月/.test(o.date); });
+    var n = Object.keys(sel).length;
+    var h = '<div class="h"><h1>発送待ち</h1><small>' + w.length + '件</small></div>' +
+      '<div class="note-box">' + (A.coolNow() ? 'いまは<b>クール便（冷蔵）の期間</b>です。箱は出す前に冷蔵庫で6時間以上冷やしてください。送り状CSVも冷蔵で出ます。' : 'いまは<b>常温便の期間</b>です（クール便は ' + SS.cool.from[0] + '/' + SS.cool.from[1] + '〜' + SS.cool.to[0] + '/' + SS.cool.to[1] + '）。') + '</div>' +
+      '<p class="lead">チェックを入れて「送り状CSV」を出し、ヤマトの送り状システムに読み込んで印刷します。印刷できたら「発送済みにする」で伝票番号を入れると、お客さんに発送のお知らせが届きます。</p>';
+    if (!w.length) { view.innerHTML = h + emptyBox('発送待ちはありません', '新しい注文が入ると、ここに並びます。'); return; }
+    h += '<div class="selbar"><b>' + n + '件 選択中</b><button class="btn b-line" data-act="csv" ' + (n ? '' : 'disabled') + '><svg><use href="#a-dl"/></svg>送り状CSV</button>' +
+      '<button class="btn b-line" data-act="packsel" ' + (n ? '' : 'disabled') + '>梱包済みに</button><button class="btn b-red" data-act="shipsel" ' + (n ? '' : 'disabled') + '>発送済みに</button></div>' +
+      '<label class="selall"><input type="checkbox" class="cb" id="all" ' + (n === w.length ? 'checked' : '') + '>すべて選ぶ</label>';
+    function rows(list) {
+      return '<div class="olist">' + list.map(function (o) {
+        return '<label class="orow shiprow' + (sel[o.no] ? ' sel' : '') + '"><input type="checkbox" class="cb" data-no="' + o.no + '" ' + (sel[o.no] ? 'checked' : '') + '>' +
+          '<span class="who">' + esc(o.gift && o.gift_name ? o.gift_name : o.name) + ' 様' + (o.gift ? '<span class="gift">ギフト</span>' : '') + '</span><span>' + pill(o.status) + '</span>' +
+          '<span class="what">' + esc(summary(o)) + '</span>' +
+          '<span class="meta"><span><b>' + nth(o) + '</b></span><span>' + esc(o.pref) + '</span><span>' + esc(o.time) + '</span><span>' + o.no + '</span>' + (o.noshi && o.noshi !== 'なし' ? '<span>のし：' + esc(o.noshi) + '</span>' : '') + '</span></label>';
+      }).join('') + '</div>';
+    }
+    if (dated.length) h += '<p class="sub-h">お届け日の指定あり</p>' + rows(dated);
+    if (free.length) h += '<p class="sub-h">お届け日の指定なし</p>' + rows(free);
+    view.innerHTML = h;
+  }
+  function download(name, text) {
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'application/octet-stream' }));  /* text/csv だとMacでNumbersが勝手に開くため、保存だけさせる */ a.download = name;
+    document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+  function trackingSheet(nos) {
+    var list = nos.map(A.getOrder).filter(Boolean);
+    openSheet('<h2>発送済みにする</h2><p class="lead" style="margin:0 0 8px">ヤマトの伝票番号（12桁）を入れてください。送り状システムのCSVを読み込んでもまとめて入ります。</p>' +
+      '<label class="btn b-line" style="width:100%;margin-bottom:6px">伝票番号のCSVを読み込む<input type="file" id="trkFile" accept=".csv,text/csv" hidden></label>' +
+      list.map(function (o) {
+        return '<div class="trk field" data-no="' + o.no + '"><small>' + o.no + '　' + esc(o.gift && o.gift_name ? o.gift_name : o.name) + ' 様</small><input inputmode="numeric" autocomplete="off" placeholder="1234-5678-9012" value="' + esc(o.tracking) + '"><span class="err" hidden>12桁の数字を入れてください</span></div>';
+      }).join('') +
+      '<div class="btns" style="margin-top:14px"><button class="btn b-line" data-act="close">やめる</button><button class="btn b-red" data-act="doship">発送済みにして知らせる</button></div>');
+    $('#trkFile').addEventListener('change', function () {
+      var f = this.files[0]; if (!f) return;
+      f.text().then(function (t) {
+        var r = A.importTracking(t); if (r.error) { toast(r.error); return; }
+        var hit = 0; $$('.trk').forEach(function (b) { if (r.map[b.dataset.no]) { $('input', b).value = r.map[b.dataset.no]; hit++; } });
+        toast(hit + '件の伝票番号を読み込みました');
+      });
+    });
+  }
+
+  /* ================= 在庫・売り切れスイッチ ================= */
+  function stock() {
+    var m = new Date().getMonth() + 1, d = new Date().getDate(), s = SS.season, md = m * 100 + d;
+    var on = md >= s.start[0] * 100 + s.start[1] || md <= s.end[0] * 100 + s.end[1];
+    var h = '<div class="h"><h1>売り切れスイッチ</h1></div>' +
+      '<div class="note-box">' + (on ? 'いまは<b>収穫期間</b>です。「販売中」の商品は、ショップで注文を受け付けます。' : 'いまは<b>収穫期間の外</b>です（' + s.start[0] + '/' + s.start[1] + '〜' + s.end[0] + '/' + s.end[1] + '）。「販売中」の商品は、ショップで「予約受付中」として注文を受けます。') +
+      '<br>「今週の上限」を入れると、その数に届いた時点でショップが自動で「今週は完売」になります（月曜にリセット）。</div>';
+    h += SS.products.map(function (p) {
+      return '<div class="prod"><h3>' + esc(p.name) + '</h3><p class="kind">' + esc(p.kind) + '</p>' + p.variants.map(function (v, i) {
+        var key = p.id + ':' + i, st = A.stockOf(p.id, i), wc = A.weekCount(p.id, i), full = st.cap != null && st.cap !== '' && wc >= +st.cap;
+        return '<div class="var" data-key="' + key + '"><div class="var-h"><span>' + esc(v.label) + '</span><span class="n">' + yen(v.price) + '</span></div>' +
+          '<div class="seg">' + Object.keys(A.STOCK).map(function (k) { return '<button data-s="' + k + '" class="' + (st.state === k ? 'on' : '') + '">' + A.STOCK[k] + '</button>'; }).join('') + '</div>' +
+          '<div class="cap">今週の上限<input type="number" min="0" inputmode="numeric" placeholder="なし" value="' + (st.cap == null ? '' : st.cap) + '">箱<span class="now' + (full ? ' full' : '') + '">今週の受付 <b class="n">' + wc + '</b> 箱' + (full ? '・完売中' : '') + '</span></div></div>';
+      }).join('') + '</div>';
+    }).join('');
+    view.innerHTML = h;
+  }
+
+  /* ================= 通知 ================= */
+  function notice() {
+    var l = A.logs();
+    var ch = A.channels ? A.channels() : {};
+    var h = '<div class="h"><h1>通知の記録</h1><small>' + l.length + '件</small></div>' +
+      (LIVE ? '<div class="note-box">LINE：<b>' + (ch.line ? 'つながっています' : '未設定') + '</b>　メール：<b>' + (ch.mail ? 'つながっています' : '未設定') + '</b><br>テスト中のメールは、お客さんではなく村瀬さんのアドレスに届きます。</div>' +
+        '<div class="btns" style="margin-bottom:12px"><button class="btn b-green" data-act="testnotify">LINEとメールにテスト送信する</button></div>'
+        : '<p class="lead">本番では、緑の「LINE」は玉垣さんのLINEに、青の「メール」はお客さんに自動で届きます。いまはデモなので、届くはずの文面をここに残しています。</p>');
+    h += l.length ? '<div class="nlist">' + l.map(function (n, i) {
+      return '<div class="nrow" data-i="' + i + '"><header><span class="kind ' + (n.kind === 'line' ? 'k-line">LINE' : 'k-mail">メール') + '</span><span>' + fmt(n.at, true) + '</span><span>宛先：' + esc(n.to) + '</span>' + (n.sent === true ? '<span class="pill s-done">送信済み</span>' : n.sent === false ? '<span class="pill s-paid" title="' + esc(n.result) + '">未送信：' + esc(n.result).slice(0, 24) + '</span>' : n.sent === null && LIVE ? '<span class="pill s-pending">送信中</span>' : '') + '</header>' +
+        '<h3>' + esc(n.title) + '</h3><pre>' + esc(n.body) + '</pre><button data-act="more">全文を見る</button></div>';
+    }).join('') + '</div>' : emptyBox('まだ通知はありません', '注文が入る・発送済みにする、と記録が残ります。');
+    view.innerHTML = h;
+  }
+
+  /* ================= 設定 ================= */
+  function settings() {
+    var c = A.conf();
+    view.innerHTML = '<div class="h"><h1>設定</h1></div>' +
+      '<p class="sub-h">発送元（送り状の「ご依頼主」）</p><div class="card">' +
+      [['name', '名前', c.name, 'organization'], ['zip', '郵便番号', c.zip, 'postal-code'], ['addr', '住所', c.addr, 'street-address'], ['tel', '電話番号', c.tel, 'tel']].map(function (f) {
+        return '<div class="field"><label for="c-' + f[0] + '">' + f[1] + '</label><input id="c-' + f[0] + '" data-c="' + f[0] + '" value="' + esc(f[2]) + '" autocomplete="' + f[3] + '"' + (f[0] === 'tel' ? ' type="tel"' : '') + '></div>';
+      }).join('') + '<button class="btn b-green" data-act="saveconf" style="width:100%">保存する</button></div>' +
+      '<p class="sub-h">送料表</p><div class="note-box">保留中（未決定）。決まるまで、注文の送料は「未確定」で記録し、確認の連絡でお伝えする運用です。</div>' +
+      '<p class="sub-h">' + (LIVE ? 'テストの台帳' : 'デモのデータ') + '</p><div class="card stack"><p class="lead" style="margin:0">' + (LIVE ? 'いまの注文・在庫・通知は、テスト用サーバー（このMac）の台帳に保存されています。Stripeの支払い記録は消えません。' : 'いまの注文・在庫・通知は、このブラウザの中にだけ保存されています。別のスマホやPCからは見えません。') + '</p>' +
+      securityCard() +
+      '<div class="btns">' + (LIVE ? '' : '<button class="btn b-line" data-act="seed">サンプル注文を3件入れる</button>') + '<button class="btn b-ghost" data-act="reset">' + (LIVE ? 'テストの台帳を全部消す' : 'デモのデータを全部消す') + '</button></div></div>';
+  }
+
+  /* ================= シート ================= */
+  function openSheet(html) { $('#sheet').innerHTML = html; $('#sheet').hidden = false; $('#sheetBg').hidden = false; }
+  function closeSheet() { $('#sheet').hidden = true; $('#sheetBg').hidden = true; }
+  $('#sheetBg').addEventListener('click', closeSheet);
+
+  /* ================= 操作 ================= */
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]'); if (!b) return;
+    var act = b.dataset.act;
+    if (act === 'seed') { A.seed(); toast('サンプル注文を3件入れました'); render(); }
+    if (act === 'reset') { if (confirm('デモの注文・在庫・通知をすべて消します。よろしいですか？')) { A.reset(); sel = {}; toast('消しました'); render(); } }
+    if (act === 'status') {
+      var to = b.dataset.to;
+      if (to === 'canceled' && !confirm('この注文をキャンセルにします。お客さんにお知らせのメールが届きます。')) return;
+      A.updateOrder(view.dataset.no, { status: to }); toast(A.STATUS[to].label + 'にしました'); render();
+    }
+    if (act === 'shipone') trackingSheet([view.dataset.no]);
+    if (act === 'csv') {
+      var nos = Object.keys(sel), fname = A.shipFileName(nos);
+      download(fname, A.shipCSV(nos));
+      toast('「' + fname + '」をダウンロードに保存しました。開かずにB2クラウドで選んでください');
+    }
+    if (act === 'packsel') { Object.keys(sel).forEach(function (no) { if (A.getOrder(no).status === 'paid') A.updateOrder(no, { status: 'packed' }); }); toast('梱包済みにしました'); render(); }
+    if (act === 'shipsel') trackingSheet(Object.keys(sel));
+    if (act === 'doship') {
+      var ok = true, rows = $$('.trk');
+      rows.forEach(function (r) { var v = $('input', r).value.replace(/[^\d]/g, ''), bad = v.length !== 12; $('.err', r).hidden = !bad; r.classList.toggle('bad', bad); if (bad) ok = false; });
+      if (!ok) { toast('伝票番号を確認してください'); return; }
+      rows.forEach(function (r) { var no = r.dataset.no; A.updateOrder(no, { tracking: $('input', r).value.replace(/[^\d]/g, '') }); A.updateOrder(no, { status: 'shipped' }); delete sel[no]; });
+      closeSheet(); toast(rows.length + '件を発送済みにして、お客さんに知らせました'); render();
+    }
+    if (act === 'close') closeSheet();
+    if (act === 'logout') { A.logout(); toast('ログアウトしました'); render(); }
+    if (act === 'logoutall') { if (confirm('すべての端末でログアウトします。よろしいですか？')) { post('/api/logout-all').then(function () { A.logout(); toast('すべての端末でログアウトしました'); render(); }); } }
+    if (act === 'pknudgeoff') { sessionStorage.setItem('pk-nudge-off', '1'); render(); }
+    if (act === 'pkreg') {
+      b.disabled = true;
+      passkeyRegister().then(function (r) {
+        if (r.ok) { try { localStorage.setItem('pk-registered', '1'); } catch (e) {} toast('登録しました。次から顔・指紋でログインできます'); render(); }
+        else { toast(r.error || '登録できませんでした'); b.disabled = false; }
+      }).catch(function (e) { toast(pkError(e)); b.disabled = false; });
+    }
+    if (act === 'pkdel') {
+      if (!confirm('この端末のパスキーを削除します。よろしいですか？')) return;
+      post('/api/passkey/delete', { id: b.dataset.id }).then(function () { toast('削除しました'); loadSecurity(); });
+    }
+    if (act === 'testnotify') { A.testNotify(); toast('テスト送信しました。数秒で結果が出ます'); render(); }
+    if (act === 'more') b.closest('.nrow').classList.toggle('open');
+    if (act === 'saveconf') { var c = {}; $$('[data-c]').forEach(function (i) { c[i.dataset.c] = i.value.trim(); }); A.setConf(c); toast('保存しました'); }
+  });
+  document.addEventListener('change', function (e) {
+    var t = e.target;
+    if (t.matches('.cb[data-no]')) { if (t.checked) sel[t.dataset.no] = 1; else delete sel[t.dataset.no]; ship(); }
+    if (t.id === 'all') { waiting().forEach(function (o) { if (t.checked) sel[o.no] = 1; else delete sel[o.no]; }); ship(); }
+    if (t.matches('.cap input')) {
+      var key = t.closest('.var').dataset.key, v = t.value === '' ? null : Math.max(0, parseInt(t.value, 10) || 0);
+      A.setStock(key, { cap: v }); toast(v == null ? '上限をなくしました' : '今週の上限を' + v + '箱にしました'); stock();
+    }
+  });
+  view.addEventListener('click', function (e) {
+    var f = e.target.closest('#fchips button'); if (f) { filter = f.dataset.f; orders(); return; }
+    var s = e.target.closest('.seg button');
+    if (s) { var key = s.closest('.var').dataset.key; A.setStock(key, { state: s.dataset.s }); toast(A.STOCK[s.dataset.s] + 'にしました（ショップに反映）'); stock(); }
+  });
+
+  /* ================= ログイン（パスキー＝顔・指紋／予備のパスワード） ================= */
+  var b64u = function (buf) { var s = '', b = new Uint8Array(buf); for (var i = 0; i < b.length; i++) s += String.fromCharCode(b[i]); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+  var ub64u = function (s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; var b = atob(s), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u.buffer; };
+  var canPasskey = !!(window.PublicKeyCredential && navigator.credentials && window.isSecureContext);
+  function post(path, body) {
+    return fetch(path, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) })
+      .then(function (r) { return r.json().then(function (j) { j._status = r.status; return j; }); });
+  }
+  function deviceName() {
+    var u = navigator.userAgent;
+    return /iPhone/.test(u) ? 'iPhone' : /iPad/.test(u) ? 'iPad' : /Android/.test(u) ? 'Androidスマホ' : /Mac/.test(u) ? 'Mac' : /Windows/.test(u) ? 'Windowsパソコン' : 'この端末';
+  }
+  function passkeyLogin() {
+    return post('/api/passkey/login/options').then(function (o) {
+      return navigator.credentials.get({ publicKey: { challenge: ub64u(o.challenge), rpId: o.rpId, allowCredentials: [], userVerification: 'required', timeout: o.timeout } });
+    }).then(function (c) {
+      return post('/api/passkey/login/verify', { id: c.id, clientDataJSON: b64u(c.response.clientDataJSON), authenticatorData: b64u(c.response.authenticatorData), signature: b64u(c.response.signature) });
+    });
+  }
+  function passkeyRegister() {
+    return post('/api/passkey/register/options').then(function (o) {
+      if (o.error) throw new Error(o.error === 'login' ? 'もう一度ログインしてください' : o.error);
+      return navigator.credentials.create({ publicKey: {
+        challenge: ub64u(o.challenge), rp: o.rp, user: { id: ub64u(o.user.id), name: o.user.name, displayName: o.user.displayName },
+        pubKeyCredParams: o.pubKeyCredParams, authenticatorSelection: o.authenticatorSelection, attestation: 'none', timeout: o.timeout,
+        excludeCredentials: o.excludeCredentials.map(function (e) { return { type: 'public-key', id: ub64u(e.id) }; }) } });
+    }).then(function (c) {
+      return post('/api/passkey/register/verify', { id: c.id, clientDataJSON: b64u(c.response.clientDataJSON), attestationObject: b64u(c.response.attestationObject), name: deviceName() });
+    });
+  }
+  function pkError(e) {
+    var m = e && e.name === 'NotAllowedError' ? 'キャンセルされました（または時間切れ）。もう一度どうぞ' :
+      e && e.name === 'InvalidStateError' ? 'この端末はもう登録されています' : (e && e.message) || 'うまくいきませんでした';
+    return m;
+  }
+  function loggedIn() { A.afterLogin(); document.body.classList.remove('locked'); toast('ログインしました'); render(); }
+  function loginView() {
+    document.body.classList.add('locked');
+    var au = A.authInfo(), hasPk = au.passkeys > 0, pwOn = au.passwordLogin !== false;
+    if (!au.hasPassword && !hasPk) {
+      view.innerHTML = '<div class="login"><svg class="login-mark"><use href="#i-mark"/></svg><h1>管理画面</h1><p class="lead">ログインの準備がまだできていません。制作担当（村瀬）に連絡してください。</p></div>';
+      return;
+    }
+    view.innerHTML = '<div class="login"><svg class="login-mark"><use href="#i-mark"/></svg><h1>管理画面にログイン</h1>' +
+      (hasPk && canPasskey ? '<button class="btn b-green pk-btn" id="pkLogin"><svg viewBox="0 0 24 24"><path d="M12 3a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-1V8a5 5 0 0 0-5-5zm-3 8V8a3 3 0 0 1 6 0v3z" fill="currentColor"/></svg>顔・指紋でログイン</button>' +
+        '<p class="lead" style="margin:10px 0 18px">Face ID・Touch ID・指紋・画面ロックの暗証番号が使えます</p>' : '') +
+      (pwOn ? (hasPk ? '<details class="pw-alt"><summary>パスワードでログイン（予備）</summary>' : '') +
+        '<form id="loginForm" class="card"><div class="field"><label for="pw">パスワード</label>' +
+        '<input id="pw" type="password" autocomplete="current-password" required></div>' +
+        '<button class="btn ' + (hasPk ? 'b-line' : 'b-green') + '" style="width:100%">ログイン</button></form>' + (hasPk ? '</details>' : '') : '') +
+      '<p class="err" id="loginErr" hidden></p>' +
+      '<p class="lead" style="margin-top:16px">この画面に入れるのは SOLE SPROUT の管理者だけです。</p></div>';
+    function err(m) { var e = $('#loginErr'); e.textContent = m; e.hidden = false; }
+    var pk = $('#pkLogin');
+    if (pk) pk.addEventListener('click', function () {
+      pk.disabled = true;
+      passkeyLogin().then(function (r) { if (r.ok) loggedIn(); else { err(r.error || 'ログインできませんでした'); pk.disabled = false; } })
+        .catch(function (e) { err(pkError(e)); pk.disabled = false; });
+    });
+    var f = $('#loginForm');
+    if (f) {
+      if (!hasPk) $('#pw').focus();
+      f.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var r = A.login($('#pw').value);
+        if (r.ok) { document.body.classList.remove('locked'); toast('ログインしました'); render(); }
+        else { err(r.error); $('#pw').value = ''; $('#pw').focus(); }
+      });
+    }
+  }
+  /* パスワードで入った端末に、パスキー登録をすすめる */
+  function pkNudge() {
+    if (!LIVE || !canPasskey || sessionStorage.getItem('pk-nudge-off')) return '';
+    var au = A.authInfo(); if (au.passkeys > 0 && localStorage.getItem('pk-registered')) return '';
+    if (localStorage.getItem('pk-registered')) return '';
+    return '<div class="note-box pk-nudge"><b>次から顔・指紋だけで入れるようにしませんか？</b><br>この端末を登録すると、パスワードを打たずにワンタップでログインできます。<div class="btns" style="margin-top:10px"><button class="btn b-green" data-act="pkreg">この端末を登録する</button><button class="btn b-ghost" data-act="pknudgeoff">あとで</button></div></div>';
+  }
+  function securityCard() {
+    if (!LIVE) return '';
+    return '<p class="sub-h">ログインの方法</p><div class="card stack" id="secCard"><p class="lead" style="margin:0">読み込み中…</p></div>';
+  }
+  function loadSecurity() {
+    var box = $('#secCard'); if (!box) return;
+    fetch('/api/passkeys', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (j) {
+      if (j.error) { box.innerHTML = '<p class="lead">もう一度ログインしてください</p>'; return; }
+      var ks = j.keys, au = j.auth;
+      box.innerHTML = '<div><b>顔・指紋（パスキー）</b><p class="lead" style="margin:4px 0 8px">登録した端末だけが、顔か指でログインできます。</p>' +
+        (ks.length ? '<ul class="pk-list">' + ks.map(function (k) {
+          return '<li><span><b>' + esc(k.name) + '</b><small>登録 ' + esc(k.created) + (k.used ? '・最後に使った日 ' + esc(k.used) : '') + '</small></span><button class="btn b-ghost" data-act="pkdel" data-id="' + esc(k.id) + '">削除</button></li>';
+        }).join('') + '</ul>' : '<p class="lead">まだ登録されていません</p>') +
+        (canPasskey ? '<button class="btn b-green" data-act="pkreg" style="width:100%;margin-top:8px">この端末を登録する</button>' : '<p class="lead">この画面（ブラウザ）ではパスキーを使えません</p>') + '</div>' +
+        '<div><b>パスワード（予備）</b><label class="tgl" style="margin:8px 0 0"><input type="checkbox" id="pwToggle"' + (au.passwordLogin ? ' checked' : '') + (ks.length ? '' : ' disabled') + '><span></span>パスワードでのログインも許可する</label>' +
+        '<p class="lead" style="margin:4px 0 0">' + (ks.length ? 'オフにすると、登録した端末からしか入れなくなります（いちばん安全）。' : 'パスキーを登録すると、オフにできます。') + '</p></div>' +
+        '<div class="btns"><button class="btn b-line" data-act="logout">この端末でログアウト</button><button class="btn b-ghost" data-act="logoutall">すべての端末でログアウト</button></div>';
+      var t = $('#pwToggle');
+      if (t) t.addEventListener('change', function () {
+        post('/api/auth/settings', { passwordLogin: t.checked }).then(function (r) { if (r.error) { toast(r.error); t.checked = true; } else toast(t.checked ? 'パスワードでも入れるようにしました' : 'パスキーだけで入る設定にしました'); });
+      });
+    });
+  }
+
+  /* ================= 画面の切り替え ================= */
+  function render() {
+    if (A.needLogin && A.needLogin()) { loginView(); return; }
+    document.body.classList.remove('locked');
+    var h = location.hash.replace(/^#\/?/, '').split('/'), tab = h[0] || 'home';
+    $$('.tabs a').forEach(function (a) { a.classList.toggle('on', a.dataset.tab === tab); });
+    badge();
+    if (tab === 'orders' && h[1]) detail(decodeURIComponent(h[1]));
+    else ({ home: home, orders: orders, ship: ship, stock: stock, notice: notice, settings: settings }[tab] || home)();
+    if (tab === 'settings') loadSecurity();
+  }
+  addEventListener('hashchange', function () { closeSheet(); scrollTo(0, 0); render(); });
+  /* ショップで注文が入ると、開いたままの管理画面にもすぐ出る */
+  A.onChange(function (k) { if (A.needLogin && A.needLogin()) { if (!$('#loginForm')) render(); return; } if ($('#sheet').hidden && !(document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName))) { render(); if (/orders/.test(k)) toast('新しい動きがありました'); } });
+  render();
+})();
+</script>
+</body>
+</html>
