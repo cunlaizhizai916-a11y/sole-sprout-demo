@@ -43,7 +43,7 @@ input,select,textarea{font:inherit;font-size:16px;color:var(--ink)}
 
 /* タブ（スマホは下・PCは左） */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;height:calc(var(--tab) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);
-  display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border-top:1px solid var(--line)}
+  display:grid;grid-template-columns:repeat(6,1fr);background:#fff;border-top:1px solid var(--line)}
 .tabs a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11.5px;font-weight:700;color:var(--ink2)}
 .tabs svg{width:24px;height:24px}
 .tabs a.on{color:var(--leaf)}
@@ -231,6 +231,25 @@ body.locked .main{margin-left:auto}
 .tgl input:checked+span{background:var(--leaf)}
 .tgl input:checked+span::after{translate:20px 0}
 .tgl input:disabled+span{opacity:.4}
+
+/* 収量 */
+.hv-two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hv-two>.field{min-width:0}
+.hv-two input{width:100%;font-family:var(--num);font-weight:800;font-size:20px;text-align:center}
+.hv-tiles .tile b{font-size:26px}
+.hv-sub{font-size:12px;color:var(--ink2);line-height:1.5}
+@media(max-width:899px){.hv-tiles{grid-template-columns:1fr 1fr}.hv-tiles .tile:last-child{grid-column:1/3}}
+.hv-list{display:flex;flex-direction:column;background:var(--card);border-radius:16px;box-shadow:0 1px 0 var(--line);padding:2px 14px}
+.hv-row{display:grid;grid-template-columns:auto 1fr 1fr auto;align-items:center;gap:6px;font-size:13.5px;border-bottom:1px solid var(--line);min-height:48px}
+.hv-row:last-child{border-bottom:0}
+.hv-row .d{font-weight:700;white-space:nowrap;margin-right:4px}
+.hv-row b{font-size:17px}
+.hv-row .btn{min-height:40px;font-size:13px}
+.hv-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px}
+.hv-dow button{min-height:44px;border-radius:10px;background:#EEE9DC;font-weight:900;color:var(--ink2)}
+.hv-dow button.on{background:var(--leaf);color:#fff}
+.hv-imp summary{font-weight:900;cursor:pointer;min-height:32px}
+.hv-imp textarea{width:100%;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);font-family:var(--num);font-size:15px}
 </style>
 </head>
 <body>
@@ -240,6 +259,7 @@ body.locked .main{margin-left:auto}
   <symbol id="a-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="4" cy="6" r="1.4" fill="currentColor"/><circle cx="4" cy="12" r="1.4" fill="currentColor"/><circle cx="4" cy="18" r="1.4" fill="currentColor"/></symbol>
   <symbol id="a-box" viewBox="0 0 24 24"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5zM3 7.5l9 4.5 9-4.5M12 12v9" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
   <symbol id="a-toggle" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="10" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="16.5" cy="12" r="3" fill="currentColor"/></symbol>
+  <symbol id="a-crop" viewBox="0 0 24 24"><path d="M4 20h16M7 20v-5M12 20V9M17 20v-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="17" cy="7.5" r="2.4" fill="currentColor"/></symbol>
   <symbol id="a-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
   <symbol id="a-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.9 1.9M16.6 16.6l1.9 1.9M5.5 18.5l1.9-1.9M16.6 7.4l1.9-1.9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
   <symbol id="a-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
@@ -259,6 +279,7 @@ body.locked .main{margin-left:auto}
   <a href="#/orders" data-tab="orders"><svg><use href="#a-list"/></svg><span>注文</span></a>
   <a href="#/ship" data-tab="ship"><svg><use href="#a-box"/></svg><span>発送</span><b class="tab-badge" id="shipBadge"></b></a>
   <a href="#/stock" data-tab="stock"><svg><use href="#a-toggle"/></svg><span>在庫</span></a>
+  <a href="#/harvest" data-tab="harvest"><svg><use href="#a-crop"/></svg><span>収量</span></a>
   <a href="#/notice" data-tab="notice"><svg><use href="#a-bell"/></svg><span>通知</span></a>
 </nav>
 
@@ -273,8 +294,13 @@ body.locked .main{margin-left:auto}
    tmp:true が付いた値は「仮」。README.md の確認リストと対応している
    ============================================================ */
 window.SS = {
-  /* 収穫・発送の期間（月, 日）。期間外は「予約受付中」になる */
-  season: { start: [11, 25], end: [7, 31] },
+  /* 収穫・発送の期間（月, 日）。期間外は「予約受付中」になる
+     2026-10-22 玉垣さん：10月の時点で収穫中（大玉70kg・ミニ50kg/日）→ 開始を10月1日に（仮・要確認） */
+  season: { start: [10, 1], end: [7, 31] },
+
+  /* 収量（飲食店・企業向けの表示）。記録がまだ無い時は、この量を1回の収穫の目安にして見込みを出す
+     days＝収穫する曜日（0=日 1=月 … 6=土）。管理画面の「収量」で変えられる */
+  harvest: { days: [1, 3, 5], big: 70, mini: 50 },
 
   /* クール便（冷蔵）で送る期間（月, 日）。この期間外は常温便。日付は仮・玉垣さんと決める */
   cool: { from: [5, 20], to: [7, 31] },
@@ -291,70 +317,30 @@ window.SS = {
   /* 送信先（決まったら入れる。空なら画面上で完了表示だけ出す） */
   endpoint: '',
 
+  /* 2026-10-22 玉垣さん決定：販売は 大玉トマト1箱4kg・ミニトマト1箱3kg の2つ。定期便は当面なし */
   products: [
     {
-      id: 'ai', name: 'AI・愛トマト', kind: 'ミニトマト', cat: 'mini',
+      id: 'ai', name: 'AI・愛トマト', kind: 'ミニトマト 1箱 約3kg', cat: 'mini',
       imgs: ['box', 'pile', 'truss'], badge: 'いちばん人気', seasonal: true,
       lead: '愛情×データ栽培で育てた、濃い味のミニトマト。',
       desc: 'ハウスの環境をデータで見守りながら、毎日この手で確かめて育てました。酸味と甘味のバランス、そして食感にこだわっています。',
       voice: 'AIと僕の共同作品！ 濃い〜トマトの味に仕上がっております。',
-      variants: [
-        { label: '約1kg', price: 1800, tmp: true },
-        { label: '約3kg', price: 4500 }
-      ],
-      specs: [['内容', '兵庫県産 ミニトマト'], ['産地', '兵庫県加古川市志方町原'], ['栽培', '養液栽培（慣行栽培）'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
+      variants: [{ label: '1箱 約3kg', price: 4000 }],
+      specs: [['内容', '兵庫県産 ミニトマト 約3kg'], ['産地', '兵庫県加古川市志方町原'], ['栽培', '養液栽培（慣行栽培）'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
     },
     {
-      id: 'gift', name: '贈りものボックス', kind: 'ミニトマト 約2kg・化粧箱', cat: 'gift',
-      imgs: ['pile', 'crate', 'box'], badge: 'ギフト', seasonal: true, gift: true,
-      lead: '大切な方へ、志方の赤い宝石を。',
-      desc: '粒のそろったミニトマトを化粧箱に詰めてお届けします。のし・メッセージカードを承ります。',
-      variants: [{ label: '約2kg', price: 4200, tmp: true }],
-      specs: [['内容', '兵庫県産 ミニトマト 約2kg'], ['包装', '化粧箱・のし対応'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
-    },
-    {
-      id: 'teiki', name: '旬のトマト定期便', kind: '収穫期に毎月お届け', cat: 'teiki',
-      imgs: ['crate', 'vines', 'sunrow'], badge: '定期便', seasonal: true,
-      lead: '冬の濃い味から、初夏のみずみずしさまで。',
-      desc: '収穫期間中（12月〜7月）、その月いちばんの状態のトマトを詰め合わせてお届けします。季節で変わる味わいをお楽しみください。',
-      variants: [
-        { label: '月1回・約2kg', price: 3800, tmp: true },
-        { label: '月2回・約2kg', price: 7400, tmp: true }
-      ],
-      specs: [['内容', 'ミニトマト・大玉トマトの詰め合わせ（時期による）'], ['お届け', '収穫期間中 毎月'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
-    },
-    {
-      id: 'wake', name: '訳ありミニトマト', kind: 'ご家庭用', cat: 'mini',
-      imgs: ['truss', 'pile', 'crate'], badge: 'お得', seasonal: true,
-      lead: '形や大きさが不ぞろいなだけ。味は同じです。',
-      desc: 'サイズの違いや小さなキズで店頭に並べられないトマトを、ご家庭用にお分けします。トマトソースやスープにも。',
-      variants: [{ label: '約2kg', price: 2500, tmp: true }],
-      specs: [['内容', '兵庫県産 ミニトマト（規格外）'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
-    },
-    {
-      id: 'big', name: '志方の大玉トマト', kind: '大玉トマト', cat: 'big',
-      imgs: ['bigred', 'crate', 'vines'], seasonal: true,
+      id: 'big', name: '志方の大玉トマト', kind: '大玉トマト 1箱 約4kg', cat: 'big',
+      imgs: ['bigred', 'crate', 'vines'], badge: '大玉', seasonal: true,
       lead: 'かぶりつきたくなる、ずっしりの一玉。',
       desc: 'ひと房ずつ手で摘み取った大玉トマト。スライスしてシンプルに、塩ひとつまみで。',
-      variants: [{ label: '約2kg', price: 3200, tmp: true }],
-      specs: [['内容', '兵庫県産 大玉トマト'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
-    },
-    {
-      id: 'tee', name: 'SOLE SPROUT Tシャツ', kind: 'アパレル', cat: 'goods',
-      imgs: ['@tee'], badge: 'グッズ', seasonal: false,
-      lead: 'トマトハウスで生まれた、農園のユニフォーム。',
-      desc: 'スタッフが畑で着ているロゴTシャツ。綿100%・ユニセックスのサイズ展開です。',
-      variants: [
-        { label: 'S', price: 4400, tmp: true }, { label: 'M', price: 4400, tmp: true },
-        { label: 'L', price: 4400, tmp: true }, { label: 'XL', price: 4400, tmp: true }
-      ],
-      specs: [['素材', '綿100%（仮）'], ['配送', 'ヤマト運輸']]
+      variants: [{ label: '1箱 約4kg', price: 5000 }],
+      specs: [['内容', '兵庫県産 大玉トマト 約4kg'], ['産地', '兵庫県加古川市志方町原'], ['栽培', '養液栽培（慣行栽培）'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
     }
   ],
 
-  featured: ['ai', 'gift', 'teiki'],
+  featured: ['ai', 'big'],
 
-  cats: [['all', 'すべて'], ['mini', 'ミニトマト'], ['big', '大玉'], ['gift', 'ギフト'], ['teiki', '定期便'], ['goods', 'グッズ']],
+  cats: [['all', 'すべて'], ['mini', 'ミニトマト'], ['big', '大玉']],
 
   news: [
     { d: '2026.10.12', tag: 'イベント', t: '「ロハスミーツ稲美」に3日間出店しました', u: 'https://www.instagram.com/p/DeaTGPxE8-v/' },
@@ -375,17 +361,19 @@ window.SS = {
 window.SSAPI = (function () {
   'use strict';
   /* テスト用サーバー（test-server/server.py・4230番）から開いたときは、台帳をサーバーに置く＝live */
+  /* live＝サーバーの台帳を使う。テスト用サーバー（4230番）か、本番用にビルドしたページ（window.SS_LIVE）のとき */
   var LIVE = location.port === '4230' || !!window.SS_LIVE;
+  var payEnv = 'sandbox';
   var MODE = LIVE ? 'live' : 'demo';
   var K = { orders: 'ss-demo-orders-v1', stock: 'ss-demo-stock-v1', log: 'ss-demo-log-v1', conf: 'ss-demo-conf-v1' };
-  var cache = {}, rev = -1, subs = [], stripeState = '', channels = {}, avail = null, login = { need: false, noPassword: false };
+  var cache = {}, rev = -1, subs = [], payState = { provider: 'Square', state: '' }, channels = {}, avail = null, login = { need: false, noPassword: false };
   /* 管理画面は注文・住所まで読む（ログイン必須）。ショップは在庫の状態だけを読む */
   var ADMIN = /\/admin(\/|\.html|$)/.test(location.pathname);
   var STATE = ADMIN ? '/api/state' : '/api/public';
   function apply(st) {
-    if (st.avail) { avail = st.avail; var ch = st.rev !== rev; rev = st.rev; return ch; }
+    if (st.avail) { avail = st.avail; if (st.payEnv) payEnv = st.payEnv; var ch = st.rev !== rev; rev = st.rev; return ch; }
     cache[K.orders] = st.orders; cache[K.stock] = st.stock; cache[K.log] = st.log; cache[K.conf] = st.conf;
-    var changed = st.rev !== rev; rev = st.rev; stripeState = st.stripe; channels = st.channels || {}; return changed;
+    var changed = st.rev !== rev; rev = st.rev; payState = st.payment || payState; if (payState.env) payEnv = payState.env; channels = st.channels || {}; return changed;
   }
   function call(method, path, body) {      /* 同期で呼ぶ（呼び出す側のコードを今のまま使うため） */
     var x = new XMLHttpRequest(); x.open(method, path, false);
@@ -460,7 +448,7 @@ window.SSAPI = (function () {
     var bad = items.filter(function (i) { return !availability(i.id, i.v).ok; });
     if (bad.length) return { error: bad.map(function (i) { return i.name + '（' + i.label + '）'; }).join('・') + ' は、いまご注文いただけません' };
     var o = {
-      no: newNo(t), created: t.toISOString(), status: 'paid', pay: MODE === 'demo' ? 'デモ（支払いなし）' : 'Stripe',
+      no: newNo(t), created: t.toISOString(), status: 'paid', pay: MODE === 'demo' ? 'デモ（支払いなし）' : 'Square',
       items: items, subtotal: items.reduce(function (a, i) { return a + i.price * i.q; }, 0), shipping: null,
       name: d.name, email: d.email, tel: d.tel, zip: d.zip, pref: d.pref, addr: d.addr,
       gift: !!d.gift, gift_name: d.gift_name || '', gift_addr: d.gift_addr || '', noshi: d.noshi || 'なし',
@@ -469,7 +457,7 @@ window.SSAPI = (function () {
     };
     list.unshift(o); set(K.orders, list);
     log('line', '玉垣さん', '🍅 新しいご注文', '受付番号 ' + o.no + '\n' + itemsText(o) + '\n小計 ' + yen(o.subtotal) + '（送料別）\nお届け先：' + (o.gift ? '贈りもの・' : '') + o.pref + '\n希望：' + o.date + '／' + o.time + '\n▶ 管理画面で見る\n' + adminURL() + o.no, o.no);
-    log('mail', o.email, '【SOLE SPROUT】ご注文ありがとうございます', o.name + ' 様\n\nご注文を承りました。\n受付番号：' + o.no + '\n\n' + itemsText(o) + '\n小計：' + yen(o.subtotal) + '（送料は確定後にお知らせします）\n\n収穫の状況を見て、発送の際にあらためてご連絡します。\n\nSOLE SPROUT（加古川市志方町）', o.no);
+    log('mail', o.email, '【SOLE SPROUT】ご注文ありがとうございます', o.name + ' 様\n\nご注文を承りました。\n受付番号：' + o.no + '\n\n' + itemsText(o) + '\n小計：' + yen(o.subtotal) + '（送料は確定後にお知らせします）\n\nご注文から3日以内に発送し、発送の際にあらためてご連絡します（収穫期間外のご注文は、収穫が始まりしだい発送します）。\n\nSOLE SPROUT（加古川市志方町）', o.no);
     return { order: o };
   }
   function updateOrder(no, patch) {
@@ -550,9 +538,9 @@ window.SSAPI = (function () {
   function seed() {
     if (LIVE) return;
     var S = [
-      { cart: [{ id: 'ai', v: 1, q: 1 }], name: '加古川 花子', email: 'hanako@example.com', tel: '090-1111-2222', zip: '675-0001', pref: '兵庫県', addr: '加古川市尾上町 1-2-3', time: '午前中' },
-      { cart: [{ id: 'gift', v: 0, q: 2 }], name: '志方 一郎', email: 'ichiro@example.com', tel: '080-3333-4444', zip: '150-0001', pref: '東京都', addr: '渋谷区神宮前 4-5-6', gift: true, gift_name: '東京 次郎', gift_addr: '東京都世田谷区 7-8-9', noshi: '御歳暮', time: '14〜16時' },
-      { cart: [{ id: 'wake', v: 0, q: 1 }, { id: 'ai', v: 0, q: 1 }], name: '高砂 三郎', email: 'saburo@example.com', tel: '070-5555-6666', zip: '530-0001', pref: '大阪府', addr: '大阪市北区梅田 1-1', message: 'トマトソース用です' }
+      { cart: [{ id: 'ai', v: 0, q: 1 }], name: '加古川 花子', email: 'hanako@example.com', tel: '090-1111-2222', zip: '675-0001', pref: '兵庫県', addr: '加古川市尾上町 1-2-3', time: '午前中' },
+      { cart: [{ id: 'big', v: 0, q: 2 }], name: '志方 一郎', email: 'ichiro@example.com', tel: '080-3333-4444', zip: '150-0001', pref: '東京都', addr: '渋谷区神宮前 4-5-6', gift: true, gift_name: '東京 次郎', gift_addr: '東京都世田谷区 7-8-9', noshi: '御歳暮', time: '14〜16時' },
+      { cart: [{ id: 'big', v: 0, q: 1 }, { id: 'ai', v: 0, q: 1 }], name: '高砂 三郎', email: 'saburo@example.com', tel: '070-5555-6666', zip: '530-0001', pref: '大阪府', addr: '大阪市北区梅田 1-1', message: 'トマトソース用です' }
     ];
     S.forEach(function (d) { createOrder(d); });
     /* 見本の注文に、数分ずつずらした受付時刻を付ける（1件目・2件目…が受付順に並ぶように） */
@@ -560,6 +548,96 @@ window.SSAPI = (function () {
     list.slice(0, S.length).reverse().forEach(function (o, i) { o.created = new Date(base + i * 7 * 60000).toISOString(); o.history[0].at = o.created; });
     set(K.orders, list);
   }
+  /* ---------- 収量（収穫の記録と見込み） ----------
+     記録＝{ d:'2026-10-21', big:70, mini:50 }（kg）。見込み＝記録のある日は記録、記録のない収穫日は「直近3回の平均」で数える。
+     前年比は記録どうし（実績だけ）で比べる。去年の同じ時期に記録が無ければ出さない */
+  var HK = 'ss-demo-harvest-v1', hcache = null;
+  function hconf(c) { return Object.assign({ days: [1, 3, 5], big: 0, mini: 0 }, SS().harvest || {}, c || {}); }
+  function hlocal() { var v = null; try { v = JSON.parse(localStorage.getItem(HK)); } catch (e) {} return { records: (v && v.records) || [], conf: hconf(v && v.conf) }; }
+  function hstore(h) { try { localStorage.setItem(HK, JSON.stringify({ records: h.records, conf: h.conf })); } catch (e) {} }
+  function happly(j) { hcache = { records: j.records || [], conf: hconf(j.conf), at: j.at || null }; return hcache; }
+  function loadHarvest() {
+    if (!LIVE) return Promise.resolve(hlocal());
+    return fetch('/api/harvest', { cache: 'no-store', credentials: 'same-origin' }).then(function (r) { return r.json(); })
+      .then(happly).catch(function () { return hcache || { records: [], conf: hconf() }; });
+  }
+  var kg = function (v) { v = Number(v); return isFinite(v) && v >= 0 && v <= 10000 ? Math.round(v * 10) / 10 : null; };
+  function cleanRows(rows) {
+    var out = [], bad = [];
+    rows.forEach(function (r) {
+      var d = String(r.d || '').trim(), b = kg(r.big), m = kg(r.mini);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(d) || isNaN(new Date(d + 'T00:00:00')) || b == null || m == null) bad.push(d || '?'); else out.push({ d: d, big: b, mini: m });
+    });
+    return { rows: out, bad: bad };
+  }
+  function saveHarvest(rows) {
+    var c = cleanRows(rows); if (c.bad.length) return { error: '日付か数字が正しくない行があります：' + c.bad.join('・') };
+    if (LIVE) { var r = call('POST', '/api/harvest', { rows: c.rows }); if (r.harvest) happly(r.harvest); return r.error ? { error: r.error } : { ok: c.rows.length }; }
+    var h = hlocal(), map = {}; h.records.forEach(function (x) { map[x.d] = x; }); c.rows.forEach(function (x) { map[x.d] = x; });
+    h.records = Object.keys(map).sort().map(function (k) { return map[k]; }); hstore(h); return { ok: c.rows.length };
+  }
+  function deleteHarvest(d) {
+    if (LIVE) { var r = call('POST', '/api/harvest', { del: d }); if (r.harvest) happly(r.harvest); return; }
+    var h = hlocal(); h.records = h.records.filter(function (x) { return x.d !== d; }); hstore(h);
+  }
+  function setHarvestConf(c) {
+    if (LIVE) { var r = call('POST', '/api/harvest/conf', c); if (r.harvest) happly(r.harvest); return r.error ? { error: r.error } : { ok: true }; }
+    var h = hlocal(); h.conf = hconf(Object.assign({}, h.conf, c)); hstore(h); return { ok: true };
+  }
+  function harvestData() { return LIVE ? (hcache || { records: [], conf: hconf() }) : hlocal(); }
+
+  function dstr(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function day0(d) { var x = new Date(d); x.setHours(0, 0, 0, 0); return x; }
+  function plus(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
+  function lastYear(d) { var x = new Date(d); x.setFullYear(x.getFullYear() - 1); return x; }
+  function inSeason(d) {
+    var s = SS().season, md = (d.getMonth() + 1) * 100 + d.getDate(), a = s.start[0] * 100 + s.start[1], b = s.end[0] * 100 + s.end[1];
+    return a <= b ? (md >= a && md <= b) : (md >= a || md <= b);
+  }
+  /* 今のシーズン（期間外なら、終わったばかりのシーズン） */
+  function seasonOf(t) {
+    var s = SS().season, wrap = s.end[0] * 100 + s.end[1] < s.start[0] * 100 + s.start[1];
+    var st = new Date(t.getFullYear(), s.start[0] - 1, s.start[1]);
+    if (st > t) st = new Date(t.getFullYear() - 1, s.start[0] - 1, s.start[1]);
+    var en = new Date(st.getFullYear() + (wrap ? 1 : 0), s.end[0] - 1, s.end[1]);
+    return { from: st, to: en };
+  }
+  function harvestStats(h, now) {
+    h = h || harvestData(); now = now || new Date();
+    var today = day0(now), cf = h.conf, days = cf.days || [], map = {};
+    h.records.forEach(function (r) { map[r.d] = r; });
+    /* 1回あたりの量：直近3週間の記録のうち新しい3回の平均。記録がなければ管理画面の目安 */
+    var recent = h.records.filter(function (r) { var d = new Date(r.d + 'T00:00:00'); return d <= today && d > plus(today, -21); })
+      .sort(function (a, b) { return a.d < b.d ? 1 : -1; }).slice(0, 3);
+    var rate = recent.length ? { big: recent.reduce(function (a, r) { return a + r.big; }, 0) / recent.length, mini: recent.reduce(function (a, r) { return a + r.mini; }, 0) / recent.length, basis: 'records', n: recent.length }
+      : { big: +cf.big || 0, mini: +cf.mini || 0, basis: 'conf', n: 0 };
+    function span(from, to) {     /* from〜to の見込み（記録＋まだの収穫日×1回あたりの量）と実績 */
+      var o = { from: from, to: to, big: 0, mini: 0, actBig: 0, actMini: 0, rec: 0, est: 0 };
+      for (var d = new Date(from); d <= to; d = plus(d, 1)) {
+        var r = map[dstr(d)];
+        if (r) { o.big += r.big; o.mini += r.mini; o.actBig += r.big; o.actMini += r.mini; o.rec++; }
+        else if (inSeason(d) && days.indexOf(d.getDay()) >= 0) { o.big += rate.big; o.mini += rate.mini; o.est++; }
+      }
+      o.total = o.big + o.mini; o.act = o.actBig + o.actMini; return o;
+    }
+    function actual(from, to) {
+      var a = 0, n = 0; for (var d = new Date(from); d <= to; d = plus(d, 1)) { var r = map[dstr(d)]; if (r) { a += r.big + r.mini; n++; } }
+      return { kg: a, n: n };
+    }
+    function yoy(from) {           /* 期間の初め〜今日の実績を、去年の同じ日付どうしで比べる */
+      var cur = actual(from, today), prev = actual(lastYear(from), lastYear(today));
+      if (!cur.n || !prev.n || !prev.kg) return null;
+      return { pct: (cur.kg - prev.kg) / prev.kg * 100, kg: cur.kg - prev.kg, prev: prev.kg, cur: cur.kg };
+    }
+    var ws = plus(today, -((today.getDay() + 6) % 7)), ms = new Date(today.getFullYear(), today.getMonth(), 1), se = seasonOf(today);
+    var week = span(ws, plus(ws, 6)), month = span(ms, new Date(today.getFullYear(), today.getMonth() + 1, 0)), season = span(se.from, se.to);
+    week.yoy = yoy(ws); month.yoy = yoy(ms); season.yoy = yoy(se.from);
+    var last = h.records.filter(function (r) { return r.d <= dstr(today); }).sort(function (a, b) { return a.d < b.d ? 1 : -1; })[0] || null;
+    var next = null;
+    for (var i = map[dstr(today)] ? 1 : 0; i < 120 && days.length; i++) { var nd = plus(today, i); if (inSeason(nd) && days.indexOf(nd.getDay()) >= 0) { next = nd; break; } }
+    return { on: inSeason(today), rate: rate, days: days, last: last, next: next, week: week, month: month, season: season, at: h.at || null };
+  }
+
   function reset() { if (LIVE) { call('POST', '/api/reset'); return; } [K.orders, K.stock, K.log].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} }); }
 
   return {
@@ -573,10 +651,11 @@ window.SSAPI = (function () {
     logs: function () { return get(K.log, []); },
     shipCSV: shipCSV, importTracking: importTracking,
     conf: conf, setConf: function (c) { if (LIVE) { call('POST', '/api/conf', c); return; } set(K.conf, Object.assign(conf(), c)); },
-    /* live：Stripeの支払い画面を作ってURLを返す／支払い済みかをすぐ確かめる */
+    /* live：Squareの支払い画面を作ってURLを返す／支払い済みかをすぐ確かめる */
     checkout: function (d) { return call('POST', '/api/checkout', d); },
-    confirm: function () { if (LIVE) call('GET', '/api/confirm'); },
-    stripeState: function () { return stripeState; },
+    confirm: function (no) { if (LIVE) call('GET', '/api/confirm' + (no ? '?no=' + encodeURIComponent(no) : '')); },
+    payEnv: function () { return payEnv; },   /* 'sandbox'＝テスト決済／'production'＝本番 */
+    paymentState: function () { return payState; },
     channels: function () { return channels; },
     needLogin: function () { return LIVE && ADMIN && login.need; },
     authInfo: function () { return login.auth || {}; },
@@ -588,6 +667,8 @@ window.SSAPI = (function () {
     },
     logout: function () { call('POST', '/api/logout'); login.need = true; },
     testNotify: function () { if (LIVE) call('POST', '/api/test-notify'); },
+    loadHarvest: loadHarvest, harvestData: harvestData, harvestStats: harvestStats,
+    saveHarvest: saveHarvest, deleteHarvest: deleteHarvest, setHarvestConf: setHarvestConf,
     seed: seed, reset: reset,
     /* 別のタブ（ショップ⇔管理画面）で変わったら知らせる */
     onChange: function (cb) { subs.push(cb); addEventListener('storage', function (e) { if (e.key && e.key.indexOf('ss-demo-') === 0) cb(e.key); }); }
@@ -614,12 +695,20 @@ window.SSAPI = (function () {
   function demoBanner() {
     return LIVE ? '' : '<div class="note-box"><b>これは見本の画面です。</b>自由に触ってください。ここで入れた注文や変更は、この端末の中だけに残り、本物の注文・お客さんには影響しません。</div>';
   }
-  if (LIVE) { var dc = $('.demo-chip'); dc.textContent = 'テスト決済'; dc.title = 'Stripeのテスト環境につながっています（実際の請求はありません）'; }
-  function stripeBanner() {
+  var PROD = function () { return LIVE && A.payEnv() === 'production'; };
+  function chip() {
+    if (!LIVE) return;
+    var dc = $('.demo-chip');
+    if (PROD()) { dc.hidden = true; return; }
+    dc.hidden = false; dc.textContent = 'テスト決済'; dc.title = 'Squareのサンドボックス（テスト環境）につながっています（実際の請求はありません）';
+  }
+  chip();
+  function payBanner() {
     if (!LIVE) return '';
-    var st = A.stripeState();
-    return st === 'ok' ? '<div class="note-box" style="background:#EEF4E5">Stripe（テスト環境）につながっています。支払いが済んだ注文は、数秒でここに出ます。</div>'
-      : '<div class="note-box" style="background:#FDE7E2"><b>Stripeにつながっていません。</b>' + esc(st) + '</div>';
+    var p = A.paymentState();
+    if (p.state === 'ok' && PROD()) return '';   /* 本番で正常なときは何も出さない */
+    return p.state === 'ok' ? '<div class="note-box" style="background:#EEF4E5">' + esc(p.provider) + '（テスト環境）につながっています。支払いが済んだ注文は、数秒でここに出ます。</div>'
+      : '<div class="note-box" style="background:#FDE7E2"><b>' + esc(p.provider) + 'につながっていません。</b>' + esc(p.state) + '</div>';
   }
 
   function fmt(iso, withTime) {
@@ -642,7 +731,7 @@ window.SSAPI = (function () {
     var today = all.filter(function (o) { return o.status !== 'pending' && new Date(o.created).toDateString() === now.toDateString(); }).length;
     var month = all.filter(function (o) { var d = new Date(o.created); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && ['canceled', 'refunded', 'pending'].indexOf(o.status) < 0; })
       .reduce(function (a, o) { return a + o.subtotal; }, 0);
-    var h = demoBanner() + pkNudge() + stripeBanner() + '<div class="h"><h1>今日やること</h1><small>' + (now.getMonth() + 1) + '月' + now.getDate() + '日</small></div>' +
+    var h = demoBanner() + pkNudge() + payBanner() + '<div class="h"><h1>今日やること</h1><small>' + (now.getMonth() + 1) + '月' + now.getDate() + '日</small></div>' +
       '<div class="tiles"><a class="tile big" href="#/ship"><span><small>発送待ち</small><b class="n">' + w.length + '<em>件</em></b></span><span class="go">発送へ →</span></a>' +
       '<div class="tile"><small>今日の新しい注文</small><b class="n">' + today + '<em>件</em></b></div>' +
       '<div class="tile"><small>今月の売上（送料別）</small><b class="n">' + yen(month) + '</b></div></div>';
@@ -698,7 +787,8 @@ window.SSAPI = (function () {
       '<div class="card"><p class="sub-h" style="margin-top:0">記録</p><ul class="hist">' + o.history.map(function (h) { return '<li>' + fmt(h.at, true) + '　' + A.STATUS[h.s].label + '</li>'; }).join('') + '</ul>' +
       '<p class="hist">受付番号 ' + o.no + '（' + nth(o) + '）</p></div>' +
       '<div class="btns">' + (o.status === 'paid' || o.status === 'packed' ? '<button class="btn b-ghost" data-act="status" data-to="canceled">この注文をキャンセルにする</button>' : '') +
-      (o.payment_intent ? '<a class="btn b-line" href="https://dashboard.stripe.com/test/payments/' + esc(o.payment_intent) + '" target="_blank" rel="noopener">Stripeで支払いを見る</a>' : '<span class="btn b-ghost" style="opacity:.5">Stripeで支払いを見る（支払い後に有効）</span>') + '</div></div>';
+      (o.receipt_url ? '<a class="btn b-line" href="' + esc(o.receipt_url) + '" target="_blank" rel="noopener">Squareの領収書を見る</a>' :
+        o.payment_intent ? '<span class="btn b-ghost" style="opacity:.5">旧テスト（Stripe）の注文です</span>' : '<span class="btn b-ghost" style="opacity:.5">Squareの領収書（支払い後に表示）</span>') + '</div></div>';
     $('#memo').addEventListener('change', function () { A.updateOrder(o.no, { memo: this.value }); toast('メモを保存しました'); });
     view.dataset.no = o.no;
   }
@@ -784,6 +874,77 @@ window.SSAPI = (function () {
     view.innerHTML = h;
   }
 
+  /* ================= 収量（サイトの「いまの収穫量」に出る数字） ================= */
+  var DOW = ['日', '月', '火', '水', '木', '金', '土'], hvLoaded = false;
+  function kgs(v) { return (Math.round(v * 10) / 10).toLocaleString('ja-JP'); }
+  function ymd(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function md(s) { var d = new Date(s + 'T00:00:00'); return (d.getMonth() + 1) + '/' + d.getDate() + '（' + DOW[d.getDay()] + '）'; }
+  function yoyText(y) { return y ? '前年比 ' + (y.pct >= 0 ? '+' : '') + Math.round(y.pct) + '%（' + (y.kg >= 0 ? '+' : '') + kgs(y.kg) + 'kg）' : ''; }
+  function harvest() {
+    if (LIVE && !hvLoaded) { hvLoaded = true; A.loadHarvest().then(function () { if (/^#\/harvest/.test(location.hash)) harvest(); }); }
+    var h = A.harvestData(), st = A.harvestStats(h), cf = h.conf, today = ymd(new Date());
+    var recs = h.records.slice().sort(function (a, b) { return a.d < b.d ? 1 : -1; });
+    var cur = recs.filter(function (r) { return r.d === today; })[0];
+    var html = '<div class="h"><h1>収量</h1><small>サイトの「いまの収穫量」に出ます</small></div>' + (LIVE ? '' : demoBanner()) +
+      '<div class="card"><p class="sub-h" style="margin-top:0">収穫を記録する</p>' +
+      '<div class="field"><label for="hv-d">日付</label><input id="hv-d" type="date" value="' + today + '" max="' + today + '"></div>' +
+      '<div class="hv-two"><div class="field"><label for="hv-big">大玉（kg）</label><input id="hv-big" type="number" inputmode="decimal" min="0" step="0.1" value="' + (cur ? cur.big : '') + '" placeholder="' + kgs(st.rate.big) + '"></div>' +
+      '<div class="field"><label for="hv-mini">ミニ（kg）</label><input id="hv-mini" type="number" inputmode="decimal" min="0" step="0.1" value="' + (cur ? cur.mini : '') + '" placeholder="' + kgs(st.rate.mini) + '"></div></div>' +
+      '<button class="btn b-green" data-act="hvsave" style="width:100%">記録する（サイトにすぐ出ます）</button>' +
+      '<p class="lead" style="margin:10px 0 0">収穫しなかった日は、入れなくて大丈夫です。同じ日をもう一度入れると、上書きします。</p></div>';
+    html += '<p class="sub-h">サイトに出ている見込み</p><div class="tiles hv-tiles">' + [['今週', st.week], ['今月', st.month], ['今シーズン', st.season]].map(function (x) {
+      var p = x[1];
+      return '<div class="tile"><small>' + x[0] + 'の見込み</small><b class="n">' + Math.round(p.total).toLocaleString('ja-JP') + '<em>kg</em></b><span class="hv-sub">実績 <span class="n">' + kgs(p.act) + '</span>kg' + (p.yoy ? '・' + yoyText(p.yoy) : '') + '</span></div>';
+    }).join('') + '</div>' +
+      '<div class="note-box" style="margin-top:10px">' + (st.rate.basis === 'records' ? '見込みは、直近' + st.rate.n + '回の平均（大玉 ' + kgs(st.rate.big) + 'kg・ミニ ' + kgs(st.rate.mini) + 'kg）が、これからの収穫日も続くとして計算しています。'
+        : '最近の記録がまだないので、下の「1回の目安」（大玉 ' + kgs(st.rate.big) + 'kg・ミニ ' + kgs(st.rate.mini) + 'kg）で計算しています。記録を入れると、その平均に切り替わります。') +
+      '<br>前年比は、去年の同じ時期の記録があるときだけ出ます。</div>';
+    html += '<p class="sub-h">記録</p>' + (recs.length ? '<div class="hv-list">' + recs.slice(0, 40).map(function (r) {
+      return '<div class="hv-row"><span class="d">' + md(r.d) + '</span><span>大玉 <b class="n">' + kgs(r.big) + '</b>kg</span><span>ミニ <b class="n">' + kgs(r.mini) + '</b>kg</span><button class="b-ghost btn" data-act="hvdel" data-d="' + r.d + '">消す</button></div>';
+    }).join('') + '</div>' : emptyBox('まだ記録がありません', '上で今日の収穫量を入れると、ここに並びます。'));
+    html += '<p class="sub-h">収穫日と1回の目安</p><div class="card stack">' +
+      '<div><b>収穫する曜日</b><div class="hv-dow">' + DOW.map(function (w, i) { return '<button type="button" data-dow="' + i + '" class="' + (cf.days.indexOf(i) >= 0 ? 'on' : '') + '">' + w + '</button>'; }).join('') + '</div></div>' +
+      '<div><b>記録がないときの、1回の目安</b><div class="hv-two" style="margin-top:6px"><div class="field"><label for="hv-cb">大玉（kg）</label><input id="hv-cb" type="number" inputmode="decimal" min="0" step="0.1" value="' + cf.big + '"></div>' +
+      '<div class="field"><label for="hv-cm">ミニ（kg）</label><input id="hv-cm" type="number" inputmode="decimal" min="0" step="0.1" value="' + cf.mini + '"></div></div></div>' +
+      '<button class="btn b-green" data-act="hvconf" style="width:100%">保存する</button></div>';
+    html += '<details class="card hv-imp"><summary>去年の記録をまとめて入れる（前年比用）</summary>' +
+      '<p class="lead" style="margin:8px 0">1行に「日付,大玉kg,ミニkg」。エクセルやスプレッドシートの3列をそのまま貼り付けても読めます。</p>' +
+      '<textarea id="hv-imp" rows="6" placeholder="2025-10-20,60,40&#10;2025-10-22,58,41"></textarea>' +
+      '<button class="btn b-line" data-act="hvimport" style="width:100%;margin-top:8px">取り込む</button></details>';
+    view.innerHTML = html;
+  }
+  view.addEventListener('change', function (e) {
+    if (e.target.id !== 'hv-d') return;
+    var r = A.harvestData().records.filter(function (x) { return x.d === e.target.value; })[0];
+    $('#hv-big').value = r ? r.big : ''; $('#hv-mini').value = r ? r.mini : '';
+  });
+  view.addEventListener('click', function (e) {
+    var w = e.target.closest('.hv-dow button'); if (w) { w.classList.toggle('on'); return; }
+    var b = e.target.closest('[data-act^="hv"]'); if (!b) return;
+    var act = b.dataset.act, r;
+    if (act === 'hvsave') {
+      var big = $('#hv-big').value.trim(), mini = $('#hv-mini').value.trim();
+      if (big === '' && mini === '') { toast('大玉かミニの量を入れてください'); return; }
+      r = A.saveHarvest([{ d: $('#hv-d').value, big: big || 0, mini: mini || 0 }]);
+      toast(r.error || md($('#hv-d').value) + 'の収穫を記録しました'); if (!r.error) harvest();
+    }
+    if (act === 'hvdel') { if (!confirm(md(b.dataset.d) + 'の記録を消します。よろしいですか？')) return; A.deleteHarvest(b.dataset.d); toast('消しました'); harvest(); }
+    if (act === 'hvconf') {
+      var days = $$('.hv-dow button.on').map(function (x) { return +x.dataset.dow; });
+      if (!days.length) { toast('収穫する曜日を1つ以上選んでください'); return; }
+      r = A.setHarvestConf({ days: days, big: $('#hv-cb').value || 0, mini: $('#hv-cm').value || 0 });
+      toast(r.error || '保存しました（サイトの見込みに反映）'); if (!r.error) harvest();
+    }
+    if (act === 'hvimport') {
+      var rows = $('#hv-imp').value.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean).map(function (l) {
+        var c = l.split(/[,\t]+/).map(function (x) { return x.trim(); }), d = (c[0] || '').replace(/[\/.年月]/g, '-').replace(/日$/, '').split('-');
+        return { d: d.length === 3 ? d[0] + '-' + ('0' + d[1]).slice(-2) + '-' + ('0' + d[2]).slice(-2) : c[0], big: c[1], mini: c[2] };
+      });
+      if (!rows.length) { toast('記録を貼り付けてください'); return; }
+      r = A.saveHarvest(rows); toast(r.error || r.ok + '件を取り込みました'); if (!r.error) harvest();
+    }
+  });
+
   /* ================= 設定 ================= */
   function settings() {
     var c = A.conf();
@@ -793,9 +954,9 @@ window.SSAPI = (function () {
         return '<div class="field"><label for="c-' + f[0] + '">' + f[1] + '</label><input id="c-' + f[0] + '" data-c="' + f[0] + '" value="' + esc(f[2]) + '" autocomplete="' + f[3] + '"' + (f[0] === 'tel' ? ' type="tel"' : '') + '></div>';
       }).join('') + '<button class="btn b-green" data-act="saveconf" style="width:100%">保存する</button></div>' +
       '<p class="sub-h">送料表</p><div class="note-box">保留中（未決定）。決まるまで、注文の送料は「未確定」で記録し、確認の連絡でお伝えする運用です。</div>' +
-      '<p class="sub-h">' + (LIVE ? 'テストの台帳' : 'デモのデータ') + '</p><div class="card stack"><p class="lead" style="margin:0">' + (LIVE ? 'いまの注文・在庫・通知は、テスト用サーバー（このMac）の台帳に保存されています。Stripeの支払い記録は消えません。' : 'いまの注文・在庫・通知は、このブラウザの中にだけ保存されています。別のスマホやPCからは見えません。') + '</p>' +
+      '<p class="sub-h">' + (LIVE ? 'テストの台帳' : 'デモのデータ') + '</p><div class="card stack"><p class="lead" style="margin:0">' + (LIVE ? 'いまの注文・在庫・通知は、テスト用サーバー（このMac）の台帳に保存されています。台帳を消しても、Squareの売上記録は消えません。' : 'いまの注文・在庫・通知は、このブラウザの中にだけ保存されています。別のスマホやPCからは見えません。') + '</p>' +
       securityCard() +
-      '<div class="btns">' + (LIVE ? '' : '<button class="btn b-line" data-act="seed">サンプル注文を3件入れる</button>') + '<button class="btn b-ghost" data-act="reset">' + (LIVE ? 'テストの台帳を全部消す' : 'デモのデータを全部消す') + '</button></div></div>';
+      '<div class="btns">' + (LIVE ? '' : '<button class="btn b-line" data-act="seed">サンプル注文を3件入れる</button>') + (PROD() ? '' : '<button class="btn b-ghost" data-act="reset">' + (LIVE ? 'テストの台帳を全部消す' : 'デモのデータを全部消す') + '</button>') + '</div></div>';
   }
 
   /* ================= シート ================= */
@@ -967,12 +1128,13 @@ window.SSAPI = (function () {
   /* ================= 画面の切り替え ================= */
   function render() {
     if (A.needLogin && A.needLogin()) { loginView(); return; }
+    chip();
     document.body.classList.remove('locked');
     var h = location.hash.replace(/^#\/?/, '').split('/'), tab = h[0] || 'home';
     $$('.tabs a').forEach(function (a) { a.classList.toggle('on', a.dataset.tab === tab); });
     badge();
     if (tab === 'orders' && h[1]) detail(decodeURIComponent(h[1]));
-    else ({ home: home, orders: orders, ship: ship, stock: stock, notice: notice, settings: settings }[tab] || home)();
+    else ({ home: home, orders: orders, ship: ship, stock: stock, harvest: harvest, notice: notice, settings: settings }[tab] || home)();
     if (tab === 'settings') loadSecurity();
   }
   addEventListener('hashchange', function () { closeSheet(); scrollTo(0, 0); render(); });

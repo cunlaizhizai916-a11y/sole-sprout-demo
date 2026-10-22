@@ -823,6 +823,7 @@ details[open]>summary::after{rotate:45deg}
 .pay-wip b{display:block}
 .pay-list{display:grid;gap:8px;margin-bottom:18px;opacity:.55}
 .pay{display:flex;align-items:center;gap:12px;padding:14px 16px;border:2px solid var(--line);border-radius:14px;background:#fff;font-weight:700;font-size:15px}
+.pay small{display:block;font-size:11.5px;font-weight:500;color:var(--ink2);margin-top:2px}
 .pay em{font-style:normal;margin-left:auto;font-size:11.5px;background:var(--line);padding:2px 10px;border-radius:999px}
 .co-sum{background:var(--paper);border-radius:28px;padding:22px 20px}
 .co-sum h3{font-size:17px;font-weight:900;margin-bottom:8px}
@@ -880,6 +881,37 @@ html.nl .spbar{padding-right:200px}
   [data-rv]{opacity:1;translate:none;scale:none}
   .leaves{display:none}
 }
+
+/* ================= いまの収穫量（業務用） ================= */
+.hv{background:var(--paper);border-radius:32px;padding:26px 20px 22px;margin:0 0 40px;box-shadow:0 24px 50px -36px rgba(30,43,27,.5)}
+@media(min-width:768px){.hv{padding:40px 44px 34px;margin-bottom:60px}}
+.hv-hd{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:6px 16px}
+.hv-hd .ttl{margin:8px 0 0}
+.hv-live{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--leaf);background:#EEF4E5;padding:6px 14px;border-radius:999px}
+.hv-live i,.hv-pill i{width:9px;height:9px;border-radius:50%;background:var(--sprout);box-shadow:0 0 0 0 rgba(141,198,63,.6);animation:hvPulse 1.8s infinite}
+@keyframes hvPulse{70%{box-shadow:0 0 0 9px rgba(141,198,63,0)}100%{box-shadow:0 0 0 0 rgba(141,198,63,0)}}
+.hv-last{margin:20px 0 4px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.hv-last small{font-size:13px;color:var(--ink2);font-weight:700}
+.hv-last p{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 6px;margin-top:2px}
+.hv-last span{font-size:14px;font-weight:700;margin-left:8px}.hv-last span:first-child{margin-left:0}
+.hv-last b{font-size:clamp(34px,6vw,48px);line-height:1.1;color:var(--tomato)}
+.hv-last em{font-style:normal;font-size:14px;font-weight:700}
+.hv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 14px}
+.hv-c{background:var(--cream);border-radius:22px;padding:14px 16px 16px;display:flex;flex-direction:column;gap:2px}
+.hv-c.wide{grid-column:1/3}
+.hv-c small{font-size:12.5px;color:var(--ink2);font-weight:700;line-height:1.5}
+.hv-num{display:flex;align-items:baseline;gap:4px}
+.hv-num b{font-size:clamp(30px,5vw,44px);line-height:1.15;color:var(--leaf)}
+.hv-num em{font-style:normal;font-size:14px;font-weight:700}
+.hv-br{display:flex;flex-wrap:wrap;gap:0 10px;font-size:12.5px;color:var(--ink2);line-height:1.6}
+.hv-br>span{white-space:nowrap}
+.hv-y{align-self:flex-start;margin-top:6px;font-size:12px;font-weight:900;padding:2px 10px;border-radius:999px;white-space:nowrap}
+@media(max-width:899px){.hv-c:not(.wide) .hv-yk{display:none}}
+.hv-y.up{background:#EEF4E5;color:var(--leaf)}.hv-y.down{background:#FDE7E2;color:var(--tomato-d)}
+@media(min-width:900px){.hv-grid{grid-template-columns:1fr 1fr 1.3fr;gap:16px}.hv-c.wide{grid-column:auto}.hv-c{padding:20px 22px 22px}}
+.hv-pill{display:flex;align-items:center;gap:10px;width:fit-content;margin-top:18px;padding:10px 18px;border-radius:999px;background:var(--paper);font-size:14px;font-weight:700;box-shadow:0 1px 0 var(--line)}
+.hv-pill b{font-size:22px;color:var(--leaf);line-height:1}
+.hv-pill svg{width:18px;height:18px}
 </style>
 </head>
 <body class="is-op">
@@ -1139,6 +1171,7 @@ html.nl .spbar{padding-right:200px}
         <p class="lbl"><svg><use href="#i-sprout"/></svg>For business</p>
         <h2 class="ttl"><span class="np">このトマトを、</span><span class="np">お店で。</span></h2>
         <p class="sub">飲食店・小売店の方の<span class="np">ご相談を承ります。</span></p>
+        <a class="hv-pill" id="hvMini" href="#/business" hidden></a>
         <a class="btn btn-green" href="#/business">業務用のご相談<svg><use href="#i-arrow"/></svg></a>
       </div>
     </div>
@@ -1205,7 +1238,7 @@ html.nl .spbar{padding-right:200px}
     <div class="guide-mini">
       <div><b>配送</b><span>ヤマト運輸（暑い時期はクール便）</span></div>
       <div><b>送料</b><span>地域・箱のサイズで変わります</span></div>
-      <div><b>お支払い</b><span>ただいま準備中です</span></div>
+      <div><b>お支払い</b><span>カード・Apple Pay・Google Pay（準備中）</span></div>
       <a class="link-arrow" href="#/guide">お買い物ガイド<svg><use href="#i-arrow"/></svg></a>
     </div>
   </div>
@@ -1261,9 +1294,8 @@ html.nl .spbar{padding-right:200px}
           <legend><b class="n">3</b>お支払い</legend>
           <div class="pay-wip"><svg><use href="#i-sprout"/></svg><p><b>お支払い機能は準備中です。</b>いまはご注文のお申し込みのみ承ります。内容を確認のうえ、農園からお支払い方法をご案内します。</p></div>
           <div class="pay-list" aria-disabled="true">
-            <label class="pay"><input type="radio" name="pay" disabled><span>クレジットカード</span><em>準備中</em></label>
-            <label class="pay"><input type="radio" name="pay" disabled><span>PayPay</span><em>準備中</em></label>
-            <label class="pay"><input type="radio" name="pay" disabled><span>銀行振込</span><em>準備中</em></label>
+            <label class="pay"><input type="radio" name="pay" disabled><span>クレジットカード<small>Visa・Mastercard・JCB・American Express・Diners Club</small></span><em>準備中</em></label>
+            <label class="pay"><input type="radio" name="pay" disabled><span>Apple Pay・Google Pay</span><em>準備中</em></label>
           </div>
           <div class="field"><label for="c-msg">ご要望（任意）</label><textarea id="c-msg" name="message" rows="3" placeholder="お届けについてのご希望など"></textarea></div>
         </fieldset>
@@ -1398,7 +1430,7 @@ html.nl .spbar{padding-right:200px}
       <div data-rv>
         <p class="lbl"><svg><use href="#i-sprout"/></svg>A year of tomatoes</p>
         <h2 class="ttl"><span class="np">トマトの、</span><span class="np">一年。</span></h2>
-        <ul class="legend"><li><i style="background:#E0452A"></i>収穫・発送<small>11月下旬〜7月</small></li><li><i style="background:#8DC63F"></i>定植<small>9月</small></li><li><i style="background:#3E7D2A"></i>育成<small>10〜11月</small></li><li><i style="background:#E8D9B5"></i>準備<small>8月</small></li></ul>
+        <ul class="legend"><li><i style="background:#E0452A"></i>収穫・発送<small>10月〜7月</small></li><li><i style="background:#8DC63F"></i>定植・育成<small>9月</small></li><li><i style="background:#E8D9B5"></i>準備<small>8月</small></li></ul>
         <a class="btn btn-red" href="#/shop">ショップへ<svg><use href="#i-arrow"/></svg></a>
       </div>
       <div class="ring" id="ring" data-rv></div>
@@ -1552,6 +1584,7 @@ html.nl .spbar{padding-right:200px}
     </div>
   </div>
   <div class="wrap">
+    <div class="hv" id="hvBoard" data-rv hidden></div>
     <div class="biz-pts">
       <div class="bp" data-rv><b class="n">01</b><h3>量と頻度</h3><p>週ごと・月ごとなど、<span class="np">ご希望に合わせてご相談ください。</span></p></div>
       <div class="bp" data-rv><b class="n">02</b><h3>規格</h3><p>ミニトマト・大玉のほか、<span class="np">ソース用の規格外品も。</span></p></div>
@@ -1614,13 +1647,15 @@ html.nl .spbar{padding-right:200px}
     <dl class="gdl" data-rv>
       <dt>配送</dt><dd>ヤマト運輸でお届けします。暑い時期（5月下旬〜7月）はクール便（冷蔵）、それ以外は常温便です。クール便で届いたら、すぐに箱を開けて常温に戻してください。</dd>
       <dt>送料</dt><dd>お届け先の地域と箱のサイズで変わります。ご注文の確認時にお知らせします。</dd>
-      <dt>発送時期</dt><dd>収穫期間（11月下旬〜7月）に、ご注文順で発送します。期間外のご注文は予約として承ります。</dd>
-      <dt>お支払い</dt><dd>オンライン決済は準備中です。いまは農園からお支払い方法をご案内します。</dd>
+      <dt>発送時期</dt><dd>収穫期間（10月〜7月）は、ご注文から3日以内に発送します。期間外のご注文は予約として承り、収穫が始まりしだい順に発送します。</dd>
+      <dt>傷みがあったとき</dt><dd>到着から1週間以内にご連絡ください。確認のうえ、代金を返金します。</dd>
+      <dt>お支払い</dt><dd>クレジットカード（Visa・Mastercard・JCB・American Express・Diners Club）、Apple Pay、Google Pay。お支払いは、決済サービス「Square」の安全な画面で行います（準備中）。</dd>
     </dl>
     <h2 class="ttl sm" data-rv>よくあるご質問</h2>
     <div class="faq" data-rv>
       <details><summary>届いたトマトはどう保存すればいいですか？</summary><p>常温で保存し、食べる2〜3時間前に冷蔵庫で冷やすのがおすすめです。まだ青みが残る実は、常温に置くと色づきます。</p></details>
-      <details><summary>のしやメッセージカードは付けられますか？</summary><p>贈りものボックスで承ります。ご注文手続きの「ギフトとして贈る」からお選びください。</p></details>
+      <details><summary>別の住所へ贈れますか？</summary><p>贈れます。ご注文手続きの「ギフトとして贈る」で、お届け先とのしをお選びください。</p></details>
+      <details><summary>定期便はありますか？</summary><p>いまは承っていません。始めるときは、お知らせとLINEでご案内します。</p></details>
       <details><summary>無人販売所はいつ開いていますか？</summary><p>トマトを並べる時間や品数は、Instagramでお知らせしています。</p></details>
       <details><summary>業務用でまとめて買いたいです。</summary><p>飲食店・小売店の方は「飲食店の方へ」のページからご相談ください。</p></details>
     </div>
@@ -1639,14 +1674,16 @@ html.nl .spbar{padding-right:200px}
     <dl class="gdl legal">
       <dt>販売業者</dt><dd>SOLE SPROUT</dd>
       <dt>運営責任者</dt><dd>玉垣 直哉</dd>
-      <dt>所在地</dt><dd class="tbd">準備中</dd>
-      <dt>電話番号</dt><dd class="tbd">準備中</dd>
-      <dt>メールアドレス</dt><dd class="tbd">準備中</dd>
+      <dt>所在地</dt><dd>〒675-0335 兵庫県加古川市志方町原793-1</dd>
+      <dt>電話番号</dt><dd>090-6979-8136</dd>
+      <dt>メールアドレス</dt><dd>solesprout1010@gmail.com</dd>
       <dt>販売価格</dt><dd>各商品ページに記載（税込）</dd>
       <dt>商品代金以外の必要料金</dt><dd>送料（地域・箱のサイズによる）</dd>
-      <dt>お支払い方法</dt><dd class="tbd">準備中</dd>
-      <dt>引き渡し時期</dt><dd>収穫期間中、ご注文確認後に順次発送</dd>
-      <dt>返品・交換</dt><dd>生鮮品のため、お客様のご都合による返品はお受けできません。傷みなどがあった場合は、到着から2日以内にご連絡ください。</dd>
+      <dt>お支払い方法</dt><dd>クレジットカード・Apple Pay・Google Pay（決済代行：Square株式会社）</dd>
+      <dt>お支払い時期</dt><dd>ご注文時にお支払いいただきます</dd>
+      <dt>引き渡し時期</dt><dd>収穫期間（10月〜7月）は、ご注文から3日以内に発送します。期間外のご注文は、収穫が始まりしだい順に発送します</dd>
+      <dt>返品・交換</dt><dd>生鮮品のため、お客様のご都合による返品はお受けできません。傷みなどがあった場合は、到着から1週間以内にご連絡ください。確認のうえ、代金を返金します。</dd>
+      <dt>定期購入</dt><dd>現在、定期便の販売は行っていません</dd>
     </dl>
   </div>
 </section>
@@ -1696,8 +1733,13 @@ html.nl .spbar{padding-right:200px}
    tmp:true が付いた値は「仮」。README.md の確認リストと対応している
    ============================================================ */
 window.SS = {
-  /* 収穫・発送の期間（月, 日）。期間外は「予約受付中」になる */
-  season: { start: [11, 25], end: [7, 31] },
+  /* 収穫・発送の期間（月, 日）。期間外は「予約受付中」になる
+     2026-10-22 玉垣さん：10月の時点で収穫中（大玉70kg・ミニ50kg/日）→ 開始を10月1日に（仮・要確認） */
+  season: { start: [10, 1], end: [7, 31] },
+
+  /* 収量（飲食店・企業向けの表示）。記録がまだ無い時は、この量を1回の収穫の目安にして見込みを出す
+     days＝収穫する曜日（0=日 1=月 … 6=土）。管理画面の「収量」で変えられる */
+  harvest: { days: [1, 3, 5], big: 70, mini: 50 },
 
   /* クール便（冷蔵）で送る期間（月, 日）。この期間外は常温便。日付は仮・玉垣さんと決める */
   cool: { from: [5, 20], to: [7, 31] },
@@ -1714,70 +1756,30 @@ window.SS = {
   /* 送信先（決まったら入れる。空なら画面上で完了表示だけ出す） */
   endpoint: '',
 
+  /* 2026-10-22 玉垣さん決定：販売は 大玉トマト1箱4kg・ミニトマト1箱3kg の2つ。定期便は当面なし */
   products: [
     {
-      id: 'ai', name: 'AI・愛トマト', kind: 'ミニトマト', cat: 'mini',
+      id: 'ai', name: 'AI・愛トマト', kind: 'ミニトマト 1箱 約3kg', cat: 'mini',
       imgs: ['box', 'pile', 'truss'], badge: 'いちばん人気', seasonal: true,
       lead: '愛情×データ栽培で育てた、濃い味のミニトマト。',
       desc: 'ハウスの環境をデータで見守りながら、毎日この手で確かめて育てました。酸味と甘味のバランス、そして食感にこだわっています。',
       voice: 'AIと僕の共同作品！ 濃い〜トマトの味に仕上がっております。',
-      variants: [
-        { label: '約1kg', price: 1800, tmp: true },
-        { label: '約3kg', price: 4500 }
-      ],
-      specs: [['内容', '兵庫県産 ミニトマト'], ['産地', '兵庫県加古川市志方町原'], ['栽培', '養液栽培（慣行栽培）'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
+      variants: [{ label: '1箱 約3kg', price: 4000 }],
+      specs: [['内容', '兵庫県産 ミニトマト 約3kg'], ['産地', '兵庫県加古川市志方町原'], ['栽培', '養液栽培（慣行栽培）'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
     },
     {
-      id: 'gift', name: '贈りものボックス', kind: 'ミニトマト 約2kg・化粧箱', cat: 'gift',
-      imgs: ['pile', 'crate', 'box'], badge: 'ギフト', seasonal: true, gift: true,
-      lead: '大切な方へ、志方の赤い宝石を。',
-      desc: '粒のそろったミニトマトを化粧箱に詰めてお届けします。のし・メッセージカードを承ります。',
-      variants: [{ label: '約2kg', price: 4200, tmp: true }],
-      specs: [['内容', '兵庫県産 ミニトマト 約2kg'], ['包装', '化粧箱・のし対応'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
-    },
-    {
-      id: 'teiki', name: '旬のトマト定期便', kind: '収穫期に毎月お届け', cat: 'teiki',
-      imgs: ['crate', 'vines', 'sunrow'], badge: '定期便', seasonal: true,
-      lead: '冬の濃い味から、初夏のみずみずしさまで。',
-      desc: '収穫期間中（12月〜7月）、その月いちばんの状態のトマトを詰め合わせてお届けします。季節で変わる味わいをお楽しみください。',
-      variants: [
-        { label: '月1回・約2kg', price: 3800, tmp: true },
-        { label: '月2回・約2kg', price: 7400, tmp: true }
-      ],
-      specs: [['内容', 'ミニトマト・大玉トマトの詰め合わせ（時期による）'], ['お届け', '収穫期間中 毎月'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
-    },
-    {
-      id: 'wake', name: '訳ありミニトマト', kind: 'ご家庭用', cat: 'mini',
-      imgs: ['truss', 'pile', 'crate'], badge: 'お得', seasonal: true,
-      lead: '形や大きさが不ぞろいなだけ。味は同じです。',
-      desc: 'サイズの違いや小さなキズで店頭に並べられないトマトを、ご家庭用にお分けします。トマトソースやスープにも。',
-      variants: [{ label: '約2kg', price: 2500, tmp: true }],
-      specs: [['内容', '兵庫県産 ミニトマト（規格外）'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
-    },
-    {
-      id: 'big', name: '志方の大玉トマト', kind: '大玉トマト', cat: 'big',
-      imgs: ['bigred', 'crate', 'vines'], seasonal: true,
+      id: 'big', name: '志方の大玉トマト', kind: '大玉トマト 1箱 約4kg', cat: 'big',
+      imgs: ['bigred', 'crate', 'vines'], badge: '大玉', seasonal: true,
       lead: 'かぶりつきたくなる、ずっしりの一玉。',
       desc: 'ひと房ずつ手で摘み取った大玉トマト。スライスしてシンプルに、塩ひとつまみで。',
-      variants: [{ label: '約2kg', price: 3200, tmp: true }],
-      specs: [['内容', '兵庫県産 大玉トマト'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
-    },
-    {
-      id: 'tee', name: 'SOLE SPROUT Tシャツ', kind: 'アパレル', cat: 'goods',
-      imgs: ['@tee'], badge: 'グッズ', seasonal: false,
-      lead: 'トマトハウスで生まれた、農園のユニフォーム。',
-      desc: 'スタッフが畑で着ているロゴTシャツ。綿100%・ユニセックスのサイズ展開です。',
-      variants: [
-        { label: 'S', price: 4400, tmp: true }, { label: 'M', price: 4400, tmp: true },
-        { label: 'L', price: 4400, tmp: true }, { label: 'XL', price: 4400, tmp: true }
-      ],
-      specs: [['素材', '綿100%（仮）'], ['配送', 'ヤマト運輸']]
+      variants: [{ label: '1箱 約4kg', price: 5000 }],
+      specs: [['内容', '兵庫県産 大玉トマト 約4kg'], ['産地', '兵庫県加古川市志方町原'], ['栽培', '養液栽培（慣行栽培）'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
     }
   ],
 
-  featured: ['ai', 'gift', 'teiki'],
+  featured: ['ai', 'big'],
 
-  cats: [['all', 'すべて'], ['mini', 'ミニトマト'], ['big', '大玉'], ['gift', 'ギフト'], ['teiki', '定期便'], ['goods', 'グッズ']],
+  cats: [['all', 'すべて'], ['mini', 'ミニトマト'], ['big', '大玉']],
 
   news: [
     { d: '2026.10.12', tag: 'イベント', t: '「ロハスミーツ稲美」に3日間出店しました', u: 'https://www.instagram.com/p/DeaTGPxE8-v/' },
@@ -1798,17 +1800,19 @@ window.SS = {
 window.SSAPI = (function () {
   'use strict';
   /* テスト用サーバー（test-server/server.py・4230番）から開いたときは、台帳をサーバーに置く＝live */
+  /* live＝サーバーの台帳を使う。テスト用サーバー（4230番）か、本番用にビルドしたページ（window.SS_LIVE）のとき */
   var LIVE = location.port === '4230' || !!window.SS_LIVE;
+  var payEnv = 'sandbox';
   var MODE = LIVE ? 'live' : 'demo';
   var K = { orders: 'ss-demo-orders-v1', stock: 'ss-demo-stock-v1', log: 'ss-demo-log-v1', conf: 'ss-demo-conf-v1' };
-  var cache = {}, rev = -1, subs = [], stripeState = '', channels = {}, avail = null, login = { need: false, noPassword: false };
+  var cache = {}, rev = -1, subs = [], payState = { provider: 'Square', state: '' }, channels = {}, avail = null, login = { need: false, noPassword: false };
   /* 管理画面は注文・住所まで読む（ログイン必須）。ショップは在庫の状態だけを読む */
   var ADMIN = /\/admin(\/|\.html|$)/.test(location.pathname);
   var STATE = ADMIN ? '/api/state' : '/api/public';
   function apply(st) {
-    if (st.avail) { avail = st.avail; var ch = st.rev !== rev; rev = st.rev; return ch; }
+    if (st.avail) { avail = st.avail; if (st.payEnv) payEnv = st.payEnv; var ch = st.rev !== rev; rev = st.rev; return ch; }
     cache[K.orders] = st.orders; cache[K.stock] = st.stock; cache[K.log] = st.log; cache[K.conf] = st.conf;
-    var changed = st.rev !== rev; rev = st.rev; stripeState = st.stripe; channels = st.channels || {}; return changed;
+    var changed = st.rev !== rev; rev = st.rev; payState = st.payment || payState; if (payState.env) payEnv = payState.env; channels = st.channels || {}; return changed;
   }
   function call(method, path, body) {      /* 同期で呼ぶ（呼び出す側のコードを今のまま使うため） */
     var x = new XMLHttpRequest(); x.open(method, path, false);
@@ -1883,7 +1887,7 @@ window.SSAPI = (function () {
     var bad = items.filter(function (i) { return !availability(i.id, i.v).ok; });
     if (bad.length) return { error: bad.map(function (i) { return i.name + '（' + i.label + '）'; }).join('・') + ' は、いまご注文いただけません' };
     var o = {
-      no: newNo(t), created: t.toISOString(), status: 'paid', pay: MODE === 'demo' ? 'デモ（支払いなし）' : 'Stripe',
+      no: newNo(t), created: t.toISOString(), status: 'paid', pay: MODE === 'demo' ? 'デモ（支払いなし）' : 'Square',
       items: items, subtotal: items.reduce(function (a, i) { return a + i.price * i.q; }, 0), shipping: null,
       name: d.name, email: d.email, tel: d.tel, zip: d.zip, pref: d.pref, addr: d.addr,
       gift: !!d.gift, gift_name: d.gift_name || '', gift_addr: d.gift_addr || '', noshi: d.noshi || 'なし',
@@ -1892,7 +1896,7 @@ window.SSAPI = (function () {
     };
     list.unshift(o); set(K.orders, list);
     log('line', '玉垣さん', '🍅 新しいご注文', '受付番号 ' + o.no + '\n' + itemsText(o) + '\n小計 ' + yen(o.subtotal) + '（送料別）\nお届け先：' + (o.gift ? '贈りもの・' : '') + o.pref + '\n希望：' + o.date + '／' + o.time + '\n▶ 管理画面で見る\n' + adminURL() + o.no, o.no);
-    log('mail', o.email, '【SOLE SPROUT】ご注文ありがとうございます', o.name + ' 様\n\nご注文を承りました。\n受付番号：' + o.no + '\n\n' + itemsText(o) + '\n小計：' + yen(o.subtotal) + '（送料は確定後にお知らせします）\n\n収穫の状況を見て、発送の際にあらためてご連絡します。\n\nSOLE SPROUT（加古川市志方町）', o.no);
+    log('mail', o.email, '【SOLE SPROUT】ご注文ありがとうございます', o.name + ' 様\n\nご注文を承りました。\n受付番号：' + o.no + '\n\n' + itemsText(o) + '\n小計：' + yen(o.subtotal) + '（送料は確定後にお知らせします）\n\nご注文から3日以内に発送し、発送の際にあらためてご連絡します（収穫期間外のご注文は、収穫が始まりしだい発送します）。\n\nSOLE SPROUT（加古川市志方町）', o.no);
     return { order: o };
   }
   function updateOrder(no, patch) {
@@ -1973,9 +1977,9 @@ window.SSAPI = (function () {
   function seed() {
     if (LIVE) return;
     var S = [
-      { cart: [{ id: 'ai', v: 1, q: 1 }], name: '加古川 花子', email: 'hanako@example.com', tel: '090-1111-2222', zip: '675-0001', pref: '兵庫県', addr: '加古川市尾上町 1-2-3', time: '午前中' },
-      { cart: [{ id: 'gift', v: 0, q: 2 }], name: '志方 一郎', email: 'ichiro@example.com', tel: '080-3333-4444', zip: '150-0001', pref: '東京都', addr: '渋谷区神宮前 4-5-6', gift: true, gift_name: '東京 次郎', gift_addr: '東京都世田谷区 7-8-9', noshi: '御歳暮', time: '14〜16時' },
-      { cart: [{ id: 'wake', v: 0, q: 1 }, { id: 'ai', v: 0, q: 1 }], name: '高砂 三郎', email: 'saburo@example.com', tel: '070-5555-6666', zip: '530-0001', pref: '大阪府', addr: '大阪市北区梅田 1-1', message: 'トマトソース用です' }
+      { cart: [{ id: 'ai', v: 0, q: 1 }], name: '加古川 花子', email: 'hanako@example.com', tel: '090-1111-2222', zip: '675-0001', pref: '兵庫県', addr: '加古川市尾上町 1-2-3', time: '午前中' },
+      { cart: [{ id: 'big', v: 0, q: 2 }], name: '志方 一郎', email: 'ichiro@example.com', tel: '080-3333-4444', zip: '150-0001', pref: '東京都', addr: '渋谷区神宮前 4-5-6', gift: true, gift_name: '東京 次郎', gift_addr: '東京都世田谷区 7-8-9', noshi: '御歳暮', time: '14〜16時' },
+      { cart: [{ id: 'big', v: 0, q: 1 }, { id: 'ai', v: 0, q: 1 }], name: '高砂 三郎', email: 'saburo@example.com', tel: '070-5555-6666', zip: '530-0001', pref: '大阪府', addr: '大阪市北区梅田 1-1', message: 'トマトソース用です' }
     ];
     S.forEach(function (d) { createOrder(d); });
     /* 見本の注文に、数分ずつずらした受付時刻を付ける（1件目・2件目…が受付順に並ぶように） */
@@ -1983,6 +1987,96 @@ window.SSAPI = (function () {
     list.slice(0, S.length).reverse().forEach(function (o, i) { o.created = new Date(base + i * 7 * 60000).toISOString(); o.history[0].at = o.created; });
     set(K.orders, list);
   }
+  /* ---------- 収量（収穫の記録と見込み） ----------
+     記録＝{ d:'2026-10-21', big:70, mini:50 }（kg）。見込み＝記録のある日は記録、記録のない収穫日は「直近3回の平均」で数える。
+     前年比は記録どうし（実績だけ）で比べる。去年の同じ時期に記録が無ければ出さない */
+  var HK = 'ss-demo-harvest-v1', hcache = null;
+  function hconf(c) { return Object.assign({ days: [1, 3, 5], big: 0, mini: 0 }, SS().harvest || {}, c || {}); }
+  function hlocal() { var v = null; try { v = JSON.parse(localStorage.getItem(HK)); } catch (e) {} return { records: (v && v.records) || [], conf: hconf(v && v.conf) }; }
+  function hstore(h) { try { localStorage.setItem(HK, JSON.stringify({ records: h.records, conf: h.conf })); } catch (e) {} }
+  function happly(j) { hcache = { records: j.records || [], conf: hconf(j.conf), at: j.at || null }; return hcache; }
+  function loadHarvest() {
+    if (!LIVE) return Promise.resolve(hlocal());
+    return fetch('/api/harvest', { cache: 'no-store', credentials: 'same-origin' }).then(function (r) { return r.json(); })
+      .then(happly).catch(function () { return hcache || { records: [], conf: hconf() }; });
+  }
+  var kg = function (v) { v = Number(v); return isFinite(v) && v >= 0 && v <= 10000 ? Math.round(v * 10) / 10 : null; };
+  function cleanRows(rows) {
+    var out = [], bad = [];
+    rows.forEach(function (r) {
+      var d = String(r.d || '').trim(), b = kg(r.big), m = kg(r.mini);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(d) || isNaN(new Date(d + 'T00:00:00')) || b == null || m == null) bad.push(d || '?'); else out.push({ d: d, big: b, mini: m });
+    });
+    return { rows: out, bad: bad };
+  }
+  function saveHarvest(rows) {
+    var c = cleanRows(rows); if (c.bad.length) return { error: '日付か数字が正しくない行があります：' + c.bad.join('・') };
+    if (LIVE) { var r = call('POST', '/api/harvest', { rows: c.rows }); if (r.harvest) happly(r.harvest); return r.error ? { error: r.error } : { ok: c.rows.length }; }
+    var h = hlocal(), map = {}; h.records.forEach(function (x) { map[x.d] = x; }); c.rows.forEach(function (x) { map[x.d] = x; });
+    h.records = Object.keys(map).sort().map(function (k) { return map[k]; }); hstore(h); return { ok: c.rows.length };
+  }
+  function deleteHarvest(d) {
+    if (LIVE) { var r = call('POST', '/api/harvest', { del: d }); if (r.harvest) happly(r.harvest); return; }
+    var h = hlocal(); h.records = h.records.filter(function (x) { return x.d !== d; }); hstore(h);
+  }
+  function setHarvestConf(c) {
+    if (LIVE) { var r = call('POST', '/api/harvest/conf', c); if (r.harvest) happly(r.harvest); return r.error ? { error: r.error } : { ok: true }; }
+    var h = hlocal(); h.conf = hconf(Object.assign({}, h.conf, c)); hstore(h); return { ok: true };
+  }
+  function harvestData() { return LIVE ? (hcache || { records: [], conf: hconf() }) : hlocal(); }
+
+  function dstr(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function day0(d) { var x = new Date(d); x.setHours(0, 0, 0, 0); return x; }
+  function plus(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
+  function lastYear(d) { var x = new Date(d); x.setFullYear(x.getFullYear() - 1); return x; }
+  function inSeason(d) {
+    var s = SS().season, md = (d.getMonth() + 1) * 100 + d.getDate(), a = s.start[0] * 100 + s.start[1], b = s.end[0] * 100 + s.end[1];
+    return a <= b ? (md >= a && md <= b) : (md >= a || md <= b);
+  }
+  /* 今のシーズン（期間外なら、終わったばかりのシーズン） */
+  function seasonOf(t) {
+    var s = SS().season, wrap = s.end[0] * 100 + s.end[1] < s.start[0] * 100 + s.start[1];
+    var st = new Date(t.getFullYear(), s.start[0] - 1, s.start[1]);
+    if (st > t) st = new Date(t.getFullYear() - 1, s.start[0] - 1, s.start[1]);
+    var en = new Date(st.getFullYear() + (wrap ? 1 : 0), s.end[0] - 1, s.end[1]);
+    return { from: st, to: en };
+  }
+  function harvestStats(h, now) {
+    h = h || harvestData(); now = now || new Date();
+    var today = day0(now), cf = h.conf, days = cf.days || [], map = {};
+    h.records.forEach(function (r) { map[r.d] = r; });
+    /* 1回あたりの量：直近3週間の記録のうち新しい3回の平均。記録がなければ管理画面の目安 */
+    var recent = h.records.filter(function (r) { var d = new Date(r.d + 'T00:00:00'); return d <= today && d > plus(today, -21); })
+      .sort(function (a, b) { return a.d < b.d ? 1 : -1; }).slice(0, 3);
+    var rate = recent.length ? { big: recent.reduce(function (a, r) { return a + r.big; }, 0) / recent.length, mini: recent.reduce(function (a, r) { return a + r.mini; }, 0) / recent.length, basis: 'records', n: recent.length }
+      : { big: +cf.big || 0, mini: +cf.mini || 0, basis: 'conf', n: 0 };
+    function span(from, to) {     /* from〜to の見込み（記録＋まだの収穫日×1回あたりの量）と実績 */
+      var o = { from: from, to: to, big: 0, mini: 0, actBig: 0, actMini: 0, rec: 0, est: 0 };
+      for (var d = new Date(from); d <= to; d = plus(d, 1)) {
+        var r = map[dstr(d)];
+        if (r) { o.big += r.big; o.mini += r.mini; o.actBig += r.big; o.actMini += r.mini; o.rec++; }
+        else if (inSeason(d) && days.indexOf(d.getDay()) >= 0) { o.big += rate.big; o.mini += rate.mini; o.est++; }
+      }
+      o.total = o.big + o.mini; o.act = o.actBig + o.actMini; return o;
+    }
+    function actual(from, to) {
+      var a = 0, n = 0; for (var d = new Date(from); d <= to; d = plus(d, 1)) { var r = map[dstr(d)]; if (r) { a += r.big + r.mini; n++; } }
+      return { kg: a, n: n };
+    }
+    function yoy(from) {           /* 期間の初め〜今日の実績を、去年の同じ日付どうしで比べる */
+      var cur = actual(from, today), prev = actual(lastYear(from), lastYear(today));
+      if (!cur.n || !prev.n || !prev.kg) return null;
+      return { pct: (cur.kg - prev.kg) / prev.kg * 100, kg: cur.kg - prev.kg, prev: prev.kg, cur: cur.kg };
+    }
+    var ws = plus(today, -((today.getDay() + 6) % 7)), ms = new Date(today.getFullYear(), today.getMonth(), 1), se = seasonOf(today);
+    var week = span(ws, plus(ws, 6)), month = span(ms, new Date(today.getFullYear(), today.getMonth() + 1, 0)), season = span(se.from, se.to);
+    week.yoy = yoy(ws); month.yoy = yoy(ms); season.yoy = yoy(se.from);
+    var last = h.records.filter(function (r) { return r.d <= dstr(today); }).sort(function (a, b) { return a.d < b.d ? 1 : -1; })[0] || null;
+    var next = null;
+    for (var i = map[dstr(today)] ? 1 : 0; i < 120 && days.length; i++) { var nd = plus(today, i); if (inSeason(nd) && days.indexOf(nd.getDay()) >= 0) { next = nd; break; } }
+    return { on: inSeason(today), rate: rate, days: days, last: last, next: next, week: week, month: month, season: season, at: h.at || null };
+  }
+
   function reset() { if (LIVE) { call('POST', '/api/reset'); return; } [K.orders, K.stock, K.log].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} }); }
 
   return {
@@ -1996,10 +2090,11 @@ window.SSAPI = (function () {
     logs: function () { return get(K.log, []); },
     shipCSV: shipCSV, importTracking: importTracking,
     conf: conf, setConf: function (c) { if (LIVE) { call('POST', '/api/conf', c); return; } set(K.conf, Object.assign(conf(), c)); },
-    /* live：Stripeの支払い画面を作ってURLを返す／支払い済みかをすぐ確かめる */
+    /* live：Squareの支払い画面を作ってURLを返す／支払い済みかをすぐ確かめる */
     checkout: function (d) { return call('POST', '/api/checkout', d); },
-    confirm: function () { if (LIVE) call('GET', '/api/confirm'); },
-    stripeState: function () { return stripeState; },
+    confirm: function (no) { if (LIVE) call('GET', '/api/confirm' + (no ? '?no=' + encodeURIComponent(no) : '')); },
+    payEnv: function () { return payEnv; },   /* 'sandbox'＝テスト決済／'production'＝本番 */
+    paymentState: function () { return payState; },
     channels: function () { return channels; },
     needLogin: function () { return LIVE && ADMIN && login.need; },
     authInfo: function () { return login.auth || {}; },
@@ -2011,6 +2106,8 @@ window.SSAPI = (function () {
     },
     logout: function () { call('POST', '/api/logout'); login.need = true; },
     testNotify: function () { if (LIVE) call('POST', '/api/test-notify'); },
+    loadHarvest: loadHarvest, harvestData: harvestData, harvestStats: harvestStats,
+    saveHarvest: saveHarvest, deleteHarvest: deleteHarvest, setHarvestConf: setHarvestConf,
     seed: seed, reset: reset,
     /* 別のタブ（ショップ⇔管理画面）で変わったら知らせる */
     onChange: function (cb) { subs.push(cb); addEventListener('storage', function (e) { if (e.key && e.key.indexOf('ss-demo-') === 0) cb(e.key); }); }
@@ -2146,7 +2243,7 @@ window.SSAPI = (function () {
   /* ---------- 在庫（管理画面の売り切れスイッチ） ---------- */
   var API = window.SSAPI;
   function avail(id, v) { return API ? API.availability(id, v) : { ok: true, label: '', short: '' }; }
-  function defVar(p) { return p.def != null ? p.def : (p.id === 'ai' ? 1 : p.cat === 'goods' ? 1 : 0); }
+  function defVar(p) { var d = p.def != null ? p.def : (p.cat === 'goods' ? 1 : 0); return d < p.variants.length ? d : 0; }
   function firstOk(p) {
     var d = defVar(p); if (avail(p.id, d).ok) return d;
     for (var i = 0; i < p.variants.length; i++) if (avail(p.id, i).ok) return i;
@@ -2400,7 +2497,7 @@ window.SSAPI = (function () {
 
   /* ================= 一年の輪 ================= */
   function drawRing(el) {
-    var col = { 1: '#E0452A', 2: '#E0452A', 3: '#E0452A', 4: '#E0452A', 5: '#E0452A', 6: '#E0452A', 7: '#E0452A', 8: '#E8D9B5', 9: '#8DC63F', 10: '#3E7D2A', 11: '#3E7D2A', 12: '#E0452A' };
+    var col = { 1: '#E0452A', 2: '#E0452A', 3: '#E0452A', 4: '#E0452A', 5: '#E0452A', 6: '#E0452A', 7: '#E0452A', 8: '#E8D9B5', 9: '#8DC63F', 10: '#E0452A', 11: '#E0452A', 12: '#E0452A' };
     var R = 112, C = 2 * Math.PI * R, segLen = C / 12, gap = 3, html = '';
     for (var m = 1; m <= 12; m++) {
       var off = -(m - 1) * segLen;
@@ -2409,7 +2506,7 @@ window.SSAPI = (function () {
       html += '<text x="' + tx.toFixed(1) + '" y="' + (ty + 5).toFixed(1) + '" text-anchor="middle" font-size="15" font-family="Shippori Mincho B1,serif" font-weight="800" fill="#1E2B1B">' + m + '<tspan font-size="10" font-family="Zen Maru Gothic,sans-serif" font-weight="700">月</tspan></text>';
     }
     var mo = today.getMonth() + 1, frac = (mo - 1 + (today.getDate() - 1) / 31) / 12, a2 = frac * 2 * Math.PI - Math.PI / 2;
-    var stage = season.on ? ['収穫の季節', '赤い実を毎朝摘んでいます'] : mo === 8 ? ['準備の季節', 'ハウスを整えています'] : mo === 9 ? ['定植の季節', '苗を植え付けています'] : ['育成の季節', '苗がぐんぐん育っています'];
+    var stage = season.on ? ['収穫の季節', '赤い実を毎朝摘んでいます'] : mo === 8 ? ['準備の季節', 'ハウスを整えています'] : ['定植の季節', '苗を植え付けて育てています'];
     html += '<circle class="mk" cx="' + (Math.cos(a2) * R).toFixed(1) + '" cy="' + (Math.sin(a2) * R).toFixed(1) + '" r="11" fill="#fff" stroke="#1E2B1B" stroke-width="4"/>';
     html += '<text y="-22" text-anchor="middle" font-size="13" font-family="Zen Maru Gothic,sans-serif" font-weight="700" fill="#4E5A49">いまは</text>' +
       '<text y="10" text-anchor="middle" font-size="24" font-family="Zen Maru Gothic,sans-serif" font-weight="900" fill="#2B6324">' + stage[0] + '</text>' +
@@ -2634,8 +2731,8 @@ window.SSAPI = (function () {
     var d = formData(coForm);
     d.gift = d.gift === 'on'; if (!d.gift) d.noshi = 'なし';
     d.cart = cart.map(function (c) { return { id: c.id, v: c.v, q: c.q }; });
-    /* 台帳に記録（デモ：このブラウザ／本番：API → Stripeの支払い画面） */
-    if (API && API.mode === 'live') {          /* テスト決済：Stripeの支払い画面へ移る */
+    /* 台帳に記録（デモ：このブラウザ／本番：API → Squareの支払い画面） */
+    if (API && API.mode === 'live') {          /* テスト決済：Squareの支払い画面へ移る */
       var sub = $('#coForm .submit'); sub.disabled = true; sub.firstChild.nodeValue = '支払い画面を準備中…';
       setTimeout(function () {
         var rr = API.checkout(d);
@@ -2652,7 +2749,7 @@ window.SSAPI = (function () {
     cart = []; saveCart(); scrollTo(0, 0);
     if (cur.name === 'shop' || cur.name === 'home') refreshStock();
   });
-  if (API && API.mode === 'live') { var sb = $('#coForm .submit'); sb.firstChild.nodeValue = 'お支払いへ進む'; $('.pay-wip p').innerHTML = '<b>テスト決済モードです。</b>次の画面（Stripe）でカード情報を入力します。テスト環境のため、実際の請求はありません。'; }
+  if (API && API.mode === 'live') { var sb = $('#coForm .submit'); sb.firstChild.nodeValue = 'お支払いへ進む'; $('.pay-wip p').innerHTML = API.payEnv() === 'production' ? '<b>お支払いは次の画面で。</b>決済サービス「Square」の安全な画面で、カード・Apple Pay・Google Payでお支払いいただけます。' : '<b>テスト決済モードです。</b>次の画面（Square）でカード情報を入力します。テスト環境のため、実際の請求はありません。'; $$('.pay-list .pay em').forEach(function (e) { e.textContent = '利用できます'; }); }
   function adminHref() { return /src\.html$/.test(location.pathname) ? 'admin.html' : 'admin/'; }
   $$('#bizForm,#ctForm').forEach(function (f) {
     f.addEventListener('submit', function (e) {
@@ -2695,13 +2792,14 @@ window.SSAPI = (function () {
     var page = $('#p-' + r.name);
     if (r.name === 'item' && !renderItem(r.param)) return;
     if (r.name !== 'item') document.title = page.dataset.title;
-    if (r.name === 'checkout' && r.done) {     /* Stripeの支払いが終わって戻ってきた */
-      if (API) API.confirm();
+    if (r.name === 'checkout' && r.done) {     /* Squareの支払いが終わって戻ってきた */
+      if (API) API.confirm(r.no);
       var od = API && API.mode === 'live' ? { status: 'paid' } : API && API.getOrder(r.no);
       $('.co-grid').hidden = true; $('#coSteps').hidden = true; $('#coDone').hidden = false;
       $('#orderNo').textContent = r.no || '';
-      $('#demoNote').innerHTML = !od ? '' : od.status === 'pending' ? 'お支払いの確認中です。数秒後に管理画面に反映されます。' :
-        '※ テスト決済です（Stripeのテスト環境・実際の請求はありません）。<br><a href="' + adminHref() + '#/orders/' + r.no + '" target="_blank" rel="noopener" style="text-decoration:underline">管理画面で見る</a>';
+      var testNote = '※ テスト決済です（Squareのテスト環境・実際の請求はありません）。<br><a href="' + adminHref() + '#/orders/' + r.no + '" target="_blank" rel="noopener" style="text-decoration:underline">管理画面で見る</a>';
+      $('#demoNote').innerHTML = !od ? '' : od.status === 'pending' ? 'お支払いの確認中です。数秒後に反映されます。' :
+        API.payEnv() === 'production' ? 'ご注文ありがとうございます。確認のメールをお送りしました。' : testNote;
       cart = []; saveCart();
     } else if (r.name === 'checkout') { $('.co-grid').hidden = false; $('#coSteps').hidden = false; $('#coDone').hidden = true; renderSummary(); }
     $$('.gnav a').forEach(function (a) { a.classList.toggle('on', a.dataset.nav === r.name || (r.name === 'item' && a.dataset.nav === 'shop')); });
@@ -2778,6 +2876,38 @@ window.SSAPI = (function () {
   /* Netlifyのバッジがある間は追従バーを左に寄せる */
   var nlTries = 0, nlT = setInterval(function () { if (document.getElementById('nl-badge-frame')) { document.documentElement.classList.add('nl'); clearInterval(nlT); } if (++nlTries > 20) clearInterval(nlT); }, 500);
 
+  /* ================= いまの収穫量（飲食店・企業向け。管理画面の「収量」で入れた記録から） ================= */
+  var DOW = ['日', '月', '火', '水', '木', '金', '土'], hvAt = 0;
+  function kgf(v) { return Math.round(v).toLocaleString('ja-JP'); }
+  function mdw(d) { d = typeof d === 'string' ? new Date(d + 'T00:00:00') : d; return '<span class="n">' + (d.getMonth() + 1) + '/' + d.getDate() + '</span>（' + DOW[d.getDay()] + '）'; }
+  function yoyHTML(y) {
+    if (!y) return '';
+    var up = y.pct >= 0;
+    return '<span class="hv-y ' + (up ? 'up' : 'down') + '">前年比 <span class="n">' + (up ? '+' : '−') + Math.abs(Math.round(y.pct)) + '%</span><span class="hv-yk">（<span class="n">' + (up ? '+' : '−') + kgf(Math.abs(y.kg)) + '</span>kg）</span></span>';
+  }
+  function hvCard(label, p, cls) {
+    return '<div class="hv-c' + (cls ? ' ' + cls : '') + '"><small>' + label + '</small><p class="hv-num"><b class="n">' + kgf(p.total) + '</b><em>kg</em></p>' +
+      '<p class="hv-br"><span>大玉 <span class="n">' + kgf(p.big) + '</span>kg</span><span>ミニ <span class="n">' + kgf(p.mini) + '</span>kg</span></p>' + yoyHTML(p.yoy) + '</div>';
+  }
+  function renderHarvest(h) {
+    var st = API.harvestStats(h), b = $('#hvBoard'), m = $('#hvMini'), sm = SS.season.start[0], em = SS.season.end[0];
+    var days = st.days.slice().sort(function (a, c) { return ((a + 6) % 7) - ((c + 6) % 7); }).map(function (d) { return DOW[d]; }).join('・');
+    if (m) { m.hidden = !st.on; m.innerHTML = '<i></i>今週の収穫見込み <b class="n">' + kgf(st.week.total) + '</b>kg<svg><use href="#i-arrow"/></svg>'; }
+    if (!b) return;
+    b.hidden = false;
+    b.innerHTML = '<div class="hv-hd"><div><p class="lbl"><svg><use href="#i-sprout"/></svg>Harvest now</p><h2 class="ttl sm">いまの収穫量</h2></div>' +
+      '<p class="hv-live"><i></i>' + (st.on ? '収穫中・毎週 ' + days : '今季の収穫は' + sm + '月から') + '</p></div>' +
+      (st.last ? '<div class="hv-last"><small>最新の収穫 ' + mdw(st.last.d) + '</small><p><span>大玉</span><b class="n">' + kgf(st.last.big) + '</b><em>kg</em><span>ミニ</span><b class="n">' + kgf(st.last.mini) + '</b><em>kg</em></p></div>' : '') +
+      '<div class="hv-grid">' + (st.on ? hvCard('今週の見込み', st.week) + hvCard('今月の見込み', st.month) + hvCard('今シーズン（' + sm + '月〜' + em + '月）の見込み', st.season, 'wide')
+        : hvCard('前シーズン（' + sm + '月〜' + em + '月）の収穫量', { total: st.season.act, big: st.season.actBig, mini: st.season.actMini, yoy: st.season.yoy }, 'wide')) + '</div>' +
+      '<p class="note">' + (st.on && st.next ? '次の収穫は ' + mdw(st.next) + '。' : '') + '見込みは、直近の収穫量がこの先も続いた場合の目安です（天候で変わります）。決まった量を続けてご用意したい方は、下のフォームからご相談ください。</p>';
+    hvAt = Date.now();
+  }
+  function loadHarvest(force) {
+    if (!API || !API.loadHarvest || (!force && Date.now() - hvAt < 60000)) return;
+    API.loadHarvest().then(renderHarvest);
+  }
+
   /* ================= 売り切れの反映 ================= */
   function refreshStock() {
     renderGrid($('#featGrid'), SS.featured.map(prod));
@@ -2794,6 +2924,7 @@ window.SSAPI = (function () {
   seasonTexts();
   phraseWrap(document); numify(document.body);
   updateBadge(); renderCart();
+  loadHarvest(true); setInterval(function () { if (cur.name === 'business' || cur.name === 'home') loadHarvest(); }, 60000);
   observe(document);
   route();
 })();
