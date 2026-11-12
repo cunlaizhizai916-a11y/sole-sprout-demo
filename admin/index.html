@@ -302,8 +302,32 @@ window.SS = {
      days＝収穫する曜日（0=日 1=月 … 6=土）。管理画面の「収量」で変えられる */
   harvest: { days: [1, 3, 5], big: 70, mini: 50 },
 
-  /* クール便（冷蔵）で送る期間（月, 日）。この期間外は常温便。日付は仮・玉垣さんと決める */
-  cool: { from: [5, 20], to: [7, 31] },
+  /* クール便（冷蔵）で送る期間（月, 日）。この期間外は常温便。2026-11-01 村瀬さん決定：5/20〜10/20 */
+  cool: { from: [5, 20], to: [10, 20] },
+
+  /* 送料＝ヤマト運輸の契約運賃（税抜）。2026-10-22 見積・有効は見積作成日から3ヶ月（2027-01-22まで）。発送元は兵庫（関西）
+     2026-11-01 玉垣さん：送料はトマトの価格に込み（included:true）→ お客さんの送料は0円。運賃は農園の負担として管理画面に出す
+     extra＝地域ごとに1箱あたり追加でいただく額（税込）。例 { '北海道': 1000 }。included:false にすると運賃＋消費税をそのまま請求する */
+  ship: {
+    included: true, extra: {},
+    quoted: '2026-10-22', until: '2027-01-22', tax: 0.1,
+    sizes: [60, 80, 100, 120, 140, 160, 180, 200],
+    regions: [
+      ['北海道', '北海道', [1740, 2000, 2280, 2830, 3460, 3800, 6200, 7640]],
+      ['北東北', '青森県,岩手県,秋田県', [950, 1210, 1490, 1980, 2560, 2910, 4350, 5550]],
+      ['南東北', '宮城県,山形県,福島県', [830, 1090, 1370, 1850, 2410, 2760, 4200, 5400]],
+      ['関東', '茨城県,栃木県,群馬県,埼玉県,千葉県,東京都,神奈川県,山梨県', [710, 970, 1250, 1720, 2270, 2620, 3820, 4660]],
+      ['信越', '新潟県,長野県', [710, 970, 1250, 1720, 2270, 2620, 3820, 4660]],
+      ['北陸', '富山県,石川県,福井県', [600, 860, 1140, 1600, 2140, 2490, 3090, 3810]],
+      ['中部', '岐阜県,静岡県,愛知県,三重県', [600, 860, 1140, 1600, 2140, 2490, 3090, 3810]],
+      ['関西', '滋賀県,京都府,大阪府,兵庫県,奈良県,和歌山県', [600, 860, 1140, 1600, 2140, 2490, 3090, 3810]],
+      ['中国', '鳥取県,島根県,岡山県,広島県,山口県', [600, 860, 1140, 1600, 2140, 2490, 3090, 3810]],
+      ['四国', '徳島県,香川県,愛媛県,高知県', [600, 860, 1140, 1600, 2140, 2490, 3090, 3810]],
+      ['九州', '福岡県,佐賀県,長崎県,熊本県,大分県,宮崎県,鹿児島県', [710, 970, 1250, 1720, 2270, 2620, 3820, 4660]],
+      ['沖縄', '沖縄県', [1320, 1880, 2460, 3050, 3660, 4250, 6550, 8050]]
+    ],
+    cool: [250, 300, 400, 650]   /* クール便の付加料金（60〜120サイズ） */
+  },
 
   links: {
     line: 'https://lin.ee/u4GqhUS',
@@ -320,7 +344,7 @@ window.SS = {
   /* 2026-10-22 玉垣さん決定：販売は 大玉トマト1箱4kg・ミニトマト1箱3kg の2つ。定期便は当面なし */
   products: [
     {
-      id: 'ai', name: 'AI・愛トマト', kind: 'ミニトマト 1箱 約3kg', cat: 'mini',
+      id: 'ai', name: 'AI・愛トマト', kind: 'ミニトマト 1箱 約3kg', cat: 'mini', box: 80,
       imgs: ['box', 'pile', 'truss'], badge: 'いちばん人気', seasonal: true,
       lead: '愛情×データ栽培で育てた、濃い味のミニトマト。',
       desc: 'ハウスの環境をデータで見守りながら、毎日この手で確かめて育てました。酸味と甘味のバランス、そして食感にこだわっています。',
@@ -329,7 +353,7 @@ window.SS = {
       specs: [['内容', '兵庫県産 ミニトマト 約3kg'], ['産地', '兵庫県加古川市志方町原'], ['栽培', '養液栽培（慣行栽培）'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
     },
     {
-      id: 'big', name: '志方の大玉トマト', kind: '大玉トマト 1箱 約4kg', cat: 'big',
+      id: 'big', name: 'モーツァルトマト（大玉）', kind: '大玉トマト 1箱 約4kg', cat: 'big', box: 80,
       imgs: ['bigred', 'crate', 'vines'], badge: '大玉', seasonal: true,
       lead: 'かぶりつきたくなる、ずっしりの一玉。',
       desc: 'ひと房ずつ手で摘み取った大玉トマト。スライスしてシンプルに、塩ひとつまみで。',
@@ -350,6 +374,26 @@ window.SS = {
     { d: '2026.01.30', tag: '募集', t: 'アルバイトさんを募集しています（週1日・1時間から）', u: 'https://www.instagram.com/p/DUIqP9TD_dN/' },
     { d: '2025.11.27', tag: '収穫', t: '本格的な収穫シーズンを迎えました', u: 'https://www.instagram.com/p/DRk19bWE9NB/' }
   ]
+};
+
+/* 送料の計算（ショップ・管理画面で共通。本番サーバーは prod/src/store.js の shipFee が同じ計算をする）
+   items＝[{id, q}]、pref＝お届け先の都道府県、d＝注文日。運賃は1箱ごとに（運賃＋クール料金）×(1+税) を四捨五入して足す */
+window.SS.coolOn = function (d) {
+  var c = window.SS.cool; if (!c) return false; d = d || new Date();
+  var md = (d.getMonth() + 1) * 100 + d.getDate(), a = c.from[0] * 100 + c.from[1], b = c.to[0] * 100 + c.to[1];
+  return a <= b ? (md >= a && md <= b) : (md >= a || md <= b);
+};
+window.SS.shipFee = function (items, pref, d) {
+  var S = window.SS, sh = S.ship, r = sh.regions.filter(function (x) { return x[1].split(',').indexOf(pref) >= 0; })[0];
+  if (!r) return null;
+  var cool = S.coolOn(d), cost = 0, boxes = 0, add = (sh.extra || {})[r[0]] || 0;
+  for (var k = 0; k < items.length; k++) {
+    var it = items[k], p = S.products.filter(function (x) { return x.id === it.id; })[0], si = sh.sizes.indexOf((p && p.box) || 80);
+    if (si < 0 || (cool && si >= sh.cool.length)) return null;
+    cost += Math.round((r[2][si] + (cool ? sh.cool[si] : 0)) * (1 + sh.tax)) * it.q; boxes += it.q;
+  }
+  /* fee＝お客さんにいただく送料／cost＝ヤマトに払う運賃（税込の目安） */
+  return { fee: sh.included ? add * boxes : cost, cost: cost, region: r[0], cool: cool, boxes: boxes };
 };
 </script>
 <script>/* ============================================================
@@ -442,22 +486,31 @@ window.SSAPI = (function () {
 
   /* ---------- 注文 ---------- */
   function newNo(t) { return 'SS' + t.getFullYear() + pad(t.getMonth() + 1) + pad(t.getDate()) + '-' + String(Math.floor(Math.random() * 900) + 100); }
+  function moneyText(o) {
+    if (o.shipping === 0) return '合計 ' + yen(o.total != null ? o.total : o.subtotal) + '（送料込み）';
+    if (o.shipping == null) return '小計 ' + yen(o.subtotal) + '（送料別）';
+    var sh = o.ship || {};
+    return '小計 ' + yen(o.subtotal) + '／送料 ' + yen(o.shipping) + '（' + (sh.region || '') + (sh.cool ? '・クール便' : '') + '・' + (sh.boxes || 1) + '箱）\n合計 ' + yen(o.total != null ? o.total : o.subtotal + o.shipping);
+  }
   function createOrder(d) {
     var t = new Date(), list = get(K.orders, []);
     var items = d.cart.map(function (c) { var p = prod(c.id), va = p.variants[c.v]; return { id: c.id, v: c.v, name: p.name, label: va.label, price: va.price, q: c.q, box: p.box || '80' }; });
     var bad = items.filter(function (i) { return !availability(i.id, i.v).ok; });
     if (bad.length) return { error: bad.map(function (i) { return i.name + '（' + i.label + '）'; }).join('・') + ' は、いまご注文いただけません' };
+    var gift = !!d.gift, sh = SS().shipFee(items, gift ? d.gift_pref : d.pref, t);
+    if (!sh) return { error: 'お届け先の都道府県を確認してください' };
+    var subtotal = items.reduce(function (a, i) { return a + i.price * i.q; }, 0);
     var o = {
       no: newNo(t), created: t.toISOString(), status: 'paid', pay: MODE === 'demo' ? 'デモ（支払いなし）' : 'Square',
-      items: items, subtotal: items.reduce(function (a, i) { return a + i.price * i.q; }, 0), shipping: null,
+      items: items, subtotal: subtotal, shipping: sh.fee, total: subtotal + sh.fee, ship: { region: sh.region, cool: sh.cool, boxes: sh.boxes, cost: sh.cost },
       name: d.name, email: d.email, tel: d.tel, zip: d.zip, pref: d.pref, addr: d.addr,
-      gift: !!d.gift, gift_name: d.gift_name || '', gift_addr: d.gift_addr || '', noshi: d.noshi || 'なし',
+      gift: gift, gift_name: gift ? d.gift_name || '' : '', gift_zip: gift ? d.gift_zip || '' : '', gift_pref: gift ? d.gift_pref || '' : '', gift_addr: gift ? d.gift_addr || '' : '', noshi: gift ? d.noshi || 'なし' : 'なし',
       date: d.date || '指定なし', time: d.time || '指定なし', message: d.message || '',
       memo: '', tracking: '', shipped_at: null, history: [{ at: t.toISOString(), s: 'paid' }]
     };
     list.unshift(o); set(K.orders, list);
-    log('line', '玉垣さん', '🍅 新しいご注文', '受付番号 ' + o.no + '\n' + itemsText(o) + '\n小計 ' + yen(o.subtotal) + '（送料別）\nお届け先：' + (o.gift ? '贈りもの・' : '') + o.pref + '\n希望：' + o.date + '／' + o.time + '\n▶ 管理画面で見る\n' + adminURL() + o.no, o.no);
-    log('mail', o.email, '【SOLE SPROUT】ご注文ありがとうございます', o.name + ' 様\n\nご注文を承りました。\n受付番号：' + o.no + '\n\n' + itemsText(o) + '\n小計：' + yen(o.subtotal) + '（送料は確定後にお知らせします）\n\nご注文から3日以内に発送し、発送の際にあらためてご連絡します（収穫期間外のご注文は、収穫が始まりしだい発送します）。\n\nSOLE SPROUT（加古川市志方町）', o.no);
+    log('line', '玉垣さん', '🍅 新しいご注文', '受付番号 ' + o.no + '\n' + itemsText(o) + '\n' + moneyText(o) + '\nお届け先：' + (o.gift ? '贈りもの・' + o.gift_pref : o.pref) + '\n希望：' + o.date + '／' + o.time + '\n▶ 管理画面で見る\n' + adminURL() + o.no, o.no);
+    log('mail', o.email, '【SOLE SPROUT】ご注文ありがとうございます', o.name + ' 様\n\nご注文を承りました。\n受付番号：' + o.no + '\n\n' + itemsText(o) + '\n' + moneyText(o) + '\n\nご注文から3日以内に発送し、発送の際にあらためてご連絡します（収穫期間外のご注文は、収穫が始まりしだい発送します）。\n\nSOLE SPROUT（加古川市志方町）', o.no);
     return { order: o };
   }
   function updateOrder(no, patch) {
@@ -511,17 +564,81 @@ window.SSAPI = (function () {
     return a <= b ? (md >= a && md <= b) : (md >= a || md <= b);
   }
   var TIME = { '午前中': '0812', '14〜16時': '1416', '16〜18時': '1618', '18〜20時': '1820', '19〜21時': '1921' };
-  function csvCell(v) { v = v == null ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
-  function shipCSV(nos) {
-    var c = conf(), rows = [['お客様管理番号', '送り状種類', 'クール区分', '出荷予定日', 'お届け予定日', '配達時間帯', 'お届け先電話番号', 'お届け先郵便番号', 'お届け先住所', 'お届け先名', '敬称', 'ご依頼主電話番号', 'ご依頼主郵便番号', 'ご依頼主住所', 'ご依頼主名', '品名1', '荷扱い1', '記事']];
-    var today = new Date(), ds = today.getFullYear() + '/' + pad(today.getMonth() + 1) + '/' + pad(today.getDate());
-    get(K.orders, []).filter(function (o) { return nos.indexOf(o.no) >= 0; }).forEach(function (o) {
-      var m = /(\d+)月(\d+)日/.exec(o.date), due = m ? today.getFullYear() + '/' + pad(m[1]) + '/' + pad(m[2]) : '';
-      rows.push([o.no, '0', coolNow(today) ? '2' : '0', ds, due, TIME[o.time] || '', o.tel, o.zip, (o.gift && o.gift_addr) ? o.gift_addr : o.pref + o.addr, (o.gift && o.gift_name) ? o.gift_name : o.name, '様',
-        c.tel, c.zip, c.addr, c.name, 'トマト（生鮮品）', 'ナマモノ', (o.noshi && o.noshi !== 'なし' ? 'のし：' + o.noshi : '')]);
-    });
-    return '﻿' + rows.map(function (r) { return r.map(csvCell).join(','); }).join('\r\n');
+  /* B2CSV-START（prod/test/test_b2csv.mjs がここだけ取り出して確かめる） */
+  /* B2クラウド「外部データから発行」の基本レイアウト（95列・Shift_JIS・取込み開始行は2行目）。列は newb2web_template1.xls と同じ順 */
+  var B2_HEAD = ["お客様管理番号","送り状種類","クール区分","伝票番号","出荷予定日","お届け予定日","配達時間帯","お届け先コード","お届け先電話番号","お届け先電話番号枝番","お届け先郵便番号","お届け先住所","お届け先アパートマンション名","お届け先会社・部門１","お届け先会社・部門２","お届け先名","お届け先名(ｶﾅ)","敬称","ご依頼主コード","ご依頼主電話番号","ご依頼主電話番号枝番","ご依頼主郵便番号","ご依頼主住所","ご依頼主アパートマンション","ご依頼主名","ご依頼主名(ｶﾅ)","品名コード１","品名１","品名コード２","品名２","荷扱い１","荷扱い２","記事","ｺﾚｸﾄ代金引換額（税込)","内消費税額等","止置き","営業所コード","発行枚数","個数口表示フラグ","請求先顧客コード","請求先分類コード","運賃管理番号","クロネコwebコレクトデータ登録","クロネコwebコレクト加盟店番号","クロネコwebコレクト申込受付番号１","クロネコwebコレクト申込受付番号２","クロネコwebコレクト申込受付番号３","お届け予定ｅメール利用区分","お届け予定ｅメールe-mailアドレス","入力機種","お届け予定ｅメールメッセージ","お届け完了ｅメール利用区分","お届け完了ｅメールe-mailアドレス","お届け完了ｅメールメッセージ","クロネコ収納代行利用区分","予備","収納代行請求金額(税込)","収納代行内消費税額等","収納代行請求先郵便番号","収納代行請求先住所","収納代行請求先住所（アパートマンション名）","収納代行請求先会社・部門名１","収納代行請求先会社・部門名２","収納代行請求先名(漢字)","収納代行請求先名(カナ)","収納代行問合せ先名(漢字)","収納代行問合せ先郵便番号","収納代行問合せ先住所","収納代行問合せ先住所（アパートマンション名）","収納代行問合せ先電話番号","収納代行管理番号","収納代行品名","収納代行備考","複数口くくりキー","検索キータイトル1","検索キー1","検索キータイトル2","検索キー2","検索キータイトル3","検索キー3","検索キータイトル4","検索キー4","検索キータイトル5","検索キー5","予備","予備","投函予定メール利用区分","投函予定メールe-mailアドレス","投函予定メールメッセージ","投函完了メール（お届け先宛）利用区分","投函完了メール（お届け先宛）e-mailアドレス","投函完了メール（お届け先宛）メールメッセージ","投函完了メール（ご依頼主宛）利用区分","投函完了メール（ご依頼主宛）e-mailアドレス","投函完了メール（ご依頼主宛）メールメッセージ"];
+  function b2Width(v) { var n = 0; for (var i = 0; i < v.length; i++) n += v.charCodeAt(i) < 0x80 ? 1 : 2; return n; }   // 半角1・全角2で数える
+  function b2Cut(v, max) { var o = '', n = 0; for (var i = 0; i < v.length; i++) { var w = v.charCodeAt(i) < 0x80 ? 1 : 2; if (n + w > max) break; o += v[i]; n += w; } return o; }
+  /* B2が受け付けない文字を直す：環境依存文字は NFKC で普通の文字へ（①→1・㈱→(株)）、JIS第三水準以降の主な字は近い字へ */
+  function b2Text(v) {
+    return String(v == null ? '' : v).normalize('NFKC').replace(/[\r\n\t]+/g, ' ').replace(/[〜~]/g, '～').replace(/[−–—]/g, '-').replace(/髙/g, '高').replace(/﨑/g, '崎').trim();
   }
+  function b2Tel(v) { return b2Text(v).replace(/[ー‐―－]/g, '-').replace(/[^\d-]/g, ''); }
+  /* 住所：B2はスペースとドットでエラーになる。最初の区切りより後ろは建物名の欄へ。長すぎる分も建物名の欄へ送る */
+  function b2Addr(v) {
+    var t = b2Text(v).replace(/(\d)[ー‐―－.．](?=\d)/g, '$1-'), m = /^(\S+)\s+(.+)$/.exec(t), main = m ? m[1] : t, sub = m ? m[2].replace(/\s+/g, '') : '';
+    main = main.replace(/[.．]/g, '');
+    if (b2Width(main) > 64) { var head = b2Cut(main, 64); sub = main.slice(head.length) + sub; main = head; }
+    return { main: main, sub: b2Cut(sub, 32), over: b2Width(sub) > 32 };
+  }
+  /* Shift_JIS の変換表をブラウザの TextDecoder から作る（JIS第一・第二水準と記号のみ。環境依存文字の区画は入れない） */
+  var sjisMap = null;
+  function sjisTable() {
+    if (sjisMap) return sjisMap;
+    sjisMap = {}; var dec = new TextDecoder('shift_jis'), i, t;
+    for (i = 0xA1; i <= 0xDF; i++) sjisMap[dec.decode(new Uint8Array([i]))] = [i];   // 半角カナ（見出しの「ｶﾅ」用）
+    var leads = [];
+    for (i = 0x81; i <= 0x84; i++) leads.push(i);
+    for (i = 0x88; i <= 0x9F; i++) leads.push(i);
+    for (i = 0xE0; i <= 0xEA; i++) leads.push(i);
+    leads.forEach(function (l) { for (t = 0x40; t <= 0xFC; t++) { if (t === 0x7F) continue; var ch = dec.decode(new Uint8Array([l, t])); if (ch.length === 1 && ch !== '\uFFFD' && !sjisMap[ch]) sjisMap[ch] = [l, t]; } });
+    return sjisMap;
+  }
+  function b2Bytes(text, bad) {
+    var map = sjisTable(), out = [];
+    Array.from(text).forEach(function (ch) {
+      var c = ch.codePointAt(0);
+      if (c < 0x80) { out.push(c); return; }
+      var b = map[ch];
+      if (b) { b.forEach(function (x) { out.push(x); }); return; }
+      if (bad) bad[ch] = 1;
+      out.push(0x81, 0xAC);   // 〓（B2の画面で直す印）
+    });
+    return new Uint8Array(out);
+  }
+  function csvCell(v) { v = v == null ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+  /* B2は囲みのない数字だけの欄を数値として読み、先頭の0を落とす（お客様コード 090… → 90…）。B2が書き出すCSVと同じく全欄を "…" で囲む */
+  function b2Cell(v) { return '"' + (v == null ? '' : String(v)).replace(/"/g, '""') + '"'; }
+  /* 必須の設定が足りなければ { error } を返す。問題なければ { bytes, warnings } */
+  function shipCSV(nos, now) {
+    var c = conf(), today = now || new Date(), ds = today.getFullYear() + '/' + pad(today.getMonth() + 1) + '/' + pad(today.getDate());
+    var need = [['tel', '電話番号'], ['zip', '郵便番号'], ['addr', '住所'], ['name', '名前'], ['billCode', 'お客様コード'], ['fareNo', '運賃管理番号']].filter(function (f) { return !String(c[f[0]] || '').trim(); }).map(function (f) { return f[1]; });
+    if (need.length) return { error: '「設定」の ' + need.join('・') + ' を入れてください（送り状に必須です）' };
+    var bill = b2Tel(c.billCode).replace(/-/g, ''), fare = b2Tel(c.fareNo).replace(/-/g, '');
+    if (!/^\d{10,12}$/.test(bill)) return { error: '「設定」のお客様コードは数字10〜12桁です' };
+    if (!/^\d{2}$/.test(fare)) return { error: '「設定」の運賃管理番号は数字2桁です（例：01）' };
+    var from = b2Addr(c.addr), warn = [], bad = {}, lines = [B2_HEAD.map(b2Cell).join(',')];
+    get(K.orders, []).filter(function (o) { return nos.indexOf(o.no) >= 0; }).forEach(function (o) {
+      var m = /(\d+)月(\d+)日/.exec(o.date), due = '';
+      if (m) { var y = today.getFullYear(); if (new Date(y, +m[1] - 1, +m[2], 23, 59) < today) y++; due = y + '/' + pad(m[1]) + '/' + pad(m[2]); }   // 12月に1月の指定は翌年
+      var g = o.gift && o.gift_name, cool = o.ship ? o.ship.cool : coolNow(today);
+      var boxes = o.ship ? o.ship.boxes : o.items.reduce(function (a, i) { return a + i.q; }, 0);
+      var to = b2Addr(g ? (o.gift_pref || '') + o.gift_addr : o.pref + o.addr), name = b2Text(g ? o.gift_name : o.name);
+      if (to.over) warn.push(o.no + ' の住所が長すぎます');
+      if (b2Width(name) > 32) warn.push(o.no + ' のお名前が長すぎます');
+      var row = new Array(B2_HEAD.length).fill('');
+      row[0] = o.no; row[1] = '0'; row[2] = cool ? '2' : '0'; row[4] = ds; row[5] = due; row[6] = TIME[o.time] || '';
+      row[8] = b2Tel(o.tel); row[10] = b2Tel(g ? (o.gift_zip || '') : o.zip); row[11] = to.main; row[12] = to.sub; row[15] = b2Cut(name, 32);
+      row[19] = b2Tel(c.tel); row[21] = b2Tel(c.zip); row[22] = from.main; row[23] = from.sub; row[24] = b2Cut(b2Text(c.name), 32);
+      row[27] = 'トマト（生鮮品）'; row[30] = 'ナマモノ'; row[32] = b2Cut(o.noshi && o.noshi !== 'なし' ? 'のし：' + b2Text(o.noshi) : '', 44);
+      row[37] = boxes; row[39] = bill; row[40] = b2Tel(c.billClass).replace(/-/g, ''); row[41] = fare;
+      lines.push(row.map(b2Cell).join(','));
+    });
+    var bytes = b2Bytes(lines.join('\r\n') + '\r\n', bad), chars = Object.keys(bad);
+    if (chars.length) warn.push('送り状に使えない字（' + chars.join('') + '）を〓にしました。B2の画面で直してください');
+    return { bytes: bytes, warnings: warn };
+  }
+  /* B2CSV-END */
   /* 送り状システムから戻ってきたCSV（お客様管理番号・伝票番号）を読む */
   function importTracking(text) {
     var lines = text.replace(/^﻿/, '').split(/\r?\n/).filter(Boolean), head = lines[0].split(','), map = {};
@@ -532,14 +649,14 @@ window.SSAPI = (function () {
   }
 
   /* ---------- 発送元の設定 ---------- */
-  function conf() { return Object.assign({ name: 'SOLE SPROUT', zip: '', addr: '兵庫県加古川市志方町原', tel: '' }, get(K.conf, {})); }
+  function conf() { return Object.assign({ name: 'SOLE SPROUT', zip: '', addr: '兵庫県加古川市志方町原', tel: '', billCode: '', billClass: '', fareNo: '01' }, get(K.conf, {})); }
 
   /* ---------- サンプル注文（見せる用） ---------- */
   function seed() {
     if (LIVE) return;
     var S = [
       { cart: [{ id: 'ai', v: 0, q: 1 }], name: '加古川 花子', email: 'hanako@example.com', tel: '090-1111-2222', zip: '675-0001', pref: '兵庫県', addr: '加古川市尾上町 1-2-3', time: '午前中' },
-      { cart: [{ id: 'big', v: 0, q: 2 }], name: '志方 一郎', email: 'ichiro@example.com', tel: '080-3333-4444', zip: '150-0001', pref: '東京都', addr: '渋谷区神宮前 4-5-6', gift: true, gift_name: '東京 次郎', gift_addr: '東京都世田谷区 7-8-9', noshi: '御歳暮', time: '14〜16時' },
+      { cart: [{ id: 'big', v: 0, q: 2 }], name: '志方 一郎', email: 'ichiro@example.com', tel: '080-3333-4444', zip: '150-0001', pref: '東京都', addr: '渋谷区神宮前 4-5-6', gift: true, gift_name: '東京 次郎', gift_zip: '154-0001', gift_pref: '東京都', gift_addr: '世田谷区 7-8-9', noshi: '御歳暮', time: '14〜16時' },
       { cart: [{ id: 'big', v: 0, q: 1 }, { id: 'ai', v: 0, q: 1 }], name: '高砂 三郎', email: 'saburo@example.com', tel: '070-5555-6666', zip: '530-0001', pref: '大阪府', addr: '大阪市北区梅田 1-1', message: 'トマトソース用です' }
     ];
     S.forEach(function (d) { createOrder(d); });
@@ -553,7 +670,17 @@ window.SSAPI = (function () {
      前年比は記録どうし（実績だけ）で比べる。去年の同じ時期に記録が無ければ出さない */
   var HK = 'ss-demo-harvest-v1', hcache = null;
   function hconf(c) { return Object.assign({ days: [1, 3, 5], big: 0, mini: 0 }, SS().harvest || {}, c || {}); }
-  function hlocal() { var v = null; try { v = JSON.parse(localStorage.getItem(HK)); } catch (e) {} return { records: (v && v.records) || [], conf: hconf(v && v.conf) }; }
+  function hlocal() { var v = null; try { v = JSON.parse(localStorage.getItem(HK)); } catch (e) {} return { records: (v && v.records) || hsample(), conf: hconf(v && v.conf) }; }
+  /* 見本（デモ）だけ：記録がまだ無いブラウザでも計器盤が見えるよう、直近2週間の収穫日に見本の量を入れる（保存はしない） */
+  function hsample() {
+    var out = [], days = hconf().days, t = new Date(), n = 0;
+    for (var i = 14; i >= 0; i--) {
+      var d = new Date(t); d.setDate(t.getDate() - i);
+      if (i && days.indexOf(d.getDay()) < 0) continue;
+      out.push({ d: d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()), big: [62, 70, 58, 75, 66, 71, 78, 69][n % 8], mini: [44, 51, 40, 55, 48, 50, 57, 49][n % 8] }); n++;
+    }
+    return out;
+  }
   function hstore(h) { try { localStorage.setItem(HK, JSON.stringify({ records: h.records, conf: h.conf })); } catch (e) {} }
   function happly(j) { hcache = { records: j.records || [], conf: hconf(j.conf), at: j.at || null }; return hcache; }
   function loadHarvest() {
@@ -734,7 +861,7 @@ window.SSAPI = (function () {
     var h = demoBanner() + pkNudge() + payBanner() + '<div class="h"><h1>今日やること</h1><small>' + (now.getMonth() + 1) + '月' + now.getDate() + '日</small></div>' +
       '<div class="tiles"><a class="tile big" href="#/ship"><span><small>発送待ち</small><b class="n">' + w.length + '<em>件</em></b></span><span class="go">発送へ →</span></a>' +
       '<div class="tile"><small>今日の新しい注文</small><b class="n">' + today + '<em>件</em></b></div>' +
-      '<div class="tile"><small>今月の売上（送料別）</small><b class="n">' + yen(month) + '</b></div></div>';
+      '<div class="tile"><small>今月の売上</small><b class="n">' + yen(month) + '</b></div></div>';
     h += '<p class="sub-h">最近の注文</p>';
     if (!all.length) h += emptyBox('まだ注文がありません', LIVE ? 'ショップでテスト注文をすると、支払いが済んだ時点でここに出ます。' : 'ショップで試しに注文するか、サンプル注文を入れて動きを確かめられます。', '<div class="btns">' + (LIVE ? '' : '<button class="btn b-green" data-act="seed">サンプル注文を3件入れる</button>') + '<a class="btn b-line" id="tryShop" target="_blank" rel="noopener">ショップで注文してみる</a></div>');
     else h += '<div class="olist">' + all.slice(0, 5).map(orow).join('') + '</div><p style="margin-top:10px"><a class="b-ghost btn" href="#/orders">すべての注文を見る</a></p>';
@@ -770,14 +897,18 @@ window.SSAPI = (function () {
     var nextBtn = next === 'packed' ? '<button class="btn b-green" data-act="status" data-to="packed">梱包済みにする</button>' :
       next === 'shipped' ? '<button class="btn b-green" data-act="shipone">発送済みにする（伝票番号）</button>' :
       next === 'done' ? '<button class="btn b-green" data-act="status" data-to="done">完了にする</button>' : '';
-    var to = o.gift && o.gift_name ? esc(o.gift_name) + ' 様<br>' + esc(o.gift_addr) : esc(o.name) + ' 様<br>〒' + esc(o.zip) + ' ' + esc(o.pref) + esc(o.addr);
+    var to = o.gift && o.gift_name ? esc(o.gift_name) + ' 様<br>' + (o.gift_zip ? '〒' + esc(o.gift_zip) + ' ' : '') + esc(o.gift_pref || '') + esc(o.gift_addr) : esc(o.name) + ' 様<br>〒' + esc(o.zip) + ' ' + esc(o.pref) + esc(o.addr);
+    var sh = o.ship || {};
     view.innerHTML = '<a class="back" href="#/orders"><svg><use href="#a-back"/></svg>注文台帳</a>' +
       '<div class="h"><h1>' + esc(o.name) + ' 様</h1>' + pill(o.status) + '</div>' +
       '<div class="flow">' + steps.map(function (s, i) { return '<span class="' + (idx >= 0 && i <= idx ? 'on' : '') + (i === idx ? ' now' : '') + '">' + A.STATUS[s].label + '</span>'; }).join('') + '</div>' +
       '<div class="stack">' +
       (nextBtn ? '<div class="btns">' + nextBtn + '</div>' : '') +
       '<div class="card"><p class="sub-h" style="margin-top:0">ご注文の品</p><ul class="items">' + o.items.map(function (i) { return '<li><span>' + esc(i.name) + '（' + esc(i.label) + '）×' + i.q + '</span><span class="n">' + yen(i.price * i.q) + '</span></li>'; }).join('') + '</ul>' +
-      '<div class="sum"><span>小計</span><span class="n">' + yen(o.subtotal) + '</span></div><p class="hist" style="margin-top:6px">送料：' + (o.shipping == null ? '未確定（送料表は保留中）' : yen(o.shipping)) + '／支払い：' + esc(o.pay) + '</p></div>' +
+      '<div class="sum"><span>小計</span><span class="n">' + yen(o.subtotal) + '</span></div>' +
+      (o.shipping == null ? '<p class="hist" style="margin-top:6px">送料：未確定（送料表ができる前の注文）／支払い：' + esc(o.pay) + '</p></div>' :
+        '<div class="sum"><span>送料（' + esc(sh.region || '') + (sh.cool ? '・クール便' : '') + '・' + (sh.boxes || 1) + '箱）</span><span class="n">' + (o.shipping ? yen(o.shipping) : '価格に込み') + '</span></div>' +
+        '<div class="sum"><b>合計</b><b class="n">' + yen(o.total != null ? o.total : o.subtotal + o.shipping) + '</b></div><p class="hist" style="margin-top:6px">支払い：' + esc(o.pay) + (sh.cost ? '／ヤマトの運賃（農園の負担・目安）：' + yen(sh.cost) : '') + '</p></div>') +
       '<div class="card"><p class="sub-h" style="margin-top:0">お届け</p><dl class="dl"><dt>お届け先</dt><dd>' + to + '</dd>' +
       (o.gift ? '<dt>ご依頼主</dt><dd>' + esc(o.name) + ' 様</dd><dt>のし</dt><dd>' + esc(o.noshi) + '</dd>' : '') +
       '<dt>希望日時</dt><dd>' + esc(o.date) + '・' + esc(o.time) + '</dd><dt>電話</dt><dd><a href="tel:' + esc(o.tel) + '">' + esc(o.tel) + '</a></dd><dt>メール</dt><dd>' + esc(o.email) + '</dd>' +
@@ -833,7 +964,8 @@ window.SSAPI = (function () {
       '<div class="btns" style="margin-top:14px"><button class="btn b-line" data-act="close">やめる</button><button class="btn b-red" data-act="doship">発送済みにして知らせる</button></div>');
     $('#trkFile').addEventListener('change', function () {
       var f = this.files[0]; if (!f) return;
-      f.text().then(function (t) {
+      f.arrayBuffer().then(function (buf) {   // B2が出すCSVは Shift_JIS。UTF-8として読めなければ Shift_JIS で読む
+        var t; try { t = new TextDecoder('utf-8', { fatal: true }).decode(buf); } catch (e) { t = new TextDecoder('shift_jis').decode(buf); }
         var r = A.importTracking(t); if (r.error) { toast(r.error); return; }
         var hit = 0; $$('.trk').forEach(function (b) { if (r.map[b.dataset.no]) { $('input', b).value = r.map[b.dataset.no]; hit++; } });
         toast(hit + '件の伝票番号を読み込みました');
@@ -953,10 +1085,38 @@ window.SSAPI = (function () {
       [['name', '名前', c.name, 'organization'], ['zip', '郵便番号', c.zip, 'postal-code'], ['addr', '住所', c.addr, 'street-address'], ['tel', '電話番号', c.tel, 'tel']].map(function (f) {
         return '<div class="field"><label for="c-' + f[0] + '">' + f[1] + '</label><input id="c-' + f[0] + '" data-c="' + f[0] + '" value="' + esc(f[2]) + '" autocomplete="' + f[3] + '"' + (f[0] === 'tel' ? ' type="tel"' : '') + '></div>';
       }).join('') + '<button class="btn b-green" data-act="saveconf" style="width:100%">保存する</button></div>' +
-      '<p class="sub-h">送料表</p><div class="note-box">保留中（未決定）。決まるまで、注文の送料は「未確定」で記録し、確認の連絡でお伝えする運用です。</div>' +
-      '<p class="sub-h">' + (LIVE ? 'テストの台帳' : 'デモのデータ') + '</p><div class="card stack"><p class="lead" style="margin:0">' + (LIVE ? 'いまの注文・在庫・通知は、テスト用サーバー（このMac）の台帳に保存されています。台帳を消しても、Squareの売上記録は消えません。' : 'いまの注文・在庫・通知は、このブラウザの中にだけ保存されています。別のスマホやPCからは見えません。') + '</p>' +
+      '<p class="sub-h">ヤマトの請求先（送り状CSVに入ります）</p><div class="card">' +
+      [['billCode', 'お客様コード（請求先顧客コード）', c.billCode, '例：B2クラウドの「請求先」の番号'], ['billClass', '請求先分類コード（無ければ空欄）', c.billClass, ''], ['fareNo', '運賃管理番号', c.fareNo, '通常は 01']].map(function (f) {
+        return '<div class="field"><label for="c-' + f[0] + '">' + f[1] + '</label><input id="c-' + f[0] + '" data-c="' + f[0] + '" value="' + esc(f[2] || '') + '" inputmode="numeric" placeholder="' + f[3] + '"></div>';
+      }).join('') + '<button class="btn b-green" data-act="saveconf" style="width:100%">保存する</button></div>' +
+      '<p class="sub-h">' + (SS.ship.included ? 'ヤマトの運賃（農園の負担）' : '送料表') + '</p>' + shipTableHTML() +
+      '<p class="sub-h">' + (PROD() ? '台帳' : LIVE ? 'テストの台帳' : 'デモのデータ') + '</p><div class="card stack"><p class="lead" style="margin:0">' + (PROD() ? '注文・在庫・通知は、このサイトの台帳に保存されています。本番では台帳を消せません。' : LIVE ? 'いまの注文・在庫・通知は、テスト用の台帳に保存されています。台帳を消しても、Squareの売上記録は消えません。' : 'いまの注文・在庫・通知は、このブラウザの中にだけ保存されています。別のスマホやPCからは見えません。') + '</p>' +
+      lineCard() +
       securityCard() +
       '<div class="btns">' + (LIVE ? '' : '<button class="btn b-line" data-act="seed">サンプル注文を3件入れる</button>') + (PROD() ? '' : '<button class="btn b-ghost" data-act="reset">' + (LIVE ? 'テストの台帳を全部消す' : 'デモのデータを全部消す') + '</button>') + '</div></div>';
+  }
+
+  /* 公式LINE：通知先の登録（連携コード）。本番サーバーの時だけ出す */
+  var lineCode = null;
+  function lineCard() {
+    var ch = A.channels ? A.channels() : {};
+    if (!LIVE || ch.lineKeys === undefined) return '';
+    if (lineCode && (Date.now() > lineCode.exp || lineCode.at !== ch.lineAt)) lineCode = null;
+    return '<p class="sub-h">公式LINE（注文の通知・収量の送信）</p><div class="card stack">' +
+      (!ch.lineKeys ? '<p class="lead" style="margin:0">LINEの鍵がまだ入っていません。</p>' :
+        '<p class="lead" style="margin:0">' + (ch.lineAt ? '<b>連携済み</b>（' + fmt(ch.lineAt, true) + '）。別のLINEに切り替えると、前のLINEには届かなくなります。' : '<b>まだ連携していません。</b>通知を受けるLINEで、公式アカウントを友だち追加してください。') + '</p>' +
+        (lineCode ? '<p style="margin:0;text-align:center;font-size:32px;letter-spacing:.12em;font-family:serif"><b>' + esc(lineCode.code) + '</b></p><p class="hist" style="margin:0">この6桁を、公式アカウントのトークに送ってください。' + lineCode.minutes + '分で無効になります。</p>'
+          : '<button class="btn b-green" data-act="linelink" style="width:100%">連携コードを出す</button>')) +
+      '</div>';
+  }
+
+  /* 送料表（data.js の ship。1箱あたり・税込）。お客さんへの請求もこの金額 */
+  function shipTableHTML() {
+    var sh = SS.ship; if (!sh) return '';
+    var box = (SS.products[0] && SS.products[0].box) || 80, si = sh.sizes.indexOf(box), tx = function (v) { return Math.round(v * (1 + sh.tax)); };
+    return '<div class="card"><table class="ship-t" style="width:100%;border-collapse:collapse;font-size:14px"><thead><tr><th style="text-align:left">地域</th><th style="text-align:right">通常</th><th style="text-align:right">クール便</th></tr></thead><tbody>' +
+      sh.regions.map(function (r) { return '<tr><td style="padding:6px 0;border-top:1px solid #eee">' + r[0] + '</td><td class="n" style="text-align:right;border-top:1px solid #eee">' + yen(tx(r[2][si])) + '</td><td class="n" style="text-align:right;border-top:1px solid #eee">' + yen(tx(r[2][si] + sh.cool[si])) + '</td></tr>'; }).join('') +
+      '</tbody></table><p class="hist" style="margin-top:8px">1箱（' + box + 'サイズ）あたり・税込。ヤマトの見積（' + sh.quoted + '）の運賃に消費税を足した金額です。' + (sh.included ? '送料はトマトの価格に込みなので、お客さんには請求せず、農園が負担します。' : 'お客さんにもこの金額を請求します。') + '見積の有効期限は ' + sh.until + '。</p></div>';
   }
 
   /* ================= シート ================= */
@@ -968,6 +1128,14 @@ window.SSAPI = (function () {
   document.addEventListener('click', function (e) {
     var b = e.target.closest('[data-act]'); if (!b) return;
     var act = b.dataset.act;
+    if (act === 'linelink') {
+      post('/api/line/link', {}).then(function (r) {
+        if (!r.code) { toast(r.error || '連携コードを出せませんでした'); return; }
+        var ch = A.channels ? A.channels() : {};
+        lineCode = { code: r.code, minutes: r.minutes, exp: Date.now() + r.minutes * 60e3, at: ch.lineAt };
+        render();
+      });
+    }
     if (act === 'seed') { A.seed(); toast('サンプル注文を3件入れました'); render(); }
     if (act === 'reset') { if (confirm('デモの注文・在庫・通知をすべて消します。よろしいですか？')) { A.reset(); sel = {}; toast('消しました'); render(); } }
     if (act === 'status') {
@@ -978,8 +1146,10 @@ window.SSAPI = (function () {
     if (act === 'shipone') trackingSheet([view.dataset.no]);
     if (act === 'csv') {
       var nos = Object.keys(sel), fname = A.shipFileName(nos);
-      download(fname, A.shipCSV(nos));
-      toast('「' + fname + '」をダウンロードに保存しました。開かずにB2クラウドで選んでください');
+      var csv = A.shipCSV(nos);
+      if (csv.error) { toast(csv.error); return; }
+      download(fname, csv.bytes);
+      toast(csv.warnings.length ? csv.warnings.join('／') : '「' + fname + '」を保存しました。開かずにB2クラウドの「外部データから発行」で選んでください（基本レイアウト・取込み開始行は2行目）');
     }
     if (act === 'packsel') { Object.keys(sel).forEach(function (no) { if (A.getOrder(no).status === 'paid') A.updateOrder(no, { status: 'packed' }); }); toast('梱包済みにしました'); render(); }
     if (act === 'shipsel') trackingSheet(Object.keys(sel));
