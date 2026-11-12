@@ -998,7 +998,7 @@ html.nl .spbar{padding-right:200px}
   .hx-body{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;align-items:stretch}
   .hx-body .hx-mods{margin-top:16px}
   .hx-side{display:flex;flex-direction:column;gap:0;margin-top:16px}
-  .hx-side .hx-gauge{margin-top:0}
+  .hx-side .hx-gauge{margin-top:0;flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:22px 24px}
 }
 @media (prefers-reduced-motion:reduce){.hx-reel,.hx-bar b{transition:none}.hx-led i{animation:none}}
 .hx-mod .hx-d.lead .hx-reel span{color:rgba(250,245,233,.16)}
@@ -3537,10 +3537,6 @@ window.SSAPI = (function () {
         '<div class="hx-gauge"><div class="hx-gh"><span>合計 <b class="n">' + kgf(v.total) + '</b> kg</span><span>' + (v.ref ? v.ref + ' <b class="n">' + Math.round(v.pct) + '</b>%' : '') + '</span></div>' +
           '<div class="hx-seg">' + Array.apply(null, Array(24)).map(function (_, i) { return '<i style="--c:hsl(' + Math.round(96 - i / 23 * 88) + ' 72% 52%)" class="' + (i < lit ? 'on' : '') + '"></i>'; }).join('') + '</div>' +
           '<div class="hx-scale">' + v.scale.map(function (x) { return '<span>' + x + '</span>'; }).join('') + '</div></div>' +
-        '<div class="hx-log"><small>' + v.logTitle + '</small>' + (v.bars.length ? '<div class="hx-bars">' + v.bars.map(function (r) {
-          return '<div class="hx-bar' + (r.hl ? ' today' : '') + '"><b style="height:' + (r.big / mx * 100) + '%;transform:scaleY(0)"></b><b style="height:' + (r.mini / mx * 100) + '%;transform:scaleY(0)"></b></div>';
-        }).join('') + '</div><div class="hx-days">' + v.bars.map(function (r) { return '<span class="' + (r.hl ? 'today' : '') + '">' + r.label + '</span>'; }).join('') + '</div>' : '<p class="hx-none">この期間の記録はまだありません</p>') +
-          '<p class="hx-key"><span><i style="background:#E0452A"></i>大玉</span><span><i style="background:#9BD15A"></i>ミニ</span></p></div>' +
       '</div></div>' +
       '<div class="hx-foot"><p>収穫したその日に、農園から記録しています。<br>この量が、そのまま食卓とお店へ。</p><a class="btn" href="#/shop">今日のトマトを買う<svg><use href="#i-arrow"/></svg></a></div>';
     el.setAttribute('aria-label', v.title + ' 大玉' + kgf(v.big) + 'kg ミニ' + kgf(v.mini) + 'kg');
