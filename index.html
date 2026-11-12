@@ -3496,7 +3496,7 @@ window.SSAPI = (function () {
     if (mode === 'day') {
       var last = recs[recs.length - 1], isToday = last.d === td, prev = recs.filter(function (r) { return r.d < last.d; }).slice(-3);
       var avg = prev.length ? prev.reduce(function (a, r) { return a + r.big + r.mini; }, 0) / prev.length : 0, tot = last.big + last.mini;
-      return { live: isToday, title: isToday ? '今日の収穫量' : '最新の収穫量', when: mdw(last.d) + (isToday ? '' : '・今日の記録はまだです'),
+      return { live: isToday, title: isToday ? '今日の収穫量' : '最新の収穫量', when: (isToday ? '' : '最終更新 ') + mdw(last.d), lastD: last.d,
         big: last.big, mini: last.mini, total: tot, pct: avg ? tot / avg * 100 : 0, max: 150, ref: avg ? '直近の平均の' : '', scale: ['0', '50%', '100%', '150%'],
         logTitle: 'Last ' + Math.min(7, recs.length) + ' harvests', bars: recs.slice(-7).map(bar) };
     }
@@ -3521,7 +3521,7 @@ window.SSAPI = (function () {
     if (key === hxKey && hxData) return;
     hxKey = key; hxData = h;
     var v = hxView(h, hxMode), now = new Date(), td = ymd(now);
-    var at = h.at ? new Date(h.at) : null, atTxt = at && ymd(at) === td ? '・更新 <span class="n">' + at.getHours() + ':' + ('0' + at.getMinutes()).slice(-2) + '</span>' : '';
+    var at = h.at ? new Date(h.at) : null, atTxt = at && ymd(at) === (v.lastD || td) ? (v.lastD === td ? '・更新 ' : ' ') + '<span class="n">' + at.getHours() + ':' + ('0' + at.getMinutes()).slice(-2) + '</span>' : '';
     var lit = Math.min(24, Math.round(v.pct / v.max * 24)), mx = Math.max.apply(null, v.bars.map(function (r) { return r.big + r.mini; }).concat([1]));
     el.innerHTML = '<i class="hx-bolt a"></i><i class="hx-bolt b"></i><i class="hx-bolt c"></i><i class="hx-bolt d"></i>' +
       '<div class="hx-top"><span>Tomato meter</span><span class="hx-led' + (v.live ? '' : ' off') + '"><i></i>' + (v.live ? 'Live' : 'Standby') + '</span></div>' +
