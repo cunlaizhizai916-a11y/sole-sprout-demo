@@ -523,8 +523,8 @@ window.SSAPI = (function () {
       o.history.push({ at: new Date().toISOString(), s: patch.status });
       if (patch.status === 'shipped') {
         o.shipped_at = new Date().toISOString();
-        log('mail', o.email, '【SOLE SPROUT】トマトを発送しました', o.name + ' 様\n\n本日、ご注文のトマトを発送しました。\n受付番号：' + o.no + '\n\n' + itemsText(o) + '\n\nヤマト運輸 伝票番号：' + (o.tracking || '（未入力）') +
-          '\nお荷物の状況：https://toi.kuronekoyamato.co.jp/cgi-bin/tneko?number00=1&number01=' + (o.tracking || '') + '\n\n届いたら常温で保存し、食べる2〜3時間前に冷やすのがおすすめです。\n\nSOLE SPROUT', o.no);
+        log('mail', o.email, '【SOLE SPROUT】トマトを発送しました', o.name + ' 様\n\nご注文のトマトを、本日発送しました。\n受付番号：' + o.no + '\n\n' + itemsText(o) + '\n\nお届け：ヤマト運輸\n伝票番号：' + (o.tracking || '（農園から追ってお知らせします）') +
+          '\n※お荷物の状況は、ヤマト運輸の公式サイトまたはアプリで、伝票番号から確認できます。\n\n届いたら常温で保存し、食べる2〜3時間前に冷やすのがおすすめです。\n\nSOLE SPROUT（加古川市志方町）', o.no);
       }
       if (patch.status === 'canceled') log('mail', o.email, '【SOLE SPROUT】ご注文のキャンセルについて', o.name + ' 様\n\n受付番号 ' + o.no + ' のご注文をキャンセルしました。', o.no);
     }

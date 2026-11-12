@@ -1495,10 +1495,6 @@ html.nl .spbar{padding-right:200px}
         <fieldset class="co-sec" data-step="3">
           <legend><b class="n">3</b>お支払い</legend>
           <div class="pay-wip"><svg><use href="#i-sprout"/></svg><p><b>お支払い機能は準備中です。</b>いまはご注文のお申し込みのみ承ります。内容を確認のうえ、農園からお支払い方法をご案内します。</p></div>
-          <div class="pay-list" aria-disabled="true">
-            <label class="pay"><input type="radio" name="pay" disabled><span>クレジットカード<small>Visa・Mastercard・JCB・American Express・Diners Club</small></span><em>準備中</em></label>
-            <label class="pay"><input type="radio" name="pay" disabled><span>Apple Pay・Google Pay</span><em>準備中</em></label>
-          </div>
           <div class="field"><label for="c-msg">ご要望（任意）</label><textarea id="c-msg" name="message" rows="3" placeholder="お届けについてのご希望など"></textarea></div>
         </fieldset>
 
@@ -2340,8 +2336,8 @@ window.SSAPI = (function () {
       o.history.push({ at: new Date().toISOString(), s: patch.status });
       if (patch.status === 'shipped') {
         o.shipped_at = new Date().toISOString();
-        log('mail', o.email, '【SOLE SPROUT】トマトを発送しました', o.name + ' 様\n\n本日、ご注文のトマトを発送しました。\n受付番号：' + o.no + '\n\n' + itemsText(o) + '\n\nヤマト運輸 伝票番号：' + (o.tracking || '（未入力）') +
-          '\nお荷物の状況：https://toi.kuronekoyamato.co.jp/cgi-bin/tneko?number00=1&number01=' + (o.tracking || '') + '\n\n届いたら常温で保存し、食べる2〜3時間前に冷やすのがおすすめです。\n\nSOLE SPROUT', o.no);
+        log('mail', o.email, '【SOLE SPROUT】トマトを発送しました', o.name + ' 様\n\nご注文のトマトを、本日発送しました。\n受付番号：' + o.no + '\n\n' + itemsText(o) + '\n\nお届け：ヤマト運輸\n伝票番号：' + (o.tracking || '（農園から追ってお知らせします）') +
+          '\n※お荷物の状況は、ヤマト運輸の公式サイトまたはアプリで、伝票番号から確認できます。\n\n届いたら常温で保存し、食べる2〜3時間前に冷やすのがおすすめです。\n\nSOLE SPROUT（加古川市志方町）', o.no);
       }
       if (patch.status === 'canceled') log('mail', o.email, '【SOLE SPROUT】ご注文のキャンセルについて', o.name + ' 様\n\n受付番号 ' + o.no + ' のご注文をキャンセルしました。', o.no);
     }
@@ -3296,7 +3292,7 @@ window.SSAPI = (function () {
     cart = []; saveCart(); scrollTo(0, 0);
     if (cur.name === 'shop' || cur.name === 'home') refreshStock();
   });
-  if (API && API.mode === 'live') { var sb = $('#coForm .submit'); sb.firstChild.nodeValue = 'お支払いへ進む'; $('.pay-wip p').innerHTML = API.payEnv() === 'production' ? '<b>お支払いは次の画面で。</b>決済サービス「Square」の安全な画面で、カード・Apple Pay・Google Payでお支払いいただけます。' : '<b>テスト決済モードです。</b>次の画面（Square）でカード情報を入力します。テスト環境のため、実際の請求はありません。'; $$('.pay-list .pay em').forEach(function (e) { e.textContent = '利用できます'; }); }
+  if (API && API.mode === 'live') { var sb = $('#coForm .submit'); sb.firstChild.nodeValue = 'お支払いへ進む'; $('.pay-wip p').innerHTML = API.payEnv() === 'production' ? '<b>お支払いは次の画面で。</b>決済サービス「Square」の安全な画面で、カード・Apple Pay・Google Payでお支払いいただけます。' : '<b>テスト決済モードです。</b>次の画面（Square）でカード情報を入力します。テスト環境のため、実際の請求はありません。'; }
   function adminHref() { return /src\.html$/.test(location.pathname) ? 'admin.html' : 'admin/'; }
   $$('#bizForm,#ctForm').forEach(function (f) {
     f.addEventListener('submit', function (e) {
