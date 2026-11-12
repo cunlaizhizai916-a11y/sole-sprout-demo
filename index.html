@@ -1104,6 +1104,13 @@ html.nl .spbar{padding-right:200px}
 .hx-foot p{color:var(--ink2)}
 @media(min-width:900px){.hx-ic{width:52px;height:52px}.hx-mod small b{font-size:18px}}
 .nw{white-space:nowrap}
+
+.zip-msg{font-size:11.5px;line-height:1.6;color:var(--ink2);margin-top:5px}
+.zip-msg.ok{color:var(--leaf);font-weight:700}
+.zip-msg.ng{color:var(--tomato-d);font-weight:700}
+.to-square{display:block;font-size:13px;font-weight:700;color:var(--ink2);margin:0 0 10px;text-align:center}
+.to-square[hidden]{display:none}
+.to-square svg{width:14px;height:14px;flex:none;color:var(--leaf)}
 </style>
 </head>
 <body class="is-op">
@@ -1468,7 +1475,7 @@ html.nl .spbar{padding-right:200px}
           <div class="field" data-f><label for="c-mail">メールアドレス<em>必須</em></label><input id="c-mail" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="tomato@example.com"><p class="err">メールアドレスの形式を確認してください</p></div>
           <div class="field" data-f><label for="c-tel">電話番号<em>必須</em></label><input id="c-tel" name="tel" type="tel" autocomplete="tel" inputmode="tel" required placeholder="090-1234-5678"><p class="err">電話番号を入力してください</p></div>
           <div class="f2">
-            <div class="field" data-f><label for="c-zip">郵便番号<em>必須</em></label><input id="c-zip" name="zip" autocomplete="postal-code" inputmode="numeric" required placeholder="675-0300"><p class="err">郵便番号を入力してください</p></div>
+            <div class="field" data-f><label for="c-zip">郵便番号<em>必須</em></label><input id="c-zip" name="zip" autocomplete="postal-code" inputmode="numeric" required placeholder="6750300" maxlength="8"><p class="zip-msg" aria-live="polite">入力すると住所が自動で入ります</p><p class="err">郵便番号を入力してください</p></div>
             <div class="field" data-f><label for="c-pref">都道府県<em>必須</em></label><select id="c-pref" name="pref" autocomplete="address-level1" required></select><p class="err">選んでください</p></div>
           </div>
           <div class="field" data-f><label for="c-addr">市区町村・番地・建物名<em>必須</em></label><input id="c-addr" name="addr" autocomplete="street-address" required placeholder="加古川市志方町原 0-0"><p class="err">ご住所を入力してください</p></div>
@@ -1476,7 +1483,7 @@ html.nl .spbar{padding-right:200px}
           <div class="gift-box" id="giftBox" hidden>
             <div class="field" data-f><label for="c-gname">贈り先のお名前<em>必須</em></label><input id="c-gname" name="gift_name" data-gift><p class="err">お名前を入力してください</p></div>
             <div class="f2">
-              <div class="field" data-f><label for="c-gzip">郵便番号<em>必須</em></label><input id="c-gzip" name="gift_zip" inputmode="numeric" data-gift><p class="err">郵便番号を入力してください</p></div>
+              <div class="field" data-f><label for="c-gzip">郵便番号<em>必須</em></label><input id="c-gzip" name="gift_zip" inputmode="numeric" maxlength="8" placeholder="6750300" data-gift><p class="zip-msg" aria-live="polite">入力すると住所が自動で入ります</p><p class="err">郵便番号を入力してください</p></div>
               <div class="field" data-f><label for="c-gpref">都道府県<em>必須</em></label><select id="c-gpref" name="gift_pref" data-gift></select><p class="err">選んでください</p></div>
             </div>
             <div class="field" data-f><label for="c-gaddr">市区町村・番地・建物名<em>必須</em></label><input id="c-gaddr" name="gift_addr" data-gift><p class="err">ご住所を入力してください</p></div>
@@ -1509,6 +1516,7 @@ html.nl .spbar{padding-right:200px}
           </ul>
           <p class="note">お支払いへ進むと、<a href="#/terms">ご利用規約</a>と<a href="#/privacy">プライバシーポリシー</a>に同意したものとします。</p>
         </div>
+        <p class="to-square" hidden>このあと、決済サービス「Square」の<span class="nw">お支払い画面に移ります</span></p>
         <button class="btn btn-red submit" type="submit">注文を申し込む<svg><use href="#i-arrow"/></svg></button>
       </form>
 
@@ -1960,7 +1968,7 @@ html.nl .spbar{padding-right:200px}
     <p>万一、個人情報の漏えいなどが起きたときは、法令に従って個人情報保護委員会に報告し、ご本人にお知らせします。</p>
 
     <h2>7. Cookieとアクセス解析</h2>
-    <p>このサイトは、カートの中身を覚えておくために、お使いのブラウザに情報を保存します（ブラウザの設定で消去できます）。いまは、外部のアクセス解析サービスや広告配信サービスは使っていません。使い始める場合は、このページでお知らせします。</p>
+    <p>このサイトは、カートの中身を覚えておくために、お使いのブラウザに情報を保存します（ブラウザの設定で消去できます）。ご住所の入力欄では、郵便番号から住所を調べるために、入力された郵便番号だけを外部の検索サービス（zipcloud）に送ります。いまは、外部のアクセス解析サービスや広告配信サービスは使っていません。使い始める場合は、このページでお知らせします。</p>
 
     <h2>8. 開示・訂正・利用停止などのご請求</h2>
     <p>ご本人から、保有する個人情報の利用目的の通知、開示、訂正・追加・削除、利用の停止・消去、第三者への提供の停止、提供の記録の開示のご請求があった場合は、ご本人であることを確認したうえで、法令に従い対応します。下記の窓口までメールでご連絡ください。手数料はいただきません。</p>
@@ -3195,6 +3203,33 @@ window.SSAPI = (function () {
     return pref ? SS.shipFee(cart.map(function (c) { return { id: c.id, q: c.q }; }), pref, new Date()) : null;
   }
   ['#c-pref', '#c-gpref'].forEach(function (id) { $(id).addEventListener('change', function () { renderSummary(); }); });
+
+  /* 郵便番号 → 住所の自動入力（zipcloud。送るのは郵便番号だけ） */
+  function bindZip(zipId, prefId, addrId) {
+    var z = $(zipId), pf = $(prefId), ad = $(addrId), msg = z.parentNode.querySelector('.zip-msg'), last = '', auto = '';
+    var HINT = '入力すると住所が自動で入ります';
+    function say(t, cls) { msg.textContent = t; msg.className = 'zip-msg' + (cls ? ' ' + cls : ''); }
+    z.addEventListener('input', function () {
+      var v = z.value.replace(/[０-９]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 65248); }).replace(/[^0-9]/g, '').slice(0, 7);
+      if (v.length < 7) { last = ''; say(HINT); return; }
+      if (v === last) return; last = v;
+      z.value = v.slice(0, 3) + '-' + v.slice(3);
+      say('住所を調べています…');
+      fetch('https://zipcloud.ibsnet.co.jp/api/search?zipcode=' + v).then(function (r) { return r.json(); }).then(function (j) {
+        if (last !== v) return;
+        var r0 = j && j.results && j.results[0];
+        if (!r0) { say('住所が見つかりません。番号をご確認ください', 'ng'); return; }
+        pf.value = r0.address1; pf.dispatchEvent(new Event('change', { bubbles: true }));
+        var a = r0.address2 + r0.address3;
+        if (!ad.value.trim() || ad.value === auto) { ad.value = a; auto = a; }
+        [z, pf, ad].forEach(function (el) { var f = el.closest('[data-f]'); if (f) f.classList.remove('bad'); });
+        say('✓ 住所を入れました', 'ok');
+        ad.focus(); try { ad.setSelectionRange(ad.value.length, ad.value.length); } catch (e) {}
+      }).catch(function () { if (last === v) say('検索できませんでした。住所を手で入力してください', 'ng'); });
+    });
+  }
+  bindZip('#c-zip', '#c-pref', '#c-addr');
+  bindZip('#c-gzip', '#c-gpref', '#c-gaddr');
   (function dates() {
     var sel = $('#c-date'), h = '<option>指定なし</option>';
     if (season.on) {
@@ -3293,7 +3328,7 @@ window.SSAPI = (function () {
     cart = []; saveCart(); scrollTo(0, 0);
     if (cur.name === 'shop' || cur.name === 'home') refreshStock();
   });
-  if (API && API.mode === 'live') { var sb = $('#coForm .submit'); sb.firstChild.nodeValue = 'お支払いへ進む'; $('.pay-wip p').innerHTML = API.payEnv() === 'production' ? '<b>お支払いは次の画面で。</b>決済サービス「Square」の安全な画面で、<span class="nw">カード</span>・<span class="nw">Apple Pay</span>・<span class="nw">Google Pay</span>でお支払いいただけます。' : '<b>テスト決済モードです。</b>次の画面（Square）でカード情報を入力します。テスト環境のため、実際の請求はありません。'; }
+  if (API && API.mode === 'live') { var sb = $('#coForm .submit'); sb.firstChild.nodeValue = 'お支払いへ進む'; $('.to-square').hidden = false; $('.pay-wip p').innerHTML = API.payEnv() === 'production' ? '<b>お支払いは、Squareの画面で。</b>「お支払いへ進む」を押すと、決済サービス「Square」の安全なお支払い画面に移ります。そこで、<span class="nw">カード</span>・<span class="nw">Apple Pay</span>・<span class="nw">Google Pay</span>でお支払いいただけます。' : '<b>テスト決済モードです。</b>次の画面（Square）でカード情報を入力します。テスト環境のため、実際の請求はありません。'; }
   function adminHref() { return /src\.html$/.test(location.pathname) ? 'admin.html' : 'admin/'; }
   $$('#bizForm,#ctForm').forEach(function (f) {
     f.addEventListener('submit', function (e) {
