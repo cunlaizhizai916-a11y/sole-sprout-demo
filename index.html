@@ -1044,6 +1044,65 @@ html.nl .spbar{padding-right:200px}
 .hx-sw button:focus-visible{outline:2px solid var(--sprout);outline-offset:2px}
 .hx-none{margin:18px 0 10px;font-size:12.5px;color:var(--hx-dim)}
 @media(min-width:900px){.hx-sw{max-width:560px}.hx-sw button{padding:10px 14px 11px}}
+
+/* ===== 計器盤：かわいい版（おもちゃのトマトはかり。リール数字・目盛り・キーの仕掛けはそのまま） ===== */
+.hx{--hx-ln:rgba(224,69,42,.16);--hx-dim:#8A7F6C;
+  background:linear-gradient(180deg,#FFFCF4,#FFF4E2);color:var(--ink);border-radius:34px;
+  box-shadow:0 0 0 6px #F7D9C9,0 0 0 8px #EFC2AE,0 22px 40px -26px rgba(181,48,26,.55)}
+.hx::before{opacity:.9;background-image:radial-gradient(rgba(224,69,42,.12) 1.6px,transparent 1.8px);background-size:20px 20px;
+  -webkit-mask-image:linear-gradient(180deg,#000,transparent 55%);mask-image:linear-gradient(180deg,#000,transparent 55%)}
+.hx-bolt{width:10px;height:10px;background:radial-gradient(circle at 35% 35%,#fff,#F2B8A3);box-shadow:inset 0 0 0 1px rgba(181,48,26,.25)}
+.hx-bolt::after{content:"";position:absolute;left:2px;right:2px;top:4.5px;height:1px;background:rgba(181,48,26,.35);transform:rotate(-35deg)}
+.hx-top{border-bottom:2px dotted #F0C9B8;color:var(--tomato);font-weight:800}
+.hx-led{color:var(--leaf)}.hx-led i{background:var(--tomato);box-shadow:0 0 0 3px #FBD5CA}
+.hx-led.off{color:#B7A98F}.hx-led.off i{background:#E6DCC8;box-shadow:0 0 0 3px #F3ECDD}
+@keyframes hxBlink{50%{transform:scale(.7)}}
+.hx-led i{animation:hxBlink 1.4s ease-in-out infinite}
+.hx-hd .lbl{color:var(--tomato)}
+.hx-hd h2{color:var(--leaf-d)}
+.hx-when{color:var(--ink2)}
+/* キー：ぷっくりした丸いボタン */
+.hx-sw{background:#F6E6D6;border-radius:999px;padding:5px;box-shadow:inset 0 2px 4px rgba(120,60,30,.18)}
+.hx-sw button{align-items:center;text-align:center;border-radius:999px;padding:7px 6px 8px;color:#9A8C75;
+  background:linear-gradient(180deg,#FFFFFF,#FBF3E6);box-shadow:0 3px 0 #E8D6C2,0 4px 8px -4px rgba(120,60,30,.25)}
+.hx-sw button i{position:static;width:auto;height:auto;background:none;box-shadow:none;display:none}
+.hx-sw button small{font-size:9px;color:#C2B49B}
+.hx-sw button:hover{color:var(--tomato)}
+.hx-sw button.on{transform:translateY(3px);color:#fff;background:linear-gradient(180deg,#EE5A3E,#E0452A);box-shadow:0 0 0 #E8D6C2,inset 0 2px 3px rgba(120,20,0,.35)}
+.hx-sw button.on small{color:rgba(255,255,255,.75)}
+/* 大玉・ミニの枠 */
+.hx-mod,.hx-gauge,.hx-log{background:#FFFFFF;border-radius:24px;box-shadow:0 0 0 2px #F6E3D3,0 8px 16px -12px rgba(120,60,30,.3)}
+.hx-mod small{align-items:center;color:var(--ink2)}
+.hx-mod small b{color:var(--ink);font-size:14px}
+.hx-ic{display:inline-flex;width:30px;height:30px}
+.hx-ic svg{width:100%;height:100%;animation:hxBob 2.6s ease-in-out infinite}
+.hx-mod.mini .hx-ic svg{animation-delay:-1.3s}
+@keyframes hxBob{50%{transform:translateY(-3px) rotate(-6deg)}}
+/* リール：まるい白いタイル */
+.hx-d{border-radius:12px;background:linear-gradient(180deg,#FFF8EE 0 49%,#FBEEDC 51% 100%);box-shadow:inset 0 0 0 1.5px #F0D9C4,0 3px 0 #EBD5BE}
+.hx-d::after{background:rgba(181,120,80,.18)}
+.hx-mod.big .hx-reel span{color:var(--tomato)}
+.hx-mod.mini .hx-reel span{color:var(--leaf-m)}
+.hx-mod .hx-d.lead .hx-reel span{color:#EADCC8}
+.hx-u{color:var(--ink2)}
+/* ゲージ：熟していく色の玉 */
+.hx-gh{color:var(--ink2)}.hx-gh b{color:var(--ink)}
+.hx-seg{gap:4px}
+.hx-seg i{height:14px;border-radius:50%;aspect-ratio:1;height:auto;background:#F3E9DA;box-shadow:inset 0 1px 2px rgba(120,60,30,.15)}
+.hx-seg i.on{background:var(--c);box-shadow:inset 0 -2px 0 rgba(0,0,0,.12),inset 2px 2px 0 rgba(255,255,255,.45)}
+.hx-scale{color:#B7A98F}
+/* 棒グラフ：まるい頭 */
+.hx-log>small{color:var(--tomato);font-weight:800}
+.hx-bar b{border-radius:999px 999px 4px 4px;background:var(--tomato)}
+.hx-bar b+b{border-radius:4px;background:#9BD15A}
+.hx-bar.today b{box-shadow:0 0 0 2px #fff,0 0 0 4px #F7C9B9}
+.hx-bar.today b+b{box-shadow:0 0 0 2px #fff}
+.hx-days{color:#A99B82}.hx-days span.today{color:var(--tomato)}
+.hx-key{color:var(--ink2)}
+.hx-key i{border-radius:50%}
+.hx-none{color:var(--ink2)}
+.hx-foot p{color:var(--ink2)}
+@media(min-width:900px){.hx-ic{width:52px;height:52px}.hx-mod small b{font-size:18px}}
 </style>
 </head>
 <body class="is-op">
@@ -3394,6 +3453,11 @@ window.SSAPI = (function () {
   /* 表示の切り替え：今日／今週／今月／今シーズン。今日以外は「その期間にこれまで穫れた量（実績）」と、見込みに対する進み具合 */
   var HX_MODES = [['day', '今日', 'Day'], ['week', '今週', 'Week'], ['month', '今月', 'Month'], ['season', '今シーズン', 'Season']];
   var hxMode = 'day', hxData = null, hxKey = '';
+  /* 大玉＝大きいトマト1つ／ミニ＝小さいトマト3つ（ゲージの玉は、緑から赤へ熟していく色） */
+  var HX_IC = {
+    big: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="23" r="14" fill="#E0452A"/><ellipse cx="14.5" cy="18" rx="3.5" ry="2.2" fill="#fff" opacity=".55"/><path d="M20 10 l-6 -2 3 4 -5 1 6 1 2 4 2 -4 6 -1 -5 -1 3 -4z" fill="#3E7D2A"/></svg>',
+    mini: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="12" cy="26" r="8" fill="#E0452A"/><circle cx="28" cy="26" r="8" fill="#E85A3C"/><circle cx="20" cy="15" r="8" fill="#F06A48"/><path d="M20 6 l-3 -1 1 3 -3 1 4 0 1 2 1 -2 4 0 -3 -1 1 -3z" fill="#3E7D2A"/></svg>'
+  };
   function hxView(h, mode) {
     var recs = (h.records || []).slice().sort(function (a, b) { return a.d < b.d ? -1 : 1; });
     var now = new Date(), td = ymd(now), st = API.harvestStats(h, now), bar = function (r) { var d = new Date(r.d + 'T00:00:00'); return { label: (d.getMonth() + 1) + '/' + d.getDate(), big: r.big, mini: r.mini, hl: r.d === td }; };
@@ -3428,23 +3492,23 @@ window.SSAPI = (function () {
     var at = h.at ? new Date(h.at) : null, atTxt = at && ymd(at) === td ? '・更新 <span class="n">' + at.getHours() + ':' + ('0' + at.getMinutes()).slice(-2) + '</span>' : '';
     var lit = Math.min(24, Math.round(v.pct / v.max * 24)), mx = Math.max.apply(null, v.bars.map(function (r) { return r.big + r.mini; }).concat([1]));
     el.innerHTML = '<i class="hx-bolt a"></i><i class="hx-bolt b"></i><i class="hx-bolt c"></i><i class="hx-bolt d"></i>' +
-      '<div class="hx-top"><span>Harvest monitor</span><span class="hx-led' + (v.live ? '' : ' off') + '"><i></i>' + (v.live ? 'Live' : 'Standby') + '</span></div>' +
+      '<div class="hx-top"><span>Tomato meter</span><span class="hx-led' + (v.live ? '' : ' off') + '"><i></i>' + (v.live ? 'Live' : 'Standby') + '</span></div>' +
       '<div class="hx-sw" role="tablist" aria-label="集計の期間">' + HX_MODES.map(function (m, i) {
         return '<button type="button" role="tab" aria-selected="' + (m[0] === hxMode) + '" data-hx="' + m[0] + '" class="' + (m[0] === hxMode ? 'on' : '') + '"><i></i><small>CH.<span class="n">' + (i + 1) + '</span></small><b>' + m[1] + '</b></button>';
       }).join('') + '</div>' +
       '<div class="hx-hd"><div><p class="lbl"><svg><use href="#i-sprout"/></svg>' + (HX_MODES.filter(function (m) { return m[0] === hxMode; })[0][2]) + ' harvest</p><h2>' + v.title + '</h2></div>' +
       '<p class="hx-when">' + v.when + (hxMode === 'day' ? atTxt : '') + '</p></div>' +
       '<div class="hx-body"><div class="hx-mods">' +
-        '<div class="hx-mod big"><small><span>Unit 01</span><b>大玉</b></small><div class="hx-val">' + reels(v.big) + '<span class="hx-u">kg</span></div></div>' +
-        '<div class="hx-mod mini"><small><span>Unit 02</span><b>ミニ</b></small><div class="hx-val">' + reels(v.mini) + '<span class="hx-u">kg</span></div></div>' +
+        '<div class="hx-mod big"><small><span class="hx-ic">' + HX_IC.big + '</span><b>大玉</b></small><div class="hx-val">' + reels(v.big) + '<span class="hx-u">kg</span></div></div>' +
+        '<div class="hx-mod mini"><small><span class="hx-ic">' + HX_IC.mini + '</span><b>ミニ</b></small><div class="hx-val">' + reels(v.mini) + '<span class="hx-u">kg</span></div></div>' +
       '</div><div class="hx-side">' +
         '<div class="hx-gauge"><div class="hx-gh"><span>合計 <b class="n">' + kgf(v.total) + '</b> kg</span><span>' + (v.ref ? v.ref + ' <b class="n">' + Math.round(v.pct) + '</b>%' : '') + '</span></div>' +
-          '<div class="hx-seg">' + Array.apply(null, Array(24)).map(function (_, i) { return '<i class="' + (i < lit ? 'on' : '') + (v.max === 150 && i >= 16 ? ' hot' : '') + '"></i>'; }).join('') + '</div>' +
+          '<div class="hx-seg">' + Array.apply(null, Array(24)).map(function (_, i) { return '<i style="--c:hsl(' + Math.round(96 - i / 23 * 88) + ' 72% 52%)" class="' + (i < lit ? 'on' : '') + '"></i>'; }).join('') + '</div>' +
           '<div class="hx-scale">' + v.scale.map(function (x) { return '<span>' + x + '</span>'; }).join('') + '</div></div>' +
         '<div class="hx-log"><small>' + v.logTitle + '</small>' + (v.bars.length ? '<div class="hx-bars">' + v.bars.map(function (r) {
           return '<div class="hx-bar' + (r.hl ? ' today' : '') + '"><b style="height:' + (r.big / mx * 100) + '%;transform:scaleY(0)"></b><b style="height:' + (r.mini / mx * 100) + '%;transform:scaleY(0)"></b></div>';
         }).join('') + '</div><div class="hx-days">' + v.bars.map(function (r) { return '<span class="' + (r.hl ? 'today' : '') + '">' + r.label + '</span>'; }).join('') + '</div>' : '<p class="hx-none">この期間の記録はまだありません</p>') +
-          '<p class="hx-key"><span><i style="background:#FF8A70"></i>大玉</span><span><i style="background:#C8EE8A"></i>ミニ</span></p></div>' +
+          '<p class="hx-key"><span><i style="background:#E0452A"></i>大玉</span><span><i style="background:#9BD15A"></i>ミニ</span></p></div>' +
       '</div></div>' +
       '<div class="hx-foot"><p>収穫したその日に、農園から記録しています。<br>この量が、そのまま食卓とお店へ。</p><a class="btn" href="#/shop">今日のトマトを買う<svg><use href="#i-arrow"/></svg></a></div>';
     el.setAttribute('aria-label', v.title + ' 大玉' + kgf(v.big) + 'kg ミニ' + kgf(v.mini) + 'kg');
