@@ -1103,6 +1103,7 @@ html.nl .spbar{padding-right:200px}
 .hx-none{color:var(--ink2)}
 .hx-foot p{color:var(--ink2)}
 @media(min-width:900px){.hx-ic{width:52px;height:52px}.hx-mod small b{font-size:18px}}
+.nw{white-space:nowrap}
 </style>
 </head>
 <body class="is-op">
@@ -1501,7 +1502,7 @@ html.nl .spbar{padding-right:200px}
         <div class="co-final">
           <p><b>ご注文の前にご確認ください</b></p>
           <ul>
-            <li>お支払い：ご注文の際（次の画面で、カード・Apple Pay・Google Pay）</li>
+            <li>お支払い：ご注文の際（次の画面で、カード・<span class="nw">Apple Pay</span>・<span class="nw">Google Pay</span>）</li>
             <li>お届け：収穫期間中はご注文から3日以内に発送。期間外は予約として、収穫が始まりしだい発送</li>
             <li>キャンセル：発送の前までご連絡で可能。生鮮品のため、発送後のお客様のご都合による返品はお受けできません</li>
             <li>傷みがあったとき：到着から1週間以内に、写真を添えてご連絡ください</li>
@@ -3292,7 +3293,7 @@ window.SSAPI = (function () {
     cart = []; saveCart(); scrollTo(0, 0);
     if (cur.name === 'shop' || cur.name === 'home') refreshStock();
   });
-  if (API && API.mode === 'live') { var sb = $('#coForm .submit'); sb.firstChild.nodeValue = 'お支払いへ進む'; $('.pay-wip p').innerHTML = API.payEnv() === 'production' ? '<b>お支払いは次の画面で。</b>決済サービス「Square」の安全な画面で、カード・Apple Pay・Google Payでお支払いいただけます。' : '<b>テスト決済モードです。</b>次の画面（Square）でカード情報を入力します。テスト環境のため、実際の請求はありません。'; }
+  if (API && API.mode === 'live') { var sb = $('#coForm .submit'); sb.firstChild.nodeValue = 'お支払いへ進む'; $('.pay-wip p').innerHTML = API.payEnv() === 'production' ? '<b>お支払いは次の画面で。</b>決済サービス「Square」の安全な画面で、<span class="nw">カード</span>・<span class="nw">Apple Pay</span>・<span class="nw">Google Pay</span>でお支払いいただけます。' : '<b>テスト決済モードです。</b>次の画面（Square）でカード情報を入力します。テスト環境のため、実際の請求はありません。'; }
   function adminHref() { return /src\.html$/.test(location.pathname) ? 'admin.html' : 'admin/'; }
   $$('#bizForm,#ctForm').forEach(function (f) {
     f.addEventListener('submit', function (e) {
