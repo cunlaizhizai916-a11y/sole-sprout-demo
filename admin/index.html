@@ -366,7 +366,7 @@ window.SS = {
       lead: 'スープ等の加工用にバッチリです。',
       desc: '大玉トマトとミニトマトをミックスして冷凍しました。スープ等の加工用にバッチリです。',
       variants: [{ label: '1箱 約3kg', price: 2500 }],
-      specs: [['内容', '兵庫県産 冷凍トマト（大玉・ミニのミックス）約3kg'], ['産地', '兵庫県加古川市志方町原'], ['用途', 'スープ等の加工用'], ['配送', 'ヤマト運輸 クール便（冷凍）。北海道・沖縄・離島へは、お届けしていません'], ['保存', '冷凍庫で保存してください']]
+      specs: [['内容', '兵庫県産 冷凍トマト（大玉・ミニのミックス）約3kg'], ['産地', '兵庫県加古川市志方町原'], ['用途', 'スープ等の加工用'], ['配送', 'ヤマト運輸 クール便（冷凍）。北海道・沖縄・離島へは、お届けしておりません'], ['保存', '冷凍庫で保存してください']]
     },
     {
       id: 'aoni', name: '青鬼（青トマト）', kind: '青トマト 1箱 約3kg', cat: 'kako', box: 80, noRegions: ['北海道', '沖縄'],
@@ -375,7 +375,7 @@ window.SS = {
       desc: '赤く熟す前の、青いトマトです。ピクルスやジャムに生まれ変わります。程よい酸味のトマトジャムは病みつきになる可能性高めです。',
       care: '届いたら常温で保存し、お早めにピクルスやジャムなどに加工してください。',
       variants: [{ label: '1箱 約3kg', price: 2500 }],
-      specs: [['内容', '兵庫県産 青トマト 約3kg'], ['産地', '兵庫県加古川市志方町原'], ['用途', 'ピクルス・ジャムなどの加工用'], ['配送', 'ヤマト運輸（暑い時期はクール便）。北海道・沖縄・離島へは、お届けしていません']]
+      specs: [['内容', '兵庫県産 青トマト 約3kg'], ['産地', '兵庫県加古川市志方町原'], ['用途', 'ピクルス・ジャムなどの加工用'], ['配送', 'ヤマト運輸（暑い時期はクール便）。北海道・沖縄・離島へは、お届けしておりません']]
     }
   ],
 
@@ -524,7 +524,7 @@ window.SSAPI = (function () {
     var gift = !!d.gift, sh = SS().shipFee(items, gift ? d.gift_pref : d.pref, t);
     if (!sh) return { error: 'お届け先の都道府県を確認してください' };
     var ngi = items.filter(function (i) { var p = SS().products.filter(function (x) { return x.id === i.id; })[0]; return p && (p.noRegions || []).indexOf(sh.region) >= 0; })[0];
-    if (ngi) return { error: ngi.name + 'は、北海道・沖縄・離島へは、お届けしていません' };
+    if (ngi) return { error: ngi.name + 'は、北海道・沖縄・離島へは、お届けしておりません' };
     var subtotal = items.reduce(function (a, i) { return a + i.price * i.q; }, 0);
     var o = {
       no: newNo(t), created: t.toISOString(), status: 'paid', pay: MODE === 'demo' ? 'デモ（支払いなし）' : 'Square',
