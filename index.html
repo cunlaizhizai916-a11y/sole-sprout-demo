@@ -2183,12 +2183,12 @@ window.SS = {
       specs: [['内容', '兵庫県産 大玉トマト 約4kg'], ['産地', '兵庫県加古川市志方町原'], ['栽培', '養液栽培（慣行栽培）'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
     },
     {
-      id: 'ft', name: 'F.T（冷凍トマト）', kind: '冷凍トマト 大玉・ミニMIX 1箱 約3kg', cat: 'frozen', box: 80, frozen: true,
+      id: 'ft', name: 'F.T（冷凍トマト）', kind: '冷凍トマト 大玉・ミニMIX 1箱 約3kg', cat: 'frozen', box: 80, frozen: true, noRegions: ['北海道', '沖縄'],
       imgs: ['frozen'], badge: '加工用',
       lead: 'スープ等の加工用にバッチリです。',
       desc: '大玉トマトとミニトマトをミックスして冷凍しました。スープ等の加工用にバッチリです。',
       variants: [{ label: '1箱 約3kg', price: 2500 }],
-      specs: [['内容', '兵庫県産 冷凍トマト（大玉・ミニのミックス）約3kg'], ['産地', '兵庫県加古川市志方町原'], ['用途', 'スープ等の加工用'], ['配送', 'ヤマト運輸 クール便（冷凍）'], ['保存', '冷凍庫で保存してください']]
+      specs: [['内容', '兵庫県産 冷凍トマト（大玉・ミニのミックス）約3kg'], ['産地', '兵庫県加古川市志方町原'], ['用途', 'スープ等の加工用'], ['配送', 'ヤマト運輸 クール便（冷凍）。北海道・沖縄・離島へは、お届けしていません'], ['保存', '冷凍庫で保存してください']]
     }
   ],
 
@@ -2336,6 +2336,8 @@ window.SSAPI = (function () {
     if (SS().mixFrozen(items.map(function (i) { return i.id; }))) return { error: '冷凍トマトは冷凍便でお届けするため、生のトマトとは別々にご注文ください' };
     var gift = !!d.gift, sh = SS().shipFee(items, gift ? d.gift_pref : d.pref, t);
     if (!sh) return { error: 'お届け先の都道府県を確認してください' };
+    var ngi = items.filter(function (i) { var p = SS().products.filter(function (x) { return x.id === i.id; })[0]; return p && (p.noRegions || []).indexOf(sh.region) >= 0; })[0];
+    if (ngi) return { error: ngi.name + 'は、北海道・沖縄・離島へは、お届けしていません' };
     var subtotal = items.reduce(function (a, i) { return a + i.price * i.q; }, 0);
     var o = {
       no: newNo(t), created: t.toISOString(), status: 'paid', pay: MODE === 'demo' ? 'デモ（支払いなし）' : 'Square',
@@ -3181,7 +3183,7 @@ window.SSAPI = (function () {
       (p.voice ? '<div class="it-voice"><span class="av"><img src="' + IMG.owner + '" alt=""></span><p>「' + esc(p.voice) + '」<small>生産者　玉垣 直哉</small></p></div>' : '') +
       '<div class="acc">' +
       '<details open><summary>商品について</summary><div class="acc-b"><p>' + esc(p.desc) + '</p><dl class="spec" style="margin-top:12px">' + p.specs.map(function (s) { return '<dt>' + esc(s[0]) + '</dt><dd>' + esc(s[1]) + '</dd>'; }).join('') + '</dl></div></details>' +
-      '<details><summary>お届けについて</summary><div class="acc-b"><p>' + ship + (p.frozen ? '一年を通して、ヤマト運輸のクール便（冷凍）でお届けします。冷凍便のため、生のトマトとは別々にご注文ください。' : coolText()) + shipNote() + '</p></div></details>' +
+      '<details><summary>お届けについて</summary><div class="acc-b"><p>' + ship + (p.frozen ? '一年を通して、ヤマト運輸のクール便（冷凍）でお届けします。冷凍便のため、生のトマトとは別々にご注文ください。北海道・沖縄・離島へは、お届けしていません。' : coolText()) + shipNote() + '</p></div></details>' +
       (p.cat !== 'goods' ? '<details><summary>保存と食べ方</summary><div class="acc-b"><p>' + (p.frozen ? '届いたら、すぐに冷凍庫で保存してください。スープ等の加工用にバッチリです。' : '届いたら常温で保存し、食べる2〜3時間前に冷やすのがおすすめです。へたを取って洗うのは、食べる直前に。') + '</p></div></details>' : '') +
       (p.gift ? '<details><summary>のし・メッセージ</summary><div class="acc-b"><p>ご注文手続きの「ギフトとして贈る」から、のしの種類とお届け先をお選びいただけます。</p></div></details>' : '') +
       '</div></div></div>';
