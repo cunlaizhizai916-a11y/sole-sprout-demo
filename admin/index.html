@@ -359,12 +359,20 @@ window.SS = {
       desc: 'ひと房ずつ手で摘み取った大玉トマト。スライスしてシンプルに、塩ひとつまみで。',
       variants: [{ label: '1箱 約4kg', price: 5000 }],
       specs: [['内容', '兵庫県産 大玉トマト 約4kg'], ['産地', '兵庫県加古川市志方町原'], ['栽培', '養液栽培（慣行栽培）'], ['配送', 'ヤマト運輸（暑い時期はクール便）']]
+    },
+    {
+      id: 'ft', name: 'F.T（冷凍トマト）', kind: '冷凍トマト 大玉・ミニMIX 1箱 約3kg', cat: 'frozen', box: 80, frozen: true,
+      imgs: ['frozen'], badge: '加工用',
+      lead: 'スープ等の加工用にバッチリです。',
+      desc: '大玉トマトとミニトマトをミックスして冷凍しました。スープ等の加工用にバッチリです。',
+      variants: [{ label: '1箱 約3kg', price: 2500 }],
+      specs: [['内容', '兵庫県産 冷凍トマト（大玉・ミニのミックス）約3kg'], ['産地', '兵庫県加古川市志方町原'], ['用途', 'スープ等の加工用'], ['配送', 'ヤマト運輸 クール便（冷凍）'], ['保存', '冷凍庫で保存してください']]
     }
   ],
 
-  featured: ['ai', 'big'],
+  featured: ['ai', 'big', 'ft'],
 
-  cats: [['all', 'すべて'], ['mini', 'ミニトマト'], ['big', '大玉']],
+  cats: [['all', 'すべて'], ['mini', 'ミニトマト'], ['big', '大玉'], ['frozen', '冷凍']],
 
   news: [
     { d: '2026.10.12', tag: 'イベント', t: '「ロハスミーツ稲美」に3日間出店しました', u: 'https://www.instagram.com/p/DeaTGPxE8-v/' },
@@ -383,17 +391,23 @@ window.SS.coolOn = function (d) {
   var md = (d.getMonth() + 1) * 100 + d.getDate(), a = c.from[0] * 100 + c.from[1], b = c.to[0] * 100 + c.to[1];
   return a <= b ? (md >= a && md <= b) : (md >= a || md <= b);
 };
+window.SS.mixFrozen = function (ids) {   // 冷凍と生が混ざっているか
+  var f = ids.map(function (id) { return !!(window.SS.products.filter(function (x) { return x.id === id; })[0] || {}).frozen; });
+  return f.indexOf(true) >= 0 && f.indexOf(false) >= 0;
+};
 window.SS.shipFee = function (items, pref, d) {
   var S = window.SS, sh = S.ship, r = sh.regions.filter(function (x) { return x[1].split(',').indexOf(pref) >= 0; })[0];
   if (!r) return null;
-  var cool = S.coolOn(d), cost = 0, boxes = 0, add = (sh.extra || {})[r[0]] || 0;
+  var cool = S.coolOn(d), cost = 0, boxes = 0, frozen = false, add = (sh.extra || {})[r[0]] || 0;
   for (var k = 0; k < items.length; k++) {
     var it = items[k], p = S.products.filter(function (x) { return x.id === it.id; })[0], si = sh.sizes.indexOf((p && p.box) || 80);
-    if (si < 0 || (cool && si >= sh.cool.length)) return null;
-    cost += Math.round((r[2][si] + (cool ? sh.cool[si] : 0)) * (1 + sh.tax)) * it.q; boxes += it.q;
+    var ic = cool || !!(p && p.frozen); if (p && p.frozen) frozen = true;   // 冷凍の商品は一年中クール便（冷凍）
+    if (si < 0 || (ic && si >= sh.cool.length)) return null;
+    cost += Math.round((r[2][si] + (ic ? sh.cool[si] : 0)) * (1 + sh.tax)) * it.q; boxes += it.q;
   }
+  cool = cool || frozen;
   /* fee＝お客さんにいただく送料／cost＝ヤマトに払う運賃（税込の目安） */
-  return { fee: sh.included ? add * boxes : cost, cost: cost, region: r[0], cool: cool, boxes: boxes };
+  return { fee: sh.included ? add * boxes : cost, cost: cost, region: r[0], cool: cool, frozen: frozen, boxes: boxes };
 };
 </script>
 <script>/* ============================================================
@@ -497,12 +511,13 @@ window.SSAPI = (function () {
     var items = d.cart.map(function (c) { var p = prod(c.id), va = p.variants[c.v]; return { id: c.id, v: c.v, name: p.name, label: va.label, price: va.price, q: c.q, box: p.box || '80' }; });
     var bad = items.filter(function (i) { return !availability(i.id, i.v).ok; });
     if (bad.length) return { error: bad.map(function (i) { return i.name + '（' + i.label + '）'; }).join('・') + ' は、いまご注文いただけません' };
+    if (SS().mixFrozen(items.map(function (i) { return i.id; }))) return { error: '冷凍トマトは冷凍便でお届けするため、生のトマトとは別々にご注文ください' };
     var gift = !!d.gift, sh = SS().shipFee(items, gift ? d.gift_pref : d.pref, t);
     if (!sh) return { error: 'お届け先の都道府県を確認してください' };
     var subtotal = items.reduce(function (a, i) { return a + i.price * i.q; }, 0);
     var o = {
       no: newNo(t), created: t.toISOString(), status: 'paid', pay: MODE === 'demo' ? 'デモ（支払いなし）' : 'Square',
-      items: items, subtotal: subtotal, shipping: sh.fee, total: subtotal + sh.fee, ship: { region: sh.region, cool: sh.cool, boxes: sh.boxes, cost: sh.cost },
+      items: items, subtotal: subtotal, shipping: sh.fee, total: subtotal + sh.fee, ship: { region: sh.region, cool: sh.cool, frozen: sh.frozen, boxes: sh.boxes, cost: sh.cost },
       name: d.name, email: d.email, tel: d.tel, zip: d.zip, pref: d.pref, addr: d.addr,
       gift: gift, gift_name: gift ? d.gift_name || '' : '', gift_zip: gift ? d.gift_zip || '' : '', gift_pref: gift ? d.gift_pref || '' : '', gift_addr: gift ? d.gift_addr || '' : '', noshi: gift ? d.noshi || 'なし' : 'なし',
       date: d.date || '指定なし', time: d.time || '指定なし', message: d.message || '',
@@ -524,7 +539,7 @@ window.SSAPI = (function () {
       if (patch.status === 'shipped') {
         o.shipped_at = new Date().toISOString();
         log('mail', o.email, '【SOLE SPROUT】トマトを発送しました', o.name + ' 様\n\nご注文のトマトを、本日発送しました。\n受付番号：' + o.no + '\n\n' + itemsText(o) + '\n\nお届け：ヤマト運輸\n伝票番号：' + (o.tracking || '（農園から追ってお知らせします）') +
-          '\n※お荷物の状況は、ヤマト運輸の公式サイトまたはアプリで、伝票番号から確認できます。\n\n届いたら常温で保存し、食べる2〜3時間前に冷やすのがおすすめです。\n\nSOLE SPROUT（加古川市志方町）', o.no);
+          '\n※お荷物の状況は、ヤマト運輸の公式サイトまたはアプリで、伝票番号から確認できます。\n\n' + (o.ship && o.ship.frozen ? '冷凍便でお届けします。届いたら、すぐに冷凍庫で保存してください。' : '届いたら常温で保存し、食べる2〜3時間前に冷やすのがおすすめです。') + '\n\nSOLE SPROUT（加古川市志方町）', o.no);
       }
       if (patch.status === 'canceled') log('mail', o.email, '【SOLE SPROUT】ご注文のキャンセルについて', o.name + ' 様\n\n受付番号 ' + o.no + ' のご注文をキャンセルしました。', o.no);
     }
@@ -621,13 +636,13 @@ window.SSAPI = (function () {
     get(K.orders, []).filter(function (o) { return nos.indexOf(o.no) >= 0; }).forEach(function (o) {
       var m = /(\d+)月(\d+)日/.exec(o.date), due = '';
       if (m) { var y = today.getFullYear(); if (new Date(y, +m[1] - 1, +m[2], 23, 59) < today) y++; due = y + '/' + pad(m[1]) + '/' + pad(m[2]); }   // 12月に1月の指定は翌年
-      var g = o.gift && o.gift_name, cool = o.ship ? o.ship.cool : coolNow(today);
+      var g = o.gift && o.gift_name, cool = o.ship ? o.ship.cool : coolNow(today), frz = (o.ship && o.ship.frozen) || (o.items || []).some(function (i) { var ps = (typeof window !== 'undefined' && window.SS && window.SS.products) || [], p = ps.filter(function (x) { return x.id === i.id; })[0]; return p && p.frozen; });
       var boxes = o.ship ? o.ship.boxes : o.items.reduce(function (a, i) { return a + i.q; }, 0);
       var to = b2Addr(g ? (o.gift_pref || '') + o.gift_addr : o.pref + o.addr), name = b2Text(g ? o.gift_name : o.name);
       if (to.over) warn.push(o.no + ' の住所が長すぎます');
       if (b2Width(name) > 32) warn.push(o.no + ' のお名前が長すぎます');
       var row = new Array(B2_HEAD.length).fill('');
-      row[0] = o.no; row[1] = '0'; row[2] = cool ? '2' : '0'; row[4] = ds; row[5] = due; row[6] = TIME[o.time] || '';
+      row[0] = o.no; row[1] = '0'; row[2] = frz ? '1' : cool ? '2' : '0'; row[4] = ds; row[5] = due; row[6] = TIME[o.time] || '';
       row[8] = b2Tel(o.tel); row[10] = b2Tel(g ? (o.gift_zip || '') : o.zip); row[11] = to.main; row[12] = to.sub; row[15] = b2Cut(name, 32);
       row[19] = b2Tel(c.tel); row[21] = b2Tel(c.zip); row[22] = from.main; row[23] = from.sub; row[24] = b2Cut(b2Text(c.name), 32);
       row[27] = 'トマト（生鮮品）'; row[30] = 'ナマモノ'; row[32] = b2Cut(o.noshi && o.noshi !== 'なし' ? 'のし：' + b2Text(o.noshi) : '', 44);
