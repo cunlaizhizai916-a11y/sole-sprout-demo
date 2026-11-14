@@ -1142,7 +1142,9 @@ html.nl .spbar{padding-right:200px}
 }
 /* トップのタイル */
 .kt-tile .v-ph{position:relative}
-.kt-tile .v-ph img{object-position:50% 55%}
+.kt-tile .v-ph,.v-tile.kt-tile:nth-child(2n) .v-ph{border-radius:22px;background:linear-gradient(#bfe0f0,#e3f1f8)}
+.kt-tile .v-ph img{object-fit:contain;padding:6px}
+.kt-tile:hover .v-ph img{scale:1.03}
 .kt-pill{position:absolute;left:50%;bottom:12px;translate:-50% 0;white-space:nowrap;background:var(--tomato);color:#fff;font-family:var(--en);font-style:italic;font-size:13px;padding:4px 12px;border-radius:999px}
 </style>
 </head>
@@ -1398,7 +1400,7 @@ html.nl .spbar{padding-right:200px}
         <a class="v-tile" href="#/visit?s=stand" data-rv><div class="v-ph"><img data-img="stall" alt="トマトが並ぶ販売所"></div><b>無人販売所</b><span>志方町原793-1</span></a>
         <a class="v-tile" href="#/visit?s=store" data-rv><div class="v-ph"><img data-img="store" alt="ボンマルシェの店舗外観"></div><b>ボンマルシェ</b><span>地元のスーパー</span></a>
         <a class="v-tile" href="#/shop" data-rv><div class="v-ph"><img data-img="box" alt="箱詰めしたミニトマト"></div><b>オンライン</b><span>全国へお届け</span></a>
-        <a class="v-tile kt-tile" href="#/visit?s=car" data-rv><div class="v-ph"><img data-img="ktposter" alt="トマトシャーベット"><em class="kt-pill">Coming soon</em></div><b>キッチントラック</b><span>まもなく出発</span></a>
+        <a class="v-tile kt-tile" href="#/visit?s=car" data-rv><div class="v-ph"><img data-img="ktposter" alt="トマトシャーベット"></div><b>キッチントラック</b><span>まもなく出発</span></a>
       </div>
     </div>
   </div>
