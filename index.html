@@ -1154,6 +1154,15 @@ html.nl .spbar{padding-right:200px}
 .kt-new{display:inline-block;font-family:var(--en);font-size:11px;font-weight:700;color:#fff;background:var(--tomato);border-radius:999px;padding:1px 9px}
 .kt-future{margin:14px 0 0;padding:12px 14px;border-left:4px solid var(--tomato);background:rgba(224,69,42,.06);border-radius:0 14px 14px 0;font-size:14.5px;line-height:1.85;font-weight:700;color:var(--ink)}
 .kt-future b{display:block;font-family:var(--en);font-style:italic;font-weight:600;color:var(--tomato);font-size:14px}
+
+/* 人生歴（縦のタイムライン） */
+.life-h{font-size:13px;font-weight:900;letter-spacing:.12em;color:var(--tomato);margin:4px 0 10px}
+.life{list-style:none;padding:0 0 0 4px;margin:0 0 16px;position:relative}
+.life li{position:relative;padding:0 0 12px 24px;font-size:14.5px;font-weight:700;line-height:1.6}
+.life li::before{content:'';position:absolute;left:0;top:7px;width:10px;height:10px;border-radius:50%;background:var(--paper);border:2px solid var(--tomato)}
+.life li:not(:last-child)::after{content:'';position:absolute;left:5px;top:19px;bottom:-1px;width:2px;background:rgba(224,69,42,.3)}
+.life li.now{padding-bottom:0;color:var(--tomato);font-size:16px}
+.life li.now::before{background:var(--tomato)}
 </style>
 </head>
 <body class="is-op">
@@ -1721,8 +1730,10 @@ html.nl .spbar{padding-right:200px}
       <div data-rv>
         <p class="lbl"><svg><use href="#i-sprout"/></svg>Founder</p>
         <h2 class="ttl"><span class="np">玉垣 直哉</span></h2>
-        <p class="body">地元・志方で、30歳で農業の道へ。兵庫県立農業大学校の実践研修を経て、研修生時代の大失敗を糧に、2025年3月3日にSOLE SPROUTを創業しました。</p>
-        <blockquote class="pull">「トマトを管理していると言うより、<span class="np">トマトに管理されてる気さえしてきました。」</span></blockquote>
+        <p class="life-h">人生歴</p>
+        <ol class="life"><li>大学（機械工学）卒業</li><li>エンジニア</li><li>タレント</li><li>トラック運転手</li><li>兵庫県立農業大学校（実践研修コース）卒業</li><li class="now">トマト農家</li></ol>
+        <p class="body">地元の志方で、30歳の時に<span class="np">農業の世界へ。</span></p>
+        <blockquote class="pull">「トマト達も含めてONE TEAMで、<span class="np">SOLE SPROUT号の舵を</span><span class="np">切らせてもらっています。」</span></blockquote>
       </div>
     </div>
   </div>
